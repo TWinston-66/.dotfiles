@@ -12,15 +12,15 @@ return {
 	opts = function()
 		local icons = {
 			diagnostics = {
-				Error = " ",
-				Warn = " ",
-				Info = " ",
-				Hint = " ",
+				Error = " ",
+				Warn = " ",
+				Info = " ",
+				Hint = " ",
 			},
 			git = {
-				added = " ",
-				modified = " ",
-				removed = " ",
+				added = " ",
+				modified = " ",
+				removed = " ",
 			},
 		}
 
@@ -28,7 +28,7 @@ return {
 
 		return {
 			options = {
-				theme = "catppuccin",
+				theme = "catppuccin-nvim",
 				globalstatus = vim.o.laststatus == 3,
 			},
 			sections = {
@@ -45,11 +45,11 @@ return {
 							hint = icons.diagnostics.Hint,
 						},
 					},
-					{ "filetype", icon_only = true, separator = "", padding = { left = 1, right = 0 } },
+					{ "filetype", padding = { left = 1, right = 1 } },
 					{
 						"filename",
 						path = 1,
-						symbols = { modified = "  ", readonly = " ", unnamed = "[No Name]" },
+						symbols = { modified = " ", readonly = " ", unnamed = "[No Name]" },
 					},
 				},
 				lualine_x = {
@@ -80,11 +80,7 @@ return {
 					{ "progress", separator = " ", padding = { left = 1, right = 0 } },
 					{ "location", padding = { left = 0, right = 1 } },
 				},
-				lualine_z = {
-					function()
-						return " " .. os.date("%R")
-					end,
-				},
+				lualine_z = {},
 			},
 
 			extensions = { "lazy", "fzf" },
