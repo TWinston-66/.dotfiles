@@ -41,6 +41,11 @@ eval "$(starship init zsh)"
 # --- Tools ---
 eval "$(zoxide init zsh)"
 if command -v brew >/dev/null 2>&1; then
+  _zsh_autosuggestions="$(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
+  [ -f "$_zsh_autosuggestions" ] && source "$_zsh_autosuggestions"
+  unset _zsh_autosuggestions
+fi
+if command -v brew >/dev/null 2>&1; then
   _fzf_keybindings="$(brew --prefix)/opt/fzf/shell/key-bindings.zsh"
   [ -f "$_fzf_keybindings" ] && source "$_fzf_keybindings"
   unset _fzf_keybindings
@@ -50,9 +55,13 @@ fi
 export TEALDEER_CONFIG_DIR="$HOME/.config/tealdeer"
 
 # --- Aliases ---
-alias ls='eza --icons -a'
-alias ll='eza -la --icons --git --header'
-alias bat='bat --paging=never'
+alias ls='eza --icons -a --group-directories-first'
+alias ll='eza -la --icons --git --header --group-directories-first'
+alias tree='eza --tree --icons --git-ignore'
+alias cat='bat --style=plain --paging=never'
+alias cd='z'
+alias where='fd'
+alias lookf='rg'
 alias nv='nvim'
 alias vim='nvim'
 alias vi='nvim'
@@ -61,6 +70,6 @@ export EDITOR="nvim"
 
 export PATH="$HOME/.local/bin:$PATH"
 
+export PATH="/Applications/calibre.app/Contents/MacOS:$PATH"
 
-# Added by Antigravity CLI installer
 export PATH="/Users/winstont/.local/bin:$PATH"

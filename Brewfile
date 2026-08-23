@@ -45,4 +45,5 @@ if OS.mac?
   cask "tor-browser"
   cask "transmission"
   cask "firefox"
+  cask "rectangle"
 end
