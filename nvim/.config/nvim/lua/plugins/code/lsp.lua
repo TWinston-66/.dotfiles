@@ -30,10 +30,18 @@ return {
 					local keymap_opts = { buffer = event.buf }
 					local keymap = vim.keymap
 
-					keymap.set("n", "gd", vim.lsp.buf.definition, keymap_opts)
+					local fzf = function(picker)
+						return function()
+							require("fzf-lua")[picker]()
+						end
+					end
+
+					keymap.set("n", "gd", fzf("lsp_definitions"), keymap_opts)
 					keymap.set("n", "gD", vim.lsp.buf.declaration, keymap_opts)
-					keymap.set("n", "gr", vim.lsp.buf.references, keymap_opts)
-					keymap.set("n", "gi", vim.lsp.buf.implementation, keymap_opts)
+					keymap.set("n", "gr", fzf("lsp_references"), keymap_opts)
+					keymap.set("n", "gi", fzf("lsp_implementations"), keymap_opts)
+					keymap.set("n", "gy", fzf("lsp_typedefs"), keymap_opts)
+					keymap.set("n", "<leader>fd", fzf("diagnostics_document"), keymap_opts)
 					keymap.set("n", "K", vim.lsp.buf.hover, keymap_opts)
 					keymap.set("n", "<leader>rn", vim.lsp.buf.rename, keymap_opts)
 					keymap.set({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, keymap_opts)

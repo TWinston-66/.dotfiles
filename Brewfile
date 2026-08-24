@@ -23,6 +23,7 @@ brew "gitmux"
 brew "neovim"
 brew "tree-sitter"
 brew "lazygit"
+brew "zk"
 
 if OS.linux?
   brew "keychain"

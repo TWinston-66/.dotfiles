@@ -51,6 +51,7 @@ return {
 						path = 1,
 						symbols = { modified = " ", readonly = " ", unnamed = "[No Name]" },
 					},
+					{ "aerial", sep_prefix = true },
 				},
 				lualine_x = {
 					{
@@ -83,7 +84,7 @@ return {
 				lualine_z = {},
 			},
 
-			extensions = { "lazy", "fzf" },
+			extensions = { "lazy", "fzf", "aerial" },
 		}
 	end,
 }

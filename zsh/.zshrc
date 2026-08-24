@@ -54,6 +54,9 @@ fi
 # --- tealdeer (tldr) ---
 export TEALDEER_CONFIG_DIR="$HOME/.config/tealdeer"
 
+# --- zk (notes) ---
+export ZK_NOTEBOOK_DIR="$HOME/Documents/notes"
+
 # --- Aliases ---
 alias ls='eza --icons -a --group-directories-first'
 alias ll='eza -la --icons --git --header --group-directories-first'

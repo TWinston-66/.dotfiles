@@ -55,6 +55,14 @@ return {
 				right_mouse_command = bufremove,
 				diagnostics = "nvim_lsp",
 				always_show_bufferline = false,
+				offsets = {
+					{
+						filetype = "aerial",
+						text = "Outline",
+						highlight = "Directory",
+						separator = true,
+					},
+				},
 				diagnostics_indicator = function(_, _, diag)
 					local icons = { Error = " ", Warn = " " }
 					local ret = (diag.error and icons.Error .. diag.error .. " " or "")
