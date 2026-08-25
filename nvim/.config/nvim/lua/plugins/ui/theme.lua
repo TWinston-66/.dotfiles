@@ -12,6 +12,7 @@ return {
 				mason = true,
 				mini = { enabled = true },
 				native_lsp = { enabled = true },
+				render_markdown = true,
 				treesitter = true,
 			},
 		},

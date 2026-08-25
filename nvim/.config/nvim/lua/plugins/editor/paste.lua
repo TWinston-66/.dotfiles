@@ -9,7 +9,7 @@ return {
     { "gp", "<Plug>(YankyGPutAfter)", mode = { "n", "x" }, desc = "Put after, leave cursor after" },
     { "gP", "<Plug>(YankyGPutBefore)", mode = { "n", "x" }, desc = "Put before, leave cursor after" },
 
-    { "<c-]>", "<Plug>(YankyCycleForward)", desc = "Cycle to next yank" },
-    { "<c-[>", "<Plug>(YankyCycleBackward)", desc = "Cycle to previous yank" },
+    { "]y", "<Plug>(YankyCycleForward)", desc = "Cycle to next yank" },
+    { "[y", "<Plug>(YankyCycleBackward)", desc = "Cycle to previous yank" },
   },
 }
