@@ -48,7 +48,9 @@ sudo_keepalive() {
 os_specific_setup() {
   case "$DOTFILES_OS" in
     macos)
-      run_step "Applying macOS defaults" bash "$DOTFILES_DIR/lib/macos/defaults.sh"
+      
+      log_step "Applying macOS defaults"
+      bash "$DOTFILES_DIR/lib/macos/defaults.sh"
 
       log_step "Setting up Touch ID for sudo"
       sudo -v

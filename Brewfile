@@ -34,6 +34,9 @@ if OS.linux?
 end
 
 if OS.mac?
+  brew "dockutil"
+  brew "defaultbrowser"
+
   cask "zed"
   cask "ghostty"
   cask "helium-browser"
