@@ -25,7 +25,7 @@ defaults write NSGlobalDomain NSAutomaticPeriodSubstitutionEnabled -bool false
 defaults write NSGlobalDomain AppleKeyboardUIMode -int 3 # Tab through all controls
 
 defaults write NSGlobalDomain AppleShowScrollBars -string "Always"
-defaults write NSGlobalDomain NSTableViewDefaultSizeMode -int 1 # small sidebar icons
+defaults write NSGlobalDomain NSTableViewDefaultSizeMode -int 2 # medium sidebar icons
 defaults write NSGlobalDomain AppleWindowTabbingMode -string "always" # tabs, not windows
 defaults write NSGlobalDomain NSDocumentSaveNewDocumentsToCloud -bool false
 

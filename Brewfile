@@ -45,6 +45,7 @@ if OS.mac?
   cask "obsidian"
   cask "drawio"
   cask "telegram"
+  cask "discord"
   cask "docker-desktop"
   cask "iina"
   cask "tor-browser"
