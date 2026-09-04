@@ -14,6 +14,7 @@ return {
 				"ts_ls",
 				"bashls",
 				"lua_ls",
+				"texlab",
 			},
 		},
 		config = function(_, opts)
@@ -21,6 +22,15 @@ return {
 
 			vim.lsp.config("*", {
 				capabilities = require("blink.cmp").get_lsp_capabilities(),
+			})
+
+			vim.lsp.config("texlab", {
+				settings = {
+					texlab = {
+						build = { onSave = false },
+						chktex = { onOpenAndSave = true, onEdit = false },
+					},
+				},
 			})
 
 			require("mason-lspconfig").setup(opts)

@@ -24,7 +24,6 @@ brew "gitmux"
 brew "neovim"
 brew "tree-sitter"
 brew "lazygit"
-brew "zk"
 
 if OS.linux?
   brew "keychain"
@@ -52,4 +51,7 @@ if OS.mac?
   cask "transmission"
   cask "firefox"
   cask "rectangle"
+
+  cask "mactex-no-gui"
+  cask "skim"
 end

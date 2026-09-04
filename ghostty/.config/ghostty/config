@@ -23,7 +23,6 @@ split-inherit-working-directory = true
 scrollback-limit = 100000000
 
 # macOS already binds cmd+d / cmd+shift+d to splits by default.
-keybind = global:cmd+backquote=toggle_quick_terminal
 # tmux on macbooks
 keybind = cmd+a=text:\x01
 
