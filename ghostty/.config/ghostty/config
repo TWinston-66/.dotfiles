@@ -26,3 +26,5 @@ scrollback-limit = 100000000
 # tmux on macbooks
 keybind = cmd+a=text:\x01
 
+keybind = cmd+enter=text:\x19
+
