@@ -9,9 +9,23 @@ return {
                     lsp_format = "fallback",
                 }
             end,
+            -- rust and c/cpp are intentionally absent: rust_analyzer and clangd
+            -- format them through the lsp_format fallback above.
             formatters_by_ft = {
                 lua = { "stylua" },
                 go = { "goimports", "gofmt" },
+                python = { "ruff_organize_imports", "ruff_format" },
+                sh = { "shfmt" },
+                bash = { "shfmt" },
+                javascript = { "prettierd" },
+                javascriptreact = { "prettierd" },
+                typescript = { "prettierd" },
+                typescriptreact = { "prettierd" },
+                json = { "prettierd" },
+                jsonc = { "prettierd" },
+                yaml = { "prettierd" },
+                html = { "prettierd" },
+                css = { "prettierd" },
                 tex = { "latexindent" },
                 plaintex = { "latexindent" },
                 bib = { "latexindent" },

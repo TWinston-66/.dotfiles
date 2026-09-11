@@ -1,5 +1,8 @@
 typeset -U path PATH
 
+# lazygit falls back to ~/Library/Application Support on macOS unless this is set
+export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
+
 if [ -d /opt/homebrew/bin ]; then
   eval "$(/opt/homebrew/bin/brew shellenv)"
 elif [ -d /home/linuxbrew/.linuxbrew ]; then
@@ -10,6 +13,14 @@ if [ -z "$TMUX" ] && command -v tmux >/dev/null 2>&1; then
   tmux attach || tmux new -s main
   exit
 fi
+
+# Catppuccin Mocha
+export FZF_DEFAULT_OPTS=" \
+--color=bg+:#313244,bg:#1e1e2e,spinner:#f5e0dc,hl:#f38ba8 \
+--color=fg:#cdd6f4,header:#f38ba8,info:#cba6f7,pointer:#f5e0dc \
+--color=marker:#b4befe,fg+:#cdd6f4,prompt:#cba6f7,hl+:#f38ba8 \
+--color=selected-bg:#45475a \
+--color=border:#6c7086,label:#cdd6f4"
 
 eval "$(fzf --zsh)"
 
@@ -60,4 +71,6 @@ export EDITOR="nvim"
 
 export PATH="$HOME/.local/bin:$PATH"
 
-export PATH="/Applications/calibre.app/Contents/MacOS:$PATH"
+if [ -d "/Applications/calibre.app/Contents/MacOS" ]; then
+  export PATH="/Applications/calibre.app/Contents/MacOS:$PATH"
+fi

@@ -24,6 +24,11 @@ return {
 			"javascriptreact",
 			"typescript",
 			"typescriptreact",
+			"python",
+			"json",
+			"yaml",
+			"toml",
+			"gitcommit",
 			"markdown",
 		}
 

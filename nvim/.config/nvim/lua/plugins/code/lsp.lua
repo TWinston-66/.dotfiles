@@ -15,6 +15,7 @@ return {
 				"bashls",
 				"lua_ls",
 				"texlab",
+				"pyright",
 			},
 		},
 		config = function(_, opts)
@@ -31,6 +32,25 @@ return {
 						chktex = { onOpenAndSave = true, onEdit = false },
 					},
 				},
+			})
+
+			-- uv puts the project venv at .venv; point pyright at it when present
+			vim.lsp.config("pyright", {
+				settings = {
+					python = {
+						analysis = {
+							autoSearchPaths = true,
+							useLibraryCodeForTypes = true,
+							diagnosticMode = "openFilesOnly",
+						},
+					},
+				},
+				before_init = function(_, config)
+					local venv = (config.root_dir or vim.fn.getcwd()) .. "/.venv/bin/python"
+					if vim.uv.fs_stat(venv) then
+						config.settings.python.pythonPath = venv
+					end
+				end,
 			})
 
 			require("mason-lspconfig").setup(opts)
@@ -65,7 +85,7 @@ return {
 		dependencies = { "rafamadriz/friendly-snippets" },
 		version = "*",
 		opts = {
-			keymap = { preset = "default" },
+			keymap = { preset = "super-tab" },
 			appearance = { nerd_font_variant = "mono" },
 			completion = { documentation = { auto_show = true } },
 			sources = { default = { "lsp", "path", "snippets", "buffer" } },
@@ -81,8 +101,11 @@ return {
 				"stylua",
 				"goimports",
 				"shellcheck",
+				"shfmt",
 				"eslint_d",
+				"prettierd",
 				"golangci-lint",
+				"ruff",
 			},
 		},
 	},

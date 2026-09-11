@@ -5,6 +5,7 @@ return {
 
         lint.linters_by_ft = {
             go = { "golangcilint" },
+            python = { "ruff" },
             sh = { "shellcheck" },
             javascript = { "eslint_d" },
             javascriptreact = { "eslint_d" },
