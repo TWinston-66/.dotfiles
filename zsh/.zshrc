@@ -1,6 +1,5 @@
 typeset -U path PATH
 
-# lazygit falls back to ~/Library/Application Support on macOS unless this is set
 export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
 
 if [ -d /opt/homebrew/bin ]; then
@@ -14,7 +13,6 @@ if [ -z "$TMUX" ] && command -v tmux >/dev/null 2>&1; then
   exit
 fi
 
-# Catppuccin Mocha
 export FZF_DEFAULT_OPTS=" \
 --color=bg+:#313244,bg:#1e1e2e,spinner:#f5e0dc,hl:#f38ba8 \
 --color=fg:#cdd6f4,header:#f38ba8,info:#cba6f7,pointer:#f5e0dc \
@@ -73,4 +71,28 @@ export PATH="$HOME/.local/bin:$PATH"
 
 if [ -d "/Applications/calibre.app/Contents/MacOS" ]; then
   export PATH="/Applications/calibre.app/Contents/MacOS:$PATH"
+fi
+
+if command -v brew >/dev/null 2>&1; then
+  ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets)
+
+  typeset -gA ZSH_HIGHLIGHT_STYLES
+  ZSH_HIGHLIGHT_STYLES[default]='fg=#cdd6f4'
+  ZSH_HIGHLIGHT_STYLES[unknown-token]='fg=#f38ba8,bold'
+  ZSH_HIGHLIGHT_STYLES[reserved-word]='fg=#cba6f7'
+  ZSH_HIGHLIGHT_STYLES[alias]='fg=#a6e3a1'
+  ZSH_HIGHLIGHT_STYLES[builtin]='fg=#a6e3a1'
+  ZSH_HIGHLIGHT_STYLES[function]='fg=#a6e3a1'
+  ZSH_HIGHLIGHT_STYLES[command]='fg=#a6e3a1'
+  ZSH_HIGHLIGHT_STYLES[precommand]='fg=#a6e3a1,italic'
+  ZSH_HIGHLIGHT_STYLES[path]='fg=#cdd6f4,underline'
+  ZSH_HIGHLIGHT_STYLES[globbing]='fg=#89b4fa'
+  ZSH_HIGHLIGHT_STYLES[single-quoted-argument]='fg=#f9e2af'
+  ZSH_HIGHLIGHT_STYLES[double-quoted-argument]='fg=#f9e2af'
+  ZSH_HIGHLIGHT_STYLES[comment]='fg=#6c7086,italic'
+  ZSH_HIGHLIGHT_STYLES[bracket-error]='fg=#f38ba8'
+
+  _zsh_hl="$(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+  [ -f "$_zsh_hl" ] && source "$_zsh_hl"
+  unset _zsh_hl
 fi

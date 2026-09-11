@@ -34,7 +34,6 @@ return {
 				},
 			})
 
-			-- uv puts the project venv at .venv; point pyright at it when present
 			vim.lsp.config("pyright", {
 				settings = {
 					python = {

@@ -11,6 +11,11 @@ shared_packages() {
 }
 
 install_tailscale() {
+    if [ "$DOTFILES_OS" = "macos" ]; then
+      log_info "Tailscale installed via cask"
+      return
+    fi
+
     if command -v tailscale >/dev/null 2>&1; then
       log_info "Tailscale already installed"
       return

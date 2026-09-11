@@ -9,8 +9,7 @@ return {
                     lsp_format = "fallback",
                 }
             end,
-            -- rust and c/cpp are intentionally absent: rust_analyzer and clangd
-            -- format them through the lsp_format fallback above.
+
             formatters_by_ft = {
                 lua = { "stylua" },
                 go = { "goimports", "gofmt" },

@@ -10,7 +10,6 @@ install_linux_apps() {
 
     am_install helium           am -ia helium
     am_install ghostty          am -e pkgforge-dev/ghostty-appimage ghostty "download/v"
-    am_install sourcegit        am -e sourcegit-scm/sourcegit sourcegit
     am_install cryptomator      am -e cryptomator/cryptomator cryptomator
     am_install obsidian         am -e obsidianmd/obsidian-releases obsidian
     am_install draw.io          am -ia draw.io

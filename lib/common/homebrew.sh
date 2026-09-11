@@ -2,7 +2,6 @@
 
 set -euo pipefail
 
-
 load_homebrew() {
   if command -v brew >/dev/null 2>&1; then
     return 0

@@ -30,7 +30,6 @@ detect_os() {
   fi
 }
 
-
 install_native_prereqs() {
   case "$DOTFILES_OS" in
     macos)

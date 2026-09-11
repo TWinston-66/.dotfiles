@@ -4,7 +4,7 @@ return {
   event = "VeryLazy",
   config = function()
     local minidiff = require("mini.diff")
-    
+
     minidiff.setup({
       mappings = {
         textobject = 'gh',

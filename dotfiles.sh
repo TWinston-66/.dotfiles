@@ -48,7 +48,7 @@ sudo_keepalive() {
 os_specific_setup() {
   case "$DOTFILES_OS" in
     macos)
-      
+
       log_step "Applying macOS defaults"
       bash "$DOTFILES_DIR/lib/macos/defaults.sh"
 
@@ -59,6 +59,5 @@ os_specific_setup() {
     linux) : ;;
   esac
 }
-
 
 main "$@"

@@ -9,8 +9,7 @@ return {
 		"BufReadPre " .. vault .. "/*.md",
 		"BufNewFile " .. vault .. "/*.md",
 	},
-	---@module 'obsidian'
-	---@type obsidian.config
+
 	opts = {
 		legacy_commands = false,
 		workspaces = { { name = "vault", path = vault } },

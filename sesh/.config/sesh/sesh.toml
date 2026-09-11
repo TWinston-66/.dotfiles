@@ -1,5 +1,3 @@
-# sesh — smart tmux session manager (prefix + o in tmux.conf)
-
 [default_session]
 preview_command = "eza --all --git --icons --color=always --long --no-user --no-permissions {}"
 

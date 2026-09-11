@@ -13,6 +13,7 @@ return {
 				mini = { enabled = true },
 				native_lsp = { enabled = true },
 				render_markdown = true,
+				snacks = true,
 				treesitter = true,
 			},
 		},

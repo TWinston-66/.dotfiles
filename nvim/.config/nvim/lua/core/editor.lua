@@ -35,6 +35,10 @@ opt.smartcase = true
 -- Spelling
 opt.spell = true
 opt.spelllang = "en_us"
+-- Split camelCase so identifiers are checked word by word
+opt.spelloptions = "camel"
+-- Words added with zg stay in the dotfiles repo
+opt.spellfile = vim.fn.stdpath("config") .. "/spell/en.utf-8.add"
 
 -- Per-language indentation
 vim.api.nvim_create_autocmd("FileType", {
@@ -61,5 +65,31 @@ vim.api.nvim_create_autocmd("FileType", {
 		vim.opt_local.conceallevel = 2
 		vim.opt_local.wrap = true
 		vim.opt_local.linebreak = true
+	end,
+})
+
+-- Spelling off where it is noise. gitcommit is deliberately absent.
+vim.api.nvim_create_autocmd("TermOpen", {
+	callback = function()
+		vim.opt_local.spell = false
+	end,
+})
+
+vim.api.nvim_create_autocmd("FileType", {
+	pattern = {
+		"help",
+		"man",
+		"qf",
+		"checkhealth",
+		"lazy",
+		"mason",
+		"aerial",
+		"fzf",
+		"snacks_dashboard",
+		"snacks_picker_list",
+		"snacks_terminal",
+	},
+	callback = function()
+		vim.opt_local.spell = false
 	end,
 })

@@ -3,7 +3,7 @@ return {
 	cmd = "FzfLua",
 	opts = {},
 	init = function()
-		-- Route vim.ui.select through fzf-lua, loading it on first use.
+
 		vim.ui.select = function(...)
 			require("lazy").load({ plugins = { "fzf-lua" } })
 			return vim.ui.select(...)
