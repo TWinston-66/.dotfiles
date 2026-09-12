@@ -17,6 +17,7 @@ install_linux_apps() {
     am_install tor-browser      am -ia tor-browser
     am_install transmission-gtk am -ia transmission-gtk
     am_install firefox          am -ia firefox
+    am_install etcher           am -ia etcher
 }
 
 am_install() {
