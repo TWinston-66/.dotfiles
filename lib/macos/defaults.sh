@@ -239,6 +239,23 @@ else
   echo "NOTE: defaultbrowser not installed — skipping default browser (see Brewfile)" >&2
 fi
 
+### RECTANGLE ###
+# Rectangle imports this file on launch (after a confirm dialog), then renames it
+# and refuses symlinks — so copy, don't stow. Only re-import when the repo copy changes.
+_rectangle_dir="$HOME/Library/Application Support/Rectangle"
+_rectangle_src="$DOTFILES_DIR/rectangle/RectangleConfig.json"
+_rectangle_sum="$(shasum -a 256 "$_rectangle_src" | cut -d' ' -f1)"
+if [ "$(cat "$_rectangle_dir/.dotfiles-imported" 2>/dev/null)" != "$_rectangle_sum" ]; then
+  mkdir -p "$_rectangle_dir"
+  cp "$_rectangle_src" "$_rectangle_dir/RectangleConfig.json"
+  echo "$_rectangle_sum" > "$_rectangle_dir/.dotfiles-imported"
+  killall Rectangle >/dev/null 2>&1 || true
+  sleep 1
+  echo "NOTE: click Apply in the Rectangle dialog that is about to appear" >&2
+  open -a Rectangle >/dev/null 2>&1 || true
+fi
+unset _rectangle_dir _rectangle_src _rectangle_sum
+
 ### RESTART AFFECTED SERVICES ###
 for _app in Finder Dock SystemUIServer ControlCenter; do
   killall "$_app" >/dev/null 2>&1 || true
