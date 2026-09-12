@@ -66,6 +66,8 @@ if OS.mac?
   cask "firefox"
   cask "rectangle"
   cask "balenaetcher"
+  cask "claude"
+  cask "google-gemini"
 
   cask "mactex-no-gui"
   cask "skim"

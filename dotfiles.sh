@@ -52,6 +52,9 @@ os_specific_setup() {
       log_step "Applying macOS defaults"
       bash "$DOTFILES_DIR/lib/macos/defaults.sh"
 
+      log_step "Applying display arrangement"
+      bash "$DOTFILES_DIR/lib/macos/displays.sh"
+
       log_step "Setting up Touch ID for sudo"
       sudo -v
       bash "$DOTFILES_DIR/lib/macos/touch-sudo.sh"

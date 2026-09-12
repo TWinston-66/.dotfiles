@@ -16,6 +16,9 @@ fi
 
 sudo nvram SystemAudioVolume=" " # Disable boot sound
 
+### APPEARANCE ###
+osascript -e 'tell application "System Events" to tell appearance preferences to set dark mode to true'
+
 #### NSGlobal ###
 defaults write NSGlobalDomain ApplePressAndHoldEnabled -bool false
 defaults write NSGlobalDomain KeyRepeat -int 2 # fast repeat
@@ -190,22 +193,17 @@ unset _c
 
 if command -v dockutil >/dev/null 2>&1; then
   _dock_apps=(
-    "/System/Applications/Apps.app"
     "/Applications/Firefox.app"
-    "/Applications/Helium.app"
     "/System/Applications/Messages.app"
     "/System/Applications/Mail.app"
     "/System/Applications/Reminders.app"
     "/System/Applications/Calendar.app"
-    "/Applications/Obsidian.app"
-    "/Applications/Zed.app"
     "/Applications/Ghostty.app"
-    "/Applications/Xcode-beta.app"
     "/System/Applications/iPhone Mirroring.app"
     "/System/Applications/Passwords.app"
     "/Applications/Cryptomator.app"
     "/System/Applications/System Settings.app"
-    "/System/Applications/Siri AI.app"
+    "/System/Applications/Siri.app"
     "/Applications/Claude.app"
     "/Applications/Gemini.app"
   )
@@ -231,9 +229,9 @@ defaults write com.apple.AdLib allowIdentifierForAdvertising -bool false
 defaults write com.apple.TimeMachine DoNotOfferNewDisksForBackup -bool true
 
 if command -v defaultbrowser >/dev/null 2>&1; then
-  if ! defaultbrowser 2>/dev/null | grep -q '^\* helium'; then
+  if ! defaultbrowser 2>/dev/null | grep -q '^\* firefox'; then
     echo "NOTE: confirm the default browser dialog that is about to appear" >&2
-    defaultbrowser helium || true
+    defaultbrowser firefox || true
   fi
 else
   echo "NOTE: defaultbrowser not installed — skipping default browser (see Brewfile)" >&2
