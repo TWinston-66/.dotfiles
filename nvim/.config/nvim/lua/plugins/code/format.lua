@@ -16,6 +16,7 @@ return {
                 python = { "ruff_organize_imports", "ruff_format" },
                 sh = { "shfmt" },
                 bash = { "shfmt" },
+                nix = { "nixfmt" },
                 javascript = { "prettierd" },
                 javascriptreact = { "prettierd" },
                 typescript = { "prettierd" },

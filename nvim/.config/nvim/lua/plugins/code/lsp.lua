@@ -52,6 +52,23 @@ return {
 				end,
 			})
 
+			-- not in mason; installed via nix profile
+			vim.lsp.config("nixd", {
+				settings = {
+					nixd = {
+						nixpkgs = { expr = "import <nixpkgs> { }" },
+						options = {
+							nixos = {
+								expr = "(import <nixpkgs/nixos/lib/eval-config.nix> { modules = [ ]; }).options",
+							},
+						},
+					},
+				},
+			})
+			if vim.fn.executable("nixd") == 1 then
+				vim.lsp.enable("nixd")
+			end
+
 			require("mason-lspconfig").setup(opts)
 
 			vim.api.nvim_create_autocmd("LspAttach", {

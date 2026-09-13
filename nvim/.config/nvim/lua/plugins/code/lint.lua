@@ -7,6 +7,7 @@ return {
             go = { "golangcilint" },
             python = { "ruff" },
             sh = { "shellcheck" },
+            nix = { "statix" },
             javascript = { "eslint_d" },
             javascriptreact = { "eslint_d" },
             typescript = { "eslint_d" },

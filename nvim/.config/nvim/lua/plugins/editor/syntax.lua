@@ -28,6 +28,7 @@ return {
 			"json",
 			"yaml",
 			"toml",
+			"nix",
 			"gitcommit",
 			"markdown",
 		}
