@@ -6,11 +6,7 @@ login_shell() {
   local user
   user="$(id -un)"
 
-  if [ "$DOTFILES_OS" = "macos" ]; then
-    dscl . -read "/Users/$user" UserShell 2>/dev/null | awk '{print $2}'
-  else
-    getent passwd "$user" 2>/dev/null | cut -d: -f7
-  fi
+  dscl . -read "/Users/$user" UserShell 2>/dev/null | awk '{print $2}'
 }
 
 set_default_shell() {

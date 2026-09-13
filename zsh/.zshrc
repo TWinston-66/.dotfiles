@@ -4,8 +4,6 @@ export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
 
 if [ -d /opt/homebrew/bin ]; then
   eval "$(/opt/homebrew/bin/brew shellenv)"
-elif [ -d /home/linuxbrew/.linuxbrew ]; then
-  eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 fi
 
 if [ -z "$TMUX" ] && command -v tmux >/dev/null 2>&1; then
@@ -23,11 +21,7 @@ export FZF_DEFAULT_OPTS=" \
 eval "$(fzf --zsh)"
 
 if [ -f "$HOME/.ssh/id_ed25519" ]; then
-  if [[ "$(uname -s)" == "Darwin" ]]; then
-    ssh-add --apple-use-keychain "$HOME/.ssh/id_ed25519" >/dev/null 2>&1
-  elif command -v keychain >/dev/null 2>&1; then
-    eval "$(keychain add --eval --quiet "$HOME/.ssh/id_ed25519")"
-  fi
+  ssh-add --apple-use-keychain "$HOME/.ssh/id_ed25519" >/dev/null 2>&1
 fi
 
 HISTFILE=~/.zsh_history

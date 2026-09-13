@@ -5,23 +5,8 @@ set -euo pipefail
 shared_packages() {
     install_homebrew
     brew_bundle "$DOTFILES_DIR/Brewfile"
-    install_tailscale
     install_claude_code
     install_pi
-}
-
-install_tailscale() {
-    if [ "$DOTFILES_OS" = "macos" ]; then
-      log_info "Tailscale installed via cask"
-      return
-    fi
-
-    if command -v tailscale >/dev/null 2>&1; then
-      log_info "Tailscale already installed"
-      return
-    fi
-    log_step "Installing Tailscale"
-    curl -fsSL https://tailscale.com/install.sh | sh
 }
 
 install_claude_code() {

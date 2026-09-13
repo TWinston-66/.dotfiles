@@ -10,9 +10,7 @@ load_homebrew() {
   local candidate
   for candidate in \
     /opt/homebrew/bin/brew \
-    /usr/local/bin/brew \
-    /home/linuxbrew/.linuxbrew/bin/brew \
-    "$HOME/.linuxbrew/bin/brew"
+    /usr/local/bin/brew
   do
     if [ -x "$candidate" ]; then
       eval "$("$candidate" shellenv)"

@@ -11,25 +11,21 @@ source "$DOTFILES_DIR/lib/common/homebrew.sh"
 source "$DOTFILES_DIR/lib/common/shared.sh"
 source "$DOTFILES_DIR/lib/common/shell.sh"
 source "$DOTFILES_DIR/lib/stow.sh"
-source "$DOTFILES_DIR/lib/linux/packages.sh"
 
 main() {
-    detect_os
-    log_title "dotfiles manager — $DOTFILES_OS ${DOTFILES_LINUX_FAMILY:-}"
+    require_macos
+    log_title "dotfiles manager — macos"
 
     sudo_keepalive
     install_native_prereqs
 
     shared_packages
-    if [ "$DOTFILES_OS" = "linux" ]; then
-        install_linux_apps
-    fi
 
     stow_packages
 
     install_tpm
     set_default_shell
-    os_specific_setup
+    macos_setup
 
     log_title "Done"
     log_ok "Machine configured. Follow steps below."
@@ -45,22 +41,16 @@ sudo_keepalive() {
   done 2>/dev/null &
 }
 
-os_specific_setup() {
-  case "$DOTFILES_OS" in
-    macos)
+macos_setup() {
+  log_step "Applying macOS defaults"
+  bash "$DOTFILES_DIR/lib/macos/defaults.sh"
 
-      log_step "Applying macOS defaults"
-      bash "$DOTFILES_DIR/lib/macos/defaults.sh"
+  log_step "Applying display arrangement"
+  bash "$DOTFILES_DIR/lib/macos/displays.sh"
 
-      log_step "Applying display arrangement"
-      bash "$DOTFILES_DIR/lib/macos/displays.sh"
-
-      log_step "Setting up Touch ID for sudo"
-      sudo -v
-      bash "$DOTFILES_DIR/lib/macos/touch-sudo.sh"
-      ;;
-    linux) : ;;
-  esac
+  log_step "Setting up Touch ID for sudo"
+  sudo -v
+  bash "$DOTFILES_DIR/lib/macos/touch-sudo.sh"
 }
 
 main "$@"
