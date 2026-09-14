@@ -44,10 +44,23 @@ log_err() {
   fi
 }
 
+# gum spin asks the terminal which features it supports but exits without reading
+# the replies, which would otherwise end up typed into the shell prompt.
+discard_terminal_replies() {
+  [ -t 0 ] || return 0
+  local timeout=0.1 _
+  [ "${BASH_VERSINFO[0]}" -ge 4 ] || timeout=1
+  while IFS= read -rs -t "$timeout" -n 256 _; do :; done
+  return 0
+}
+
 run_step() {
   local label="$1"; shift
   if has_gum; then
-    gum spin --spinner dot --title "$label" -- "$@"
+    local status=0
+    gum spin --spinner dot --title "$label" -- "$@" || status=$?
+    discard_terminal_replies
+    return "$status"
   else
     log_step "$label"
     "$@"

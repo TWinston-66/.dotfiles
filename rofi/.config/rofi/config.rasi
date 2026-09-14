@@ -6,6 +6,7 @@ configuration {
   display-drun: "apps";
   display-run: "run";
   drun-display-format: "{name}";
+  terminal: "ghostty";
 }
 
 @import "mocha.rasi"
