@@ -1,18 +1,23 @@
-/* Catppuccin Mocha, matching mako and rofi */
+/* Catppuccin Mocha, matching mako and rofi. swayosd hardcodes a 250px minimum width. */
 window#osd {
-  border-radius: 12px;
+  border-radius: 10px;
   border: 2px solid #89b4fa;
   background: #1e1e2e;
 }
 
 window#osd #container {
-  margin: 14px 18px;
+  margin: 4px 12px;
 }
 
-window#osd image,
+window#osd image {
+  color: #cdd6f4;
+  -gtk-icon-transform: scale(0.6);
+}
+
 window#osd label {
   color: #cdd6f4;
   font-family: "JetBrains Mono";
+  font-size: 11px;
 }
 
 window#osd progressbar:disabled,
@@ -22,7 +27,7 @@ window#osd image:disabled {
 
 window#osd progressbar,
 window#osd segmentedprogress {
-  min-height: 6px;
+  min-height: 4px;
   border-radius: 999px;
   background: transparent;
   border: none;
@@ -45,7 +50,7 @@ window#osd segment.active {
 }
 
 window#osd segment {
-  margin-left: 8px;
+  margin-left: 6px;
 }
 
 window#osd segment:first-child {
