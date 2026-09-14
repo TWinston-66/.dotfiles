@@ -43,6 +43,7 @@ setup_macos() {
 setup_nixos() {
     require_commands stow git tmux
 
+    DOTFILES_STOW_PACKAGES+=(hypr)
     stow_packages
     install_tpm
 
