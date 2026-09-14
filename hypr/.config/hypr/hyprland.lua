@@ -56,9 +56,9 @@ local menu        = "rofi -show drun"
 -- See https://wiki.hypr.land/Configuring/Advanced-and-Cool/Environment-variables/
 
 hl.env("XCURSOR_THEME", "catppuccin-mocha-dark-cursors")
-hl.env("XCURSOR_SIZE", "18")
+hl.env("XCURSOR_SIZE", "16")
 hl.env("HYPRCURSOR_THEME", "catppuccin-mocha-dark-cursors")
-hl.env("HYPRCURSOR_SIZE", "18")
+hl.env("HYPRCURSOR_SIZE", "16")
 
 
 -----------------------
@@ -88,7 +88,7 @@ hl.env("HYPRCURSOR_SIZE", "18")
 hl.config({
     general = {
         gaps_in  = 5,
-        gaps_out = 20,
+        gaps_out = 10,
 
         border_size = 2,
 
