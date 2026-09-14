@@ -1,0 +1,112 @@
+configuration {
+  modi: "drun,run";
+  show-icons: true;
+  icon-theme: "Papirus-Dark";
+  font: "JetBrains Mono 12";
+  display-drun: "apps";
+  display-run: "run";
+  drun-display-format: "{name}";
+}
+
+@import "mocha.rasi"
+
+* {
+  background-color: transparent;
+  text-color: @text;
+}
+
+window {
+  width: 560px;
+  padding: 12px;
+  border: 2px;
+  border-color: @blue;
+  border-radius: 12px;
+  background-color: @base;
+}
+
+mainbox {
+  spacing: 10px;
+  children: [ inputbar, message, listview ];
+}
+
+inputbar {
+  padding: 10px 12px;
+  spacing: 10px;
+  border-radius: 8px;
+  background-color: @surface0;
+  children: [ prompt, entry ];
+}
+
+prompt {
+  text-color: @blue;
+}
+
+entry {
+  cursor: text;
+  placeholder: "search";
+  placeholder-color: @overlay0;
+}
+
+message {
+  padding: 8px 12px;
+  border-radius: 8px;
+  background-color: @mantle;
+}
+
+textbox {
+  text-color: @subtext0;
+}
+
+listview {
+  lines: 8;
+  spacing: 4px;
+  scrollbar: false;
+  fixed-height: false;
+}
+
+element {
+  padding: 8px 12px;
+  spacing: 12px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+element normal.normal,
+element alternate.normal {
+  text-color: @text;
+}
+
+element normal.active,
+element alternate.active {
+  text-color: @lavender;
+}
+
+element normal.urgent,
+element alternate.urgent {
+  text-color: @red;
+}
+
+element selected.normal {
+  background-color: @surface0;
+  text-color: @blue;
+}
+
+element selected.active {
+  background-color: @surface0;
+  text-color: @lavender;
+}
+
+element selected.urgent {
+  background-color: @red;
+  text-color: @crust;
+}
+
+element-icon {
+  size: 24px;
+  text-color: inherit;
+}
+
+element-text {
+  text-color: inherit;
+  vertical-align: 0.5;
+}

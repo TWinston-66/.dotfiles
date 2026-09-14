@@ -1,0 +1,2 @@
+/* libadwaita apps ignore the GTK theme setting, so load the Catppuccin theme lattice installs. */
+@import url("file:///run/current-system/sw/share/themes/catppuccin-mocha-blue-standard/gtk-4.0/gtk-dark.css");

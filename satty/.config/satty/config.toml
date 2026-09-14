@@ -1,0 +1,20 @@
+[general]
+copy-command = "wl-copy"
+early-exit = true
+output-filename = "~/Pictures/Screenshots/%Y-%m-%d_%H-%M-%S.png"
+
+[font]
+family = "JetBrains Mono"
+
+# Catppuccin Mocha
+[color-palette]
+palette = [
+    "#f38ba8ff",
+    "#fab387ff",
+    "#f9e2afff",
+    "#a6e3a1ff",
+    "#89b4faff",
+    "#cba6f7ff",
+    "#cdd6f4ff",
+    "#11111bff",
+]

@@ -3,10 +3,10 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/macOS-000000?style=flat-square&logo=apple&logoColor=white" alt="macOS">
-  <a href="https://github.com/TWinston-66/lattice"><img src="https://img.shields.io/badge/NixOS-5277C3?style=flat-square&logo=nixos&logoColor=white" alt="NixOS"></a>
-  <a href="https://github.com/TWinston-66/.dotfiles/releases"><img src="https://img.shields.io/github/v/release/TWinston-66/.dotfiles?style=flat-square" alt="Latest release"></a>
-  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue?style=flat-square" alt="MIT license"></a>
+  <img src="https://img.shields.io/badge/macOS-313244?style=flat-square&logo=apple&logoColor=CDD6F4" alt="macOS">
+  <a href="https://github.com/TWinston-66/lattice"><img src="https://img.shields.io/badge/NixOS-313244?style=flat-square&logo=nixos&logoColor=89B4FA" alt="NixOS"></a>
+  <a href="https://github.com/TWinston-66/.dotfiles/releases"><img src="https://img.shields.io/github/v/release/TWinston-66/.dotfiles?style=flat-square&color=89B4FA&labelColor=313244" alt="Latest release"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-CBA6F7?style=flat-square&labelColor=313244" alt="MIT license"></a>
 </p>
 
 My configs for macOS and NixOS, linked into `$HOME` with

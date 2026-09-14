@@ -1,0 +1,109 @@
+@import "mocha.css";
+
+* {
+  font-family: "JetBrains Mono", "Symbols Nerd Font";
+  font-size: 13px;
+  min-height: 0;
+}
+
+window#waybar {
+  background: transparent;
+  color: @text;
+}
+
+tooltip {
+  background: @base;
+  border: 2px solid @blue;
+  border-radius: 10px;
+}
+
+tooltip label {
+  color: @text;
+}
+
+#workspaces,
+#clock,
+#tray,
+#wireplumber,
+#backlight,
+#network,
+#power-profiles-daemon,
+#battery {
+  background: @base;
+  border: 2px solid @surface0;
+  border-radius: 10px;
+  padding: 0 12px;
+}
+
+#workspaces {
+  padding: 0 4px;
+}
+
+#tray.empty {
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+
+#workspaces button {
+  color: @overlay1;
+  padding: 0 8px;
+  margin: 4px 0;
+  border-radius: 6px;
+}
+
+#workspaces button:hover {
+  background: @surface0;
+  box-shadow: none;
+}
+
+#workspaces button.active {
+  background: @blue;
+  color: @crust;
+}
+
+#workspaces button.urgent {
+  background: @red;
+  color: @crust;
+}
+
+#clock {
+  color: @blue;
+  font-weight: bold;
+}
+
+#wireplumber {
+  color: @lavender;
+}
+
+#wireplumber.muted {
+  color: @overlay0;
+}
+
+#backlight {
+  color: @yellow;
+}
+
+#network {
+  color: @sapphire;
+}
+
+#network.disconnected {
+  color: @overlay0;
+}
+
+#power-profiles-daemon {
+  color: @mauve;
+}
+
+#battery {
+  color: @green;
+}
+
+#battery.warning:not(.charging) {
+  color: @peach;
+}
+
+#battery.critical:not(.charging) {
+  color: @red;
+}
