@@ -73,16 +73,19 @@ element {
 
 element normal.normal,
 element alternate.normal {
+  background-color: transparent;
   text-color: @text;
 }
 
 element normal.active,
 element alternate.active {
+  background-color: transparent;
   text-color: @lavender;
 }
 
 element normal.urgent,
 element alternate.urgent {
+  background-color: transparent;
   text-color: @red;
 }
 
@@ -108,5 +111,6 @@ element-icon {
 
 element-text {
   text-color: inherit;
+  highlight: bold #89b4fa;
   vertical-align: 0.5;
 }
