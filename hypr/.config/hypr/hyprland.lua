@@ -231,7 +231,7 @@ hl.config({
         sensitivity = -0.2, -- -1.0 - 1.0, 0 means no modification.
 
         touchpad = {
-            natural_scroll = false,
+            natural_scroll = true,
         },
     },
 })
@@ -301,6 +301,28 @@ hl.bind(mainMod .. " + mouse_up",   hl.dsp.focus({ workspace = "e-1" }))
 -- Move/resize windows with mainMod + LMB/RMB and dragging
 hl.bind(mainMod .. " + mouse:272", hl.dsp.window.drag(),   { mouse = true })
 hl.bind(mainMod .. " + mouse:273", hl.dsp.window.resize(), { mouse = true })
+
+-- Fullscreen the focused window
+hl.bind(mainMod .. " + F", hl.dsp.window.fullscreen({ action = "toggle" }))
+
+-- Keyboard resize: hold mainMod+R to enter, arrows to resize in steps, Escape/Enter to exit
+-- ("" is the root/default submap - there is no submap literally named "default")
+-- Note: -1 does NOT mean "persistent" for notify's duration (unlike its icon arg) -
+-- it underflows and the notification vanishes almost instantly. Use a long explicit
+-- duration instead; it gets dismissed early anyway when the submap exits.
+local resizeModeNotify = "hyprctl notify 2 600000 \"rgb(89b4fa)\" \"  RESIZE MODE  —  arrows to resize, Esc/Enter to exit\""
+hl.define_submap("resize", function()
+    hl.bind("left",   hl.dsp.window.resize({ x = -20, y = 0,  relative = true }))
+    hl.bind("right",  hl.dsp.window.resize({ x = 20,  y = 0,  relative = true }))
+    hl.bind("up",     hl.dsp.window.resize({ x = 0,   y = -20, relative = true }))
+    hl.bind("down",   hl.dsp.window.resize({ x = 0,   y = 20,  relative = true }))
+    hl.bind("escape", hl.dsp.exec_cmd("hyprctl dismissnotify"))
+    hl.bind("escape", hl.dsp.submap(""))
+    hl.bind("return", hl.dsp.exec_cmd("hyprctl dismissnotify"))
+    hl.bind("return", hl.dsp.submap(""))
+end)
+hl.bind(mainMod .. " + R", hl.dsp.exec_cmd(resizeModeNotify))
+hl.bind(mainMod .. " + R", hl.dsp.submap("resize"))
 
 -- Laptop multimedia keys for volume and LCD brightness, shown with swayosd
 hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("swayosd-client --output-volume raise --max-volume 100"), { locked = true, repeating = true })

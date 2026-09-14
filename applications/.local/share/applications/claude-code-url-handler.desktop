@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=Claude Code URL Handler
+Comment=Handle claude-cli:// deep links for Claude Code
+Exec="/nix/store/kbfdk9xsxli80204fly4krqyk9i9rfkw-claude-code-2.1.266/bin/.claude-wrapped" --handle-uri %u
+Type=Application
+NoDisplay=true
+MimeType=x-scheme-handler/claude-cli;
