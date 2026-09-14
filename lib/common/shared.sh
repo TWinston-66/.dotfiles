@@ -11,8 +11,8 @@ shared_packages() {
 
 install_claude_code() {
     if command -v claude >/dev/null 2>&1; then
-      log_info "Claude Code already installed"
-      return
+        log_info "Claude Code already installed"
+        return
     fi
     log_step "Installing Claude Code"
     curl -fsSL https://claude.ai/install.sh | bash
@@ -20,22 +20,21 @@ install_claude_code() {
 
 install_pi() {
     if command -v pi >/dev/null 2>&1; then
-      log_info "pi.dev already installed"
-      return
+        log_info "pi.dev already installed"
+        return
     fi
     log_step "Installing pi.dev"
     curl -fsSL https://pi.dev/install.sh | sh
 }
 
-# Clones skip ~/.gitconfig, which rewrites GitHub URLs to SSH before a key exists
 install_tpm() {
     local tpm_dir="$HOME/.local/share/tmux/plugins/tpm"
 
     if [ -d "$tpm_dir" ]; then
-      log_info "tpm already installed"
+        log_info "tpm already installed"
     else
-      log_step "Installing tpm"
-      GIT_CONFIG_GLOBAL=/dev/null git clone --depth 1 https://github.com/tmux-plugins/tpm "$tpm_dir"
+        log_step "Installing tpm"
+        GIT_CONFIG_GLOBAL=/dev/null git clone --depth 1 https://github.com/tmux-plugins/tpm "$tpm_dir"
     fi
 
     run_step "Installing tmux plugins" env GIT_CONFIG_GLOBAL=/dev/null "$tpm_dir/bin/install_plugins"
