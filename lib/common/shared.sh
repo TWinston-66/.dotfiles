@@ -27,6 +27,7 @@ install_pi() {
     curl -fsSL https://pi.dev/install.sh | sh
 }
 
+# Clones skip ~/.gitconfig, which rewrites GitHub URLs to SSH before a key exists
 install_tpm() {
     local tpm_dir="$HOME/.local/share/tmux/plugins/tpm"
 
@@ -34,8 +35,8 @@ install_tpm() {
       log_info "tpm already installed"
     else
       log_step "Installing tpm"
-      git clone --depth 1 https://github.com/tmux-plugins/tpm "$tpm_dir"
+      GIT_CONFIG_GLOBAL=/dev/null git clone --depth 1 https://github.com/tmux-plugins/tpm "$tpm_dir"
     fi
 
-    run_step "Installing tmux plugins" "$tpm_dir/bin/install_plugins"
+    run_step "Installing tmux plugins" env GIT_CONFIG_GLOBAL=/dev/null "$tpm_dir/bin/install_plugins"
 }

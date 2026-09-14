@@ -41,6 +41,9 @@ stow_packages() {
     log_info "Pre-existing dotfiles backed up to $backup_dir"
   fi
 
+  # Keep ~/.ssh a real directory so keys never end up inside the repo
+  mkdir -p -m 700 "$HOME/.ssh"
+
   stow --dir="$DOTFILES_DIR" --target="$HOME" --restow "${DOTFILES_STOW_PACKAGES[@]}"
   log_ok "Dotfiles stowed"
 }

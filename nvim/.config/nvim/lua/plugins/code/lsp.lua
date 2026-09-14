@@ -64,6 +64,23 @@ return {
 						},
 					},
 				},
+				-- nixd filters server-side and truncates results (e.g. 30 items after `services.`)
+				-- but reports isIncomplete = false, so blink never re-requests as you type
+				on_init = function(client)
+					local request = client.request
+					client.request = function(self, method, params, handler, bufnr)
+						if method == "textDocument/completion" and handler then
+							local on_result = handler
+							handler = function(err, result, ctx)
+								if result then
+									result.isIncomplete = true
+								end
+								return on_result(err, result, ctx)
+							end
+						end
+						return request(self, method, params, handler, bufnr)
+					end
+				end,
 			})
 			if vim.fn.executable("nixd") == 1 then
 				vim.lsp.enable("nixd")

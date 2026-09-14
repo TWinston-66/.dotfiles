@@ -20,7 +20,7 @@ export FZF_DEFAULT_OPTS=" \
 
 eval "$(fzf --zsh)"
 
-if [ -f "$HOME/.ssh/id_ed25519" ]; then
+if [[ "$OSTYPE" == darwin* && -f "$HOME/.ssh/id_ed25519" ]]; then
   ssh-add --apple-use-keychain "$HOME/.ssh/id_ed25519" >/dev/null 2>&1
 fi
 
@@ -37,14 +37,16 @@ autoload -Uz compinit && compinit
 eval "$(starship init zsh)"
 
 eval "$(zoxide init zsh)"
+
+# Where zsh plugins live: Homebrew on macOS, the system profile on NixOS
 if command -v brew >/dev/null 2>&1; then
-  _brew_prefix="$(brew --prefix)"
-  for _f in "$_brew_prefix/share/zsh-autosuggestions/zsh-autosuggestions.zsh" \
-            "$_brew_prefix/opt/fzf/shell/key-bindings.zsh"; do
-    [ -f "$_f" ] && source "$_f"
-  done
-  unset _brew_prefix _f
+  _share="$(brew --prefix)/share"
+else
+  _share=/run/current-system/sw/share
 fi
+_zsh_as="$_share/zsh-autosuggestions/zsh-autosuggestions.zsh"
+[ -f "$_zsh_as" ] && source "$_zsh_as"
+unset _zsh_as
 
 export TEALDEER_CONFIG_DIR="$HOME/.config/tealdeer"
 
@@ -67,7 +69,8 @@ if [ -d "/Applications/calibre.app/Contents/MacOS" ]; then
   export PATH="/Applications/calibre.app/Contents/MacOS:$PATH"
 fi
 
-if command -v brew >/dev/null 2>&1; then
+_zsh_hl="$_share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+if [ -f "$_zsh_hl" ]; then
   ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets)
 
   typeset -gA ZSH_HIGHLIGHT_STYLES
@@ -86,7 +89,6 @@ if command -v brew >/dev/null 2>&1; then
   ZSH_HIGHLIGHT_STYLES[comment]='fg=#6c7086,italic'
   ZSH_HIGHLIGHT_STYLES[bracket-error]='fg=#f38ba8'
 
-  _zsh_hl="$(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
-  [ -f "$_zsh_hl" ] && source "$_zsh_hl"
-  unset _zsh_hl
+  source "$_zsh_hl"
 fi
+unset _zsh_hl _share

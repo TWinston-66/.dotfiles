@@ -13,9 +13,16 @@ source "$DOTFILES_DIR/lib/common/shell.sh"
 source "$DOTFILES_DIR/lib/stow.sh"
 
 main() {
-    require_macos
-    log_title "dotfiles manager — macos"
+    detect_os
+    log_title "dotfiles manager — $DOTFILES_OS"
 
+    case "$DOTFILES_OS" in
+      macos) setup_macos ;;
+      nixos) setup_nixos ;;
+    esac
+}
+
+setup_macos() {
     sudo_keepalive
     install_native_prereqs
 
@@ -30,6 +37,17 @@ main() {
     log_title "Done"
     log_ok "Machine configured. Follow steps below."
     log_info "1. run \`sudo tailscale up\`"
+}
+
+# Packages and the login shell come from lattice, so this only links configs.
+setup_nixos() {
+    require_commands stow git tmux
+
+    stow_packages
+    install_tpm
+
+    log_title "Done"
+    log_ok "Configs linked."
 }
 
 sudo_keepalive() {

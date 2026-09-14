@@ -35,7 +35,13 @@ return {
 
 		explorer = { enabled = true },
 		image = { enabled = true },
-		picker = { enabled = true, ui_select = false },
+		picker = {
+			enabled = true,
+			ui_select = false,
+			sources = {
+				explorer = { hidden = true },
+			},
+		},
 		scroll = { enabled = true },
 		words = { enabled = true },
 	},
