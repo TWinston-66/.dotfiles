@@ -1,0 +1,3 @@
+# Ghostty scales fonts by GTK's text DPI, so the size here is smaller than on macOS
+# to look the same at the laptop's 1.5 display scale.
+font-size = 8.4

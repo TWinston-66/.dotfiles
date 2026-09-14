@@ -43,7 +43,7 @@ setup_macos() {
 setup_nixos() {
     require_commands stow git tmux
 
-    DOTFILES_STOW_PACKAGES+=(hypr waybar mako rofi satty gtk qt6ct)
+    DOTFILES_STOW_PACKAGES+=(hypr ghostty-nixos waybar mako rofi satty gtk qt6ct)
     stow_packages
     install_tpm
 

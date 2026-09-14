@@ -16,7 +16,7 @@
   },
 
   "clock": {
-    "format": "{:%a %b %-d  %H:%M}",
+    "format": "{:%a %b %d  %H:%M}",
     "tooltip-format": "<tt>{calendar}</tt>",
     "calendar": {
       "format": {
@@ -60,9 +60,9 @@
     "format": "{icon}",
     "tooltip-format": "Power profile: {profile}",
     "format-icons": {
-      "performance": "󰓅",
-      "balanced": "󰾅",
-      "power-saver": "󰾆"
+      "performance": "󰓅 perf",
+      "balanced": "󰾅 balanced",
+      "power-saver": "󰾆 saver"
     }
   },
 

@@ -24,3 +24,5 @@ keybind = cmd+a=text:\x01
 
 keybind = cmd+y=text:\x19
 
+# NixOS-only overrides, stowed from ghostty-nixos.
+config-file = ?nixos
