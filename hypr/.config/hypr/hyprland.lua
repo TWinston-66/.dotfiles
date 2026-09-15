@@ -22,6 +22,15 @@ hl.monitor({
     scale    = "auto",
 })
 
+-- Samsung 32" 4K on the dock: "auto" picks scale 1 here, which makes waybar and text tiny.
+-- 1.5 gives a 2560x1440 logical desktop (scales must divide 3840x2160 evenly: 1.5, 1.6, 1.666667, 2).
+hl.monitor({
+    output   = "desc:Samsung Electric Company U32R59x",
+    mode     = "preferred",
+    position = "auto",
+    scale    = 1.5,
+})
+
 
 ---------------------
 ---- MY PROGRAMS ----
@@ -232,6 +241,7 @@ hl.config({
 
         touchpad = {
             natural_scroll = true,
+            scroll_factor  = 0.8, -- default 1.0; lower = slower scrolling
         },
     },
 })
@@ -244,9 +254,11 @@ hl.gesture({
 
 -- Example per-device config
 -- See https://wiki.hypr.land/Configuring/Advanced-and-Cool/Devices/ for more
+-- Logitech MX Master 3 over Bluetooth (name from `hyprctl devices`)
 hl.device({
-    name        = "epic-mouse-v1",
-    sensitivity = -0.5,
+    name          = "logitech-wireless-mouse-mx-master-3-1",
+    sensitivity   = -0.225, -- -1.0 - 1.0; overrides input.sensitivity for this mouse only
+    scroll_factor = 0.5,  -- default 1.0; lower = slower scrolling
 })
 
 
@@ -260,7 +272,13 @@ local mainMod = "SUPER" -- Sets "Windows" key as main modifier
 hl.bind(mainMod .. " + T", hl.dsp.exec_cmd(terminal))
 local closeWindowBind = hl.bind(mainMod .. " + C", hl.dsp.window.close())
 -- closeWindowBind:set_enabled(false)
-hl.bind("ALT + Q", hl.dsp.exec_cmd("command -v hyprshutdown >/dev/null 2>&1 && hyprshutdown || hyprctl dispatch 'hl.dsp.exit()'"))
+-- Log out (ends the session). Asks first; "Cancel" is preselected so a stray Enter or Escape does nothing.
+-- Uses `test`, not `[ ]`: exec_cmd reads a leading `[...]` as window rules and never runs the command.
+local logout = [[command -v hyprshutdown >/dev/null 2>&1 && hyprshutdown || hyprctl dispatch 'hl.dsp.exit()']]
+local confirmLogout = [[test "$(printf 'Cancel\nLog out\n' | rofi -dmenu -i -no-custom -p 'Log out?')" = 'Log out' && { ]] .. logout .. "; }"
+hl.bind("CTRL + ALT + Q", hl.dsp.exec_cmd(confirmLogout))
+-- Lock the screen; the session and its apps keep running behind hyprlock.
+hl.bind(mainMod .. " + L", hl.dsp.exec_cmd("loginctl lock-session"))
 hl.bind(mainMod .. " + E", hl.dsp.exec_cmd(fileManager))
 hl.bind(mainMod .. " + V", hl.dsp.window.float({ action = "toggle" }))
 hl.bind("ALT + SPACE", hl.dsp.exec_cmd(menu))
@@ -281,6 +299,16 @@ hl.bind(mainMod .. " + left",  hl.dsp.focus({ direction = "left" }))
 hl.bind(mainMod .. " + right", hl.dsp.focus({ direction = "right" }))
 hl.bind(mainMod .. " + up",    hl.dsp.focus({ direction = "up" }))
 hl.bind(mainMod .. " + down",  hl.dsp.focus({ direction = "down" }))
+
+-- Move the focused window with mainMod + SHIFT + arrow keys (crosses onto the next monitor at the edge)
+hl.bind(mainMod .. " + SHIFT + left",  hl.dsp.window.move({ direction = "left" }))
+hl.bind(mainMod .. " + SHIFT + right", hl.dsp.window.move({ direction = "right" }))
+hl.bind(mainMod .. " + SHIFT + up",    hl.dsp.window.move({ direction = "up" }))
+hl.bind(mainMod .. " + SHIFT + down",  hl.dsp.window.move({ direction = "down" }))
+
+-- Send the whole current workspace to the monitor on the left/right with mainMod + CTRL + arrow keys
+hl.bind(mainMod .. " + CTRL + left",  hl.dsp.workspace.move({ monitor = "l" }))
+hl.bind(mainMod .. " + CTRL + right", hl.dsp.workspace.move({ monitor = "r" }))
 
 -- Switch workspaces with mainMod + [0-9]
 -- Move active window to a workspace with mainMod + SHIFT + [0-9]

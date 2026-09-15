@@ -13,6 +13,8 @@ opt.termguicolors = true
 
 -- Mouse
 opt.mouse = "a"
+-- Lines/columns per wheel tick (default "ver:3,hor:6")
+opt.mousescroll = "ver:1,hor:2"
 
 -- Indentation
 opt.tabstop = 4
