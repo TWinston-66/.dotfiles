@@ -1,8 +1,10 @@
-/* Catppuccin Mocha, matching mako and rofi. swayosd hardcodes a 250px minimum width. */
+@import url("file:///etc/xdg/swayosd/lattice.css");
+
+/* Colours from lattice (lattice.theme). swayosd hardcodes a 250px minimum width. */
 window#osd {
   border-radius: 10px;
-  border: 2px solid #89b4fa;
-  background: #1e1e2e;
+  border: 2px solid @accent;
+  background: @base;
 }
 
 window#osd #container {
@@ -10,12 +12,12 @@ window#osd #container {
 }
 
 window#osd image {
-  color: #cdd6f4;
+  color: @text;
   -gtk-icon-transform: scale(0.6);
 }
 
 window#osd label {
-  color: #cdd6f4;
+  color: @text;
   font-family: "JetBrains Mono";
   font-size: 11px;
 }
@@ -38,7 +40,7 @@ window#osd segment {
   min-height: inherit;
   border-radius: inherit;
   border: none;
-  background: #313244;
+  background: @surface0;
 }
 
 window#osd progress,
@@ -46,7 +48,7 @@ window#osd segment.active {
   min-height: inherit;
   border-radius: inherit;
   border: none;
-  background: #89b4fa;
+  background: @accent;
 }
 
 window#osd segment {

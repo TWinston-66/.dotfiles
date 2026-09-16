@@ -7,14 +7,8 @@ border-radius=10
 max-icon-size=48
 default-timeout=5000
 
-background-color=#1e1e2e
-text-color=#cdd6f4
-border-color=#89b4fa
-progress-color=over #313244
-
-[urgency=low]
-border-color=#45475a
+# Colours, including the per-urgency borders, come from lattice (lattice.theme).
+include=/etc/xdg/mako/lattice
 
 [urgency=critical]
-border-color=#fab387
 default-timeout=0

@@ -61,6 +61,11 @@ alias nv='nvim'
 alias vim='nvim'
 alias vi='nvim'
 
+# macOS ships its own `open`; only alias it on Linux
+if [[ "$OSTYPE" == linux* ]] && command -v xdg-open >/dev/null 2>&1; then
+  alias open='xdg-open'
+fi
+
 export EDITOR="nvim"
 
 export PATH="$HOME/.local/bin:$PATH"

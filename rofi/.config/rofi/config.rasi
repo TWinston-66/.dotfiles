@@ -9,7 +9,7 @@ configuration {
   terminal: "ghostty";
 }
 
-@import "mocha.rasi"
+@import "/etc/xdg/rofi/lattice.rasi"
 
 * {
   background-color: transparent;
@@ -20,7 +20,7 @@ window {
   width: 560px;
   padding: 12px;
   border: 2px;
-  border-color: @blue;
+  border-color: @accent;
   border-radius: 12px;
   background-color: @base;
 }
@@ -39,7 +39,7 @@ inputbar {
 }
 
 prompt {
-  text-color: @blue;
+  text-color: @accent;
 }
 
 entry {
@@ -92,7 +92,7 @@ element alternate.urgent {
 
 element selected.normal {
   background-color: @surface0;
-  text-color: @blue;
+  text-color: @accent;
 }
 
 element selected.active {
@@ -112,6 +112,7 @@ element-icon {
 
 element-text {
   text-color: inherit;
-  highlight: bold #89b4fa;
+  /* highlight comes from lattice's palette: rofi rejects a @reference here and, rather
+     than warn, throws away the whole theme. Nothing on macOS reads this file. */
   vertical-align: 0.5;
 }

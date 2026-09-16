@@ -1,4 +1,4 @@
-@import "mocha.css";
+@import url("file:///etc/xdg/waybar/lattice.css");
 
 * {
   font-family: "JetBrains Mono", "Symbols Nerd Font";
@@ -13,7 +13,7 @@ window#waybar {
 
 tooltip {
   background: @base;
-  border: 2px solid @blue;
+  border: 2px solid @accent;
   border-radius: 10px;
 }
 
@@ -58,7 +58,7 @@ tooltip label {
 }
 
 #workspaces button.active {
-  background: @blue;
+  background: @accent;
   color: @crust;
 }
 
@@ -68,7 +68,7 @@ tooltip label {
 }
 
 #clock {
-  color: @blue;
+  color: @accent;
   font-weight: bold;
 }
 
