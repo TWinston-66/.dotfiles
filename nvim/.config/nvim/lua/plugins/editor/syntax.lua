@@ -9,7 +9,7 @@ return {
 			sh = "bash",
 			javascriptreact = "javascript",
 			typescriptreact = "tsx",
-			markdown = { "markdown", "markdown_inline", "yaml", "html" },
+			markdown = { "markdown", "markdown_inline", "yaml", "html", "latex" },
 		}
 		local filetypes = {
 			"lua",

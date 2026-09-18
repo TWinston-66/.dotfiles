@@ -6,6 +6,6 @@ return {
 	opts = {
 		preset = "obsidian",
 		completions = { blink = { enabled = true } },
-		latex = { enabled = false },
+		latex = { enabled = true },
 	},
 }
