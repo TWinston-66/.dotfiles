@@ -330,6 +330,14 @@ hl.bind(mainMod .. " + mouse_up",   hl.dsp.focus({ workspace = "e-1" }))
 hl.bind(mainMod .. " + mouse:272", hl.dsp.window.drag(),   { mouse = true })
 hl.bind(mainMod .. " + mouse:273", hl.dsp.window.resize(), { mouse = true })
 
+-- Swallow middle click (BTN_MIDDLE = 274) so it never reaches apps: no paste-on-middle-click,
+-- no middle-click-closes-tab. The clickpad has only a physical left button; libinput invents
+-- middle clicks from the bottom-centre click zone and from three-finger taps, so they land by
+-- accident (a three-finger workspace swipe that doesn't travel far enough is a paste).
+-- Binds are global, so this covers the MX Master too - delete the line to get middle click back.
+-- No { mouse = true }: that flag is for press-and-hold drag dispatchers (drag/resize above).
+hl.bind("mouse:274", hl.dsp.no_op())
+
 -- Fullscreen the focused window
 hl.bind(mainMod .. " + F", hl.dsp.window.fullscreen({ action = "toggle" }))
 
