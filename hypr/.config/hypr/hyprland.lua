@@ -195,6 +195,20 @@ for _, ns in ipairs({ "waybar", "rofi", "notifications", "swayosd" }) do
     })
 end
 
+-- wlogout calls its layer "logout_dialog", not "wlogout" (checked with `hyprctl layers`
+-- while it was open). It gets its own rule rather than joining the loop above: it is a
+-- fullscreen modal, so xray would replace everything behind it with blurred wallpaper
+-- instead of frosting the desktop that is actually there. ignore_alpha stays below the
+-- 0.72 scrim in /etc/xdg/wlogout/style.css so the whole overlay blurs, not just the
+-- buttons.
+hl.layer_rule({
+    name         = "blur-logout_dialog",
+    match        = { namespace = "logout_dialog" },
+    blur         = true,
+    blur_popups  = true,
+    ignore_alpha = 0.2,
+})
+
 -- Ref https://wiki.hypr.land/Configuring/Basics/Workspace-Rules/
 -- "Smart gaps" / "No gaps when only": a lone tiled window (or a lone fullscreen one)
 -- drops its gaps, border and rounding, so a single window sits flush to the screen.
@@ -261,7 +275,8 @@ hl.config({
 
         follow_mouse = 1,
 
-        sensitivity = -0.2, -- -1.0 - 1.0, 0 means no modification.
+        sensitivity = -0.1, -- -1.0 - 1.0, 0 means no modification. Mostly the touchpad: the
+                            -- MX Master below is the only other pointer, and it overrides this.
 
         touchpad = {
             natural_scroll = true,
@@ -281,7 +296,7 @@ hl.gesture({
 -- Logitech MX Master 3 over Bluetooth (name from `hyprctl devices`)
 hl.device({
     name          = "logitech-wireless-mouse-mx-master-3-1",
-    sensitivity   = -0.225, -- -1.0 - 1.0; overrides input.sensitivity for this mouse only
+    sensitivity   = -0.5,  -- -1.0 - 1.0; overrides input.sensitivity for this mouse only
     scroll_factor = 0.5,  -- default 1.0; lower = slower scrolling
 })
 
@@ -296,13 +311,15 @@ local mainMod = "SUPER" -- Sets "Windows" key as main modifier
 hl.bind(mainMod .. " + T", hl.dsp.exec_cmd(terminal))
 local closeWindowBind = hl.bind(mainMod .. " + C", hl.dsp.window.close())
 -- closeWindowBind:set_enabled(false)
--- Log out (ends the session). Asks first; "Cancel" is preselected so a stray Enter or Escape does nothing.
--- Uses `test`, not `[ ]`: exec_cmd reads a leading `[...]` as window rules and never runs the command.
-local logout = [[command -v hyprshutdown >/dev/null 2>&1 && hyprshutdown || hyprctl dispatch 'hl.dsp.exit()']]
-local confirmLogout = [[test "$(printf 'Cancel\nLog out\n' | rofi -dmenu -i -no-custom -p 'Log out?')" = 'Log out' && { ]] .. logout .. "; }"
-hl.bind("CTRL + ALT + Q", hl.dsp.exec_cmd(confirmLogout))
--- Lock the screen; the session and its apps keep running behind hyprlock.
-hl.bind(mainMod .. " + L", hl.dsp.exec_cmd("loginctl lock-session"))
+-- Session menu: lock, log out, suspend, hibernate, reboot, shut down. Themed and wired up
+-- in the lattice flake (modules/nixos/profiles/graphical.nix); the wrapper is what passes
+-- wlogout its config, so don't call bare `wlogout` here.
+hl.bind("CTRL + ALT + Q", hl.dsp.exec_cmd("lattice-power"))
+-- Lock the screen; the session and its apps keep running behind hyprlock. Calls hyprlock
+-- straight out rather than going through `loginctl lock-session`, which only asks logind
+-- to emit a Lock signal that hypridle then has to act on -- nothing happens at all if
+-- hypridle is down. `pidof` first so holding the bind can't stack a second lock screen.
+hl.bind(mainMod .. " + L", hl.dsp.exec_cmd("pidof hyprlock || hyprlock"))
 hl.bind(mainMod .. " + E", hl.dsp.exec_cmd(fileManager))
 hl.bind(mainMod .. " + V", hl.dsp.window.float({ action = "toggle" }))
 hl.bind("ALT + SPACE", hl.dsp.exec_cmd(menu))

@@ -9,7 +9,7 @@
 
   "modules-left": ["hyprland/workspaces"],
   "modules-center": ["clock"],
-  "modules-right": ["tray", "wireplumber", "custom/sunset", "backlight", "network", "power-profiles-daemon", "battery"],
+  "modules-right": ["tray", "wireplumber", "custom/sunset", "backlight", "network", "power-profiles-daemon", "battery", "custom/power"],
 
   "hyprland/workspaces": {
     "format": "{id}"
@@ -76,6 +76,17 @@
       "balanced": "󰾅 balanced",
       "power-saver": "󰾆 saver"
     }
+  },
+
+  // lattice-power toggles wlogout, which is themed from the lattice flake rather than
+  // from here -- wlogout ignores XDG_CONFIG_DIRS, so the wrapper passes it the paths.
+  // Bare `wlogout` would open with its stock theme, and the command has to be on
+  // waybar's systemd PATH; both are handled in modules/nixos/profiles/graphical.nix.
+  "custom/power": {
+    "format": "󰐥",
+    "tooltip": true,
+    "tooltip-format": "Session",
+    "on-click": "lattice-power"
   },
 
   "battery": {

@@ -29,6 +29,7 @@ tooltip label {
 #network,
 #power-profiles-daemon,
 #custom-sunset,
+#custom-power,
 #battery {
   /* alpha() keeps @base as the single source of truth, so a re-accent still lands;
      the Hyprland layer rule on the "waybar" namespace blurs whatever shows through. */
@@ -123,4 +124,16 @@ tooltip label {
 
 #custom-sunset.cool {
   color: @overlay1;
+}
+
+/* Session menu: the one pill that can end the session, so it sits at the far end in
+   red rather than reading as another readout. */
+#custom-power {
+  color: @red;
+  padding: 0 11px;
+}
+
+#custom-power:hover {
+  background: @red;
+  color: @crust;
 }
