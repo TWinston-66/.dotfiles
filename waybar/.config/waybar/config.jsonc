@@ -7,12 +7,46 @@
   "margin-right": 10,
   "spacing": 5,
 
-  "modules-left": ["hyprland/workspaces"],
+  "modules-left": ["hyprland/workspaces", "privacy", "hyprland/window"],
   "modules-center": ["clock"],
-  "modules-right": ["tray", "wireplumber", "custom/sunset", "backlight", "network", "power-profiles-daemon", "battery", "custom/power"],
+  "modules-right": ["tray", "wireplumber", "custom/sunset", "idle_inhibitor", "backlight", "network", "power-profiles-daemon", "battery", "custom/power"],
 
   "hyprland/workspaces": {
     "format": "{id}"
+  },
+
+  // Sits between the workspaces and the title rather than on the right, which is full.
+  // Takes zero width while nothing is capturing, so it costs nothing at rest and simply
+  // appears when something starts. Placed ahead of the title so it lands in the same spot
+  // every time instead of drifting with the title's length.
+  //
+  // Default modules are screenshare + audio-in, which is what is wanted: audio-out would
+  // light up for any music playing. icon-size 15 to sit on a 28px bar -- the default 20
+  // is sized for a taller one.
+  "privacy": {
+    "icon-size": 15,
+    "icon-spacing": 6,
+    "transition-duration": 200
+  },
+
+  // The left side had ~486px of dead space between the workspaces pill and the centred
+  // clock, which is the only reason there is room for this; the right side is full.
+  // 35 chars, sized for the worst case: 5 persistent workspace pills (162px) plus the
+  // privacy module showing both indicators (~85px) still leaves the title clear of the
+  // clock. Without privacy up it has ~115px to spare.
+  //
+  // Firefox separates the title from the app name with an em dash, not a hyphen -- the
+  // rewrite below will silently not match if that is ever retyped as "-". Rules are
+  // ECMAScript regex over the whole title, and a title that matches nothing is left alone.
+  "hyprland/window": {
+    "format": "{}",
+    "max-length": 35,
+    "separate-outputs": true,
+    "rewrite": {
+      "(.*) \u2014 Mozilla Firefox": "$1",
+      "(.*) \u2014 Mozilla Thunderbird": "$1",
+      "(.*) - Visual Studio Code": "$1"
+    }
   },
 
   "clock": {
@@ -44,6 +78,21 @@
     "on-click": "lattice-sunset toggle"
   },
 
+  // Sits next to custom/sunset because both are click-toggles rather than readouts.
+  // Holds a zwp_idle_inhibit_manager_v1 lock on waybar's own surface, which suppresses
+  // ext_idle_notifier_v1 -- so this stops hypridle's 300s lock and 900s
+  // suspend-then-hibernate, not just the screen blank. Icon-only to save bar width; the
+  // colour carries the state.
+  "idle_inhibitor": {
+    "format": "{icon}",
+    "tooltip-format-activated": "Staying awake",
+    "tooltip-format-deactivated": "Idle timers active",
+    "format-icons": {
+      "activated": "󰅶",
+      "deactivated": "󰾪"
+    }
+  },
+
   "wireplumber": {
     "format": "{icon} {volume}%",
     "format-muted": "󰝟 muted",
@@ -60,7 +109,12 @@
     "format-icons": ["󰃞", "󰃟", "󰃠"]
   },
 
+  // The last variable-width module on the right, and the bar only has ~35px of slack
+  // before the centred clock on this 1280px-logical screen. 13 chars covers the icon,
+  // a space and an 11-char SSID; anything longer is truncated rather than allowed to
+  // push into the clock. Full name and address stay in the tooltip.
   "network": {
+    "max-length": 13,
     "format-wifi": "{icon} {essid}",
     "format-ethernet": "󰈀 wired",
     "format-disconnected": "󰤮 offline",
@@ -68,13 +122,17 @@
     "tooltip-format": "{ifname}  {ipaddr}/{cidr}"
   },
 
+  // Icon-only: the three glyphs are distinct enough to read at a glance, and dropping the
+  // labels frees ~42px on a 1280px-wide bar -- which is what makes room for
+  // idle_inhibitor without the right side colliding with the centred clock. The profile
+  // name is still one hover away.
   "power-profiles-daemon": {
     "format": "{icon}",
     "tooltip-format": "Power profile: {profile}",
     "format-icons": {
-      "performance": "󰓅 perf",
-      "balanced": "󰾅 balanced",
-      "power-saver": "󰾆 saver"
+      "performance": "󰓅",
+      "balanced": "󰾅",
+      "power-saver": "󰾆"
     }
   },
 

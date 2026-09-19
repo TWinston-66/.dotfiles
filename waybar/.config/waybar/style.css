@@ -22,6 +22,7 @@ tooltip label {
 }
 
 #workspaces,
+#window,
 #clock,
 #tray,
 #wireplumber,
@@ -30,6 +31,7 @@ tooltip label {
 #power-profiles-daemon,
 #custom-sunset,
 #custom-power,
+#idle_inhibitor,
 #battery {
   /* alpha() keeps @base as the single source of truth, so a re-accent still lands;
      the Hyprland layer rule on the "waybar" namespace blurs whatever shows through. */
@@ -49,15 +51,38 @@ tooltip label {
   padding: 0;
 }
 
+/* Quieter than the clock so the two don't compete for the eye. The empty class lands on
+   the whole bar rather than on #window, per waybar-hyprland-window(5) -- an empty pill
+   would otherwise sit there on a bare workspace. */
+#window {
+  color: @subtext1;
+}
+
+window#waybar.empty #window {
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+
+/* Three states, deliberately far apart: an occupied workspace is bright text on a raised
+   chip, an empty one is recessed grey on nothing, and the active one is a solid accent
+   block. .empty must come BEFORE .active -- they have equal specificity, so source order
+   decides, and an active-but-empty workspace has both classes. */
 #workspaces button {
-  color: @overlay1;
+  color: @text;
+  background: @surface0;
   padding: 0 7px;
   margin: 3px 0;
   border-radius: 6px;
 }
 
+#workspaces button.empty {
+  color: @surface2;
+  background: transparent;
+}
+
 #workspaces button:hover {
-  background: @surface0;
+  background: @surface1;
   box-shadow: none;
 }
 
@@ -69,6 +94,28 @@ tooltip label {
 #workspaces button.urgent {
   background: @red;
   color: @crust;
+}
+
+/* The pill lives on the items, not the container: privacy renders no children while
+   nothing is capturing, and a container pill would leave its padding and border sitting
+   on the bar permanently. */
+#privacy {
+  padding: 0;
+}
+
+#privacy-item {
+  background: alpha(@base, 0.82);
+  border: 2px solid @surface0;
+  border-radius: 9px;
+  padding: 0 9px;
+}
+
+#privacy-item.screenshare {
+  color: @peach;
+}
+
+#privacy-item.audio-in {
+  color: @red;
 }
 
 #clock {
@@ -96,8 +143,24 @@ tooltip label {
   color: @overlay0;
 }
 
+/* Icon-only, so it matches the other toggles' wider padding. */
 #power-profiles-daemon {
   color: @mauve;
+  padding: 0 11px;
+}
+
+/* Keep-awake: teal while it holds the inhibit lock, muted when idle timers are live --
+   same on/off convention as #custom-sunset above. */
+#idle_inhibitor {
+  padding: 0 11px;
+}
+
+#idle_inhibitor.activated {
+  color: @teal;
+}
+
+#idle_inhibitor.deactivated {
+  color: @overlay1;
 }
 
 #battery {

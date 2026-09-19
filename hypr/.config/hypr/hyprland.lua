@@ -214,6 +214,16 @@ hl.layer_rule({
 -- drops its gaps, border and rounding, so a single window sits flush to the screen.
 hl.workspace_rule({ workspace = "w[tv1]", gaps_out = 0, gaps_in = 0 })
 hl.workspace_rule({ workspace = "f[1]",   gaps_out = 0, gaps_in = 0 })
+
+-- Keep 1-5 on the bar even when empty, so the workspace pills stop reflowing as windows
+-- come and go and the SUPER+[1-5] binds always have a visible target. Persistence belongs
+-- to Hyprland, not waybar -- waybar 0.15's hyprland/workspaces has no
+-- persistent-workspaces option, it just reflects these rules and tags the empty ones with
+-- a .empty class (styled muted in ~/.dotfiles/waybar/.config/waybar/style.css).
+-- 5 and not 10: each pill is ~32px and the bar only has room before the centred clock.
+for i = 1, 5 do
+    hl.workspace_rule({ workspace = tostring(i), persistent = true })
+end
 hl.window_rule({
     name  = "no-gaps-wtv1",
     match = { float = false, workspace = "w[tv1]" },
@@ -329,11 +339,11 @@ hl.bind(mainMod .. " + B", hl.dsp.exec_cmd("firefox"))
 hl.bind(mainMod .. " + SHIFT + V", hl.dsp.exec_cmd("cliphist list | rofi -dmenu -p clipboard -display-columns 2 | cliphist decode | wl-copy"))
 
 -- Screenshots: Print for a region, SHIFT + Print for the whole screen. Opens in satty
--- to annotate (settings in ~/.config/satty); Enter copies, Ctrl+S saves to ~/Pictures/Screenshots.
+-- to annotate (settings in ~/.config/satty); Enter copies, Ctrl+S saves to ~/Documents/Screenshots.
 local slurp = "slurp -d -b 1e1e2e80 -c 89b4faff -s 89b4fa22 -B 1e1e2e80 -w 2"
 local satty = "satty -f -"
-hl.bind("Print",         hl.dsp.exec_cmd("mkdir -p ~/Pictures/Screenshots && grim -g \"$(" .. slurp .. ")\" - | " .. satty))
-hl.bind("SHIFT + Print", hl.dsp.exec_cmd("mkdir -p ~/Pictures/Screenshots && grim - | " .. satty))
+hl.bind("Print",         hl.dsp.exec_cmd("mkdir -p ~/Documents/Screenshots && grim -g \"$(" .. slurp .. ")\" - | " .. satty))
+hl.bind("SHIFT + Print", hl.dsp.exec_cmd("mkdir -p ~/Documents/Screenshots && grim - | " .. satty))
 
 -- Move focus with mainMod + arrow keys
 hl.bind(mainMod .. " + left",  hl.dsp.focus({ direction = "left" }))

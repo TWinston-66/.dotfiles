@@ -1,11 +1,15 @@
-font=JetBrains Mono 11
-width=360
+font=JetBrains Mono 8
+width=440
 margin=10
-padding=12
+padding=8
 border-size=2
 border-radius=10
 max-icon-size=48
-default-timeout=5000
+default-timeout=15000
+
+# The default height cap is 100px, which truncated the body to a couple of lines no
+# matter how small the font was. 140 lets the smaller font actually buy more preview.
+height=140
 
 # Colours, including the per-urgency borders, come from lattice (lattice.theme).
 include=/etc/xdg/mako/lattice
