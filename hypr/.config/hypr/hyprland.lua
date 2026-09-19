@@ -135,6 +135,12 @@ hl.config({
             size      = 3,
             passes    = 1,
             vibrancy  = 0.1696,
+
+            -- new_optimizations caches the blur of unchanged surfaces instead of
+            -- recomputing it per frame; xray samples the wallpaper rather than the
+            -- window stack underneath. Both make blur cheaper, not prettier.
+            new_optimizations = true,
+            xray              = true,
         },
     },
 
@@ -171,23 +177,41 @@ hl.animation({ leaf = "workspacesIn",  enabled = true,  speed = 1.21, bezier = "
 hl.animation({ leaf = "workspacesOut", enabled = true,  speed = 1.94, bezier = "almostLinear", style = "fade" })
 hl.animation({ leaf = "zoomFactor",    enabled = true,  speed = 7,    bezier = "quick" })
 
+-- Ref https://wiki.hypr.land/Configuring/Basics/Layer-Rules/
+-- Blur the shell surfaces. Namespaces verified live with `hyprctl layers`:
+-- waybar -> "waybar", rofi -> "rofi", mako -> "notifications", swayosd -> "swayosd".
+-- ignore_alpha skips blurring pixels below that alpha, so waybar's transparent
+-- gutter between pills doesn't get blurred along with the pills themselves.
+-- xray per-layer keeps these sampling the wallpaper, so the cost doesn't grow
+-- with however many windows happen to be stacked underneath.
+for _, ns in ipairs({ "waybar", "rofi", "notifications", "swayosd" }) do
+    hl.layer_rule({
+        name         = "blur-" .. ns,
+        match        = { namespace = ns },
+        blur         = true,
+        blur_popups  = true,
+        xray         = true,
+        ignore_alpha = 0.2,
+    })
+end
+
 -- Ref https://wiki.hypr.land/Configuring/Basics/Workspace-Rules/
--- "Smart gaps" / "No gaps when only"
--- uncomment all if you wish to use that.
--- hl.workspace_rule({ workspace = "w[tv1]", gaps_out = 0, gaps_in = 0 })
--- hl.workspace_rule({ workspace = "f[1]",   gaps_out = 0, gaps_in = 0 })
--- hl.window_rule({
---     name  = "no-gaps-wtv1",
---     match = { float = false, workspace = "w[tv1]" },
---     border_size = 0,
---     rounding    = 0,
--- })
--- hl.window_rule({
---     name  = "no-gaps-f1",
---     match = { float = false, workspace = "f[1]" },
---     border_size = 0,
---     rounding    = 0,
--- })
+-- "Smart gaps" / "No gaps when only": a lone tiled window (or a lone fullscreen one)
+-- drops its gaps, border and rounding, so a single window sits flush to the screen.
+hl.workspace_rule({ workspace = "w[tv1]", gaps_out = 0, gaps_in = 0 })
+hl.workspace_rule({ workspace = "f[1]",   gaps_out = 0, gaps_in = 0 })
+hl.window_rule({
+    name  = "no-gaps-wtv1",
+    match = { float = false, workspace = "w[tv1]" },
+    border_size = 0,
+    rounding    = 0,
+})
+hl.window_rule({
+    name  = "no-gaps-f1",
+    match = { float = false, workspace = "f[1]" },
+    border_size = 0,
+    rounding    = 0,
+})
 
 -- See https://wiki.hypr.land/Configuring/Layouts/Dwindle-Layout/ for more
 hl.config({

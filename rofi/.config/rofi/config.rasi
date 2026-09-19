@@ -22,7 +22,10 @@ window {
   border: 2px;
   border-color: @accent;
   border-radius: 12px;
-  background-color: @base;
+  /* baseAlpha comes from /etc/xdg/rofi/lattice.rasi at lattice.theme.opacity; rasi has
+     no alpha() function, so it's baked there. The Hyprland "rofi" layer rule blurs it.
+     Inner elements stay opaque so text keeps its contrast. */
+  background-color: @baseAlpha;
 }
 
 mainbox {

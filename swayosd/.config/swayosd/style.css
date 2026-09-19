@@ -1,10 +1,15 @@
 @import url("file:///etc/xdg/swayosd/lattice.css");
 
 /* Colours from lattice (lattice.theme). swayosd hardcodes a 250px minimum width. */
+/* Matched to the waybar pills in ~/.dotfiles/waybar/style.css: same translucent @base,
+   same @surface0 border, same 2px/9px treatment, and the Hyprland layer rule on the
+   "swayosd" namespace blurs behind it. swayosd 0.3.2 puts no per-control class on the
+   window -- the only CSS names it knows are osd/container/active -- so the accent can't
+   vary between the volume and brightness popups the way the bar's icons do. */
 window#osd {
-  border-radius: 10px;
-  border: 2px solid @accent;
-  background: @base;
+  border-radius: 9px;
+  border: 2px solid @surface0;
+  background: alpha(@base, 0.82);
 }
 
 window#osd #container {

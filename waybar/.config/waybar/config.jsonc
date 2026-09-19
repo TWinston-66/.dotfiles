@@ -9,7 +9,7 @@
 
   "modules-left": ["hyprland/workspaces"],
   "modules-center": ["clock"],
-  "modules-right": ["tray", "wireplumber", "backlight", "network", "power-profiles-daemon", "battery"],
+  "modules-right": ["tray", "wireplumber", "custom/sunset", "backlight", "network", "power-profiles-daemon", "battery"],
 
   "hyprland/workspaces": {
     "format": "{id}"
@@ -33,6 +33,17 @@
     "spacing": 8
   },
 
+  // lattice-sunset emits the JSON and signals RTMIN+1 after every change, so the bar
+  // updates on click instead of waiting out an interval. It queries hyprsunset itself,
+  // so an external `hyprctl hyprsunset` still shows up here within the interval.
+  "custom/sunset": {
+    "exec": "lattice-sunset status",
+    "return-type": "json",
+    "signal": 1,
+    "interval": 30,
+    "on-click": "lattice-sunset toggle"
+  },
+
   "wireplumber": {
     "format": "{icon} {volume}%",
     "format-muted": "󰝟 muted",
@@ -41,11 +52,12 @@
     "scroll-step": 5
   },
 
+  // Readout only -- no on-scroll handlers, so scrolling past the bar can't nudge the
+  // backlight. Brightness is changed with XF86MonBrightness{Up,Down}, bound in
+  // ~/.dotfiles/hypr/hyprland.lua, which raise the same swayosd popup.
   "backlight": {
     "format": "{icon} {percent}%",
-    "format-icons": ["󰃞", "󰃟", "󰃠"],
-    "on-scroll-up": "brightnessctl -e4 -n2 set 5%+",
-    "on-scroll-down": "brightnessctl -e4 -n2 set 5%-"
+    "format-icons": ["󰃞", "󰃟", "󰃠"]
   },
 
   "network": {
