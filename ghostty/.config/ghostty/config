@@ -20,6 +20,9 @@ split-inherit-working-directory = true
 
 scrollback-limit = 100000000
 
+# precision = touchpad (default 1), discrete = mouse wheel notches (default 3).
+mouse-scroll-multiplier = precision:0.5,discrete:2
+
 keybind = cmd+a=text:\x01
 
 keybind = cmd+y=text:\x19

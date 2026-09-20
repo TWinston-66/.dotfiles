@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-DOTFILES_STOW_PACKAGES=(git zsh zed ssh ghostty tealdeer tmux sesh gitmux starship nvim bat btop lazygit)
+DOTFILES_STOW_PACKAGES=(git zsh zed ssh ghostty tealdeer tmux sesh gitmux starship nvim bat btop lazygit pi)
 
 stow_packages() {
     log_step "Stowing dotfiles"
@@ -41,7 +41,11 @@ stow_packages() {
         log_info "Pre-existing dotfiles backed up to $backup_dir"
     fi
 
+    # Pre-create dirs that hold machine-local state next to the linked
+    # config, so stow links the files instead of folding the whole dir
+    # into the repo (auth.json and sessions/ would land in git).
     mkdir -p -m 700 "$HOME/.ssh"
+    mkdir -p "$HOME/.pi/agent"
 
     stow --dir="$DOTFILES_DIR" --target="$HOME" --restow "${DOTFILES_STOW_PACKAGES[@]}"
     log_ok "Dotfiles stowed"

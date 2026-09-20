@@ -31,6 +31,18 @@ hl.monitor({
     scale    = 1.5,
 })
 
+-- Both laptops call their internal panel eDP-1 but want different scales for it, and this
+-- repo is one tree shared between them and macOS, so an eDP-1 rule written here would
+-- follow the wrong machine home. NixOS generates the host's own rules into
+-- /etc/xdg/hypr/lattice.lua instead -- lattice.display.monitors, in
+-- modules/nixos/display.nix -- and they are loaded here, last, so they win over the rules
+-- above. There is no such file on macOS or on a host that overrides nothing, hence the
+-- guard: loadfile returns nil rather than raising when the path isn't there.
+local latticeMonitors = loadfile("/etc/xdg/hypr/lattice.lua")
+if latticeMonitors then
+    latticeMonitors()
+end
+
 
 ---------------------
 ---- MY PROGRAMS ----

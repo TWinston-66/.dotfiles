@@ -7,3 +7,9 @@ nvim/.config/nvim/spell/*.spl
 ssh/.ssh/id_*
 ssh/.ssh/known_hosts*
 ssh/.ssh/agent/
+
+# pi's credentials and session transcripts are machine-local; only
+# pi/.pi/agent/settings.json is meant to be versioned
+pi/.pi/agent/auth.json
+pi/.pi/agent/sessions/
+pi/.pi/agent/models-store.json
