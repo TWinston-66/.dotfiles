@@ -6,7 +6,7 @@ vim.g.loaded_netrwPlugin = 1
 
 -- Display
 opt.number = true
-opt.relativenumber = true
+opt.relativenumber = false
 opt.signcolumn = "yes"
 opt.wrap = false
 opt.termguicolors = true

@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Version=1.5
+Name=Google Gemini
+Icon=/home/winston/.config/mozilla/firefox/uk8qrdih.default/taskbartabs/icons/5cd5b580-fa7a-450e-a7bf-fbe1873caa8e.png
+Exec="/run/current-system/sw/bin/firefox" "-taskbar-tab" "5cd5b580-fa7a-450e-a7bf-fbe1873caa8e" "-new-window" "https://gemini.google.com" "-profile" "/home/winston/.config/mozilla/firefox/uk8qrdih.default" "-container" "0"
+

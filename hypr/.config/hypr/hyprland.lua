@@ -302,7 +302,14 @@ hl.config({
 
         touchpad = {
             natural_scroll = true,
-            scroll_factor  = 0.8, -- default 1.0; lower = slower scrolling
+
+            -- default 1.0; lower = slower scrolling. 0.2 rather than something nearer
+            -- 1.0 because rofi scales row movement off the scroll distance, and a
+            -- trackpad flick carries far more of it than a wheel detent does -- at 0.8
+            -- the wifi dropdown and the launcher both shot past whatever was aimed at.
+            -- The MX Master overrides this with its own factor below, so this number is
+            -- the trackpad's alone.
+            scroll_factor  = 0.2,
         },
     },
 })
@@ -318,8 +325,24 @@ hl.gesture({
 -- Logitech MX Master 3 over Bluetooth (name from `hyprctl devices`)
 hl.device({
     name          = "logitech-wireless-mouse-mx-master-3-1",
-    sensitivity   = -0.5,  -- -1.0 - 1.0; overrides input.sensitivity for this mouse only
-    scroll_factor = 0.5,  -- default 1.0; lower = slower scrolling
+
+    -- DPI is the only speed knob for this mouse; these two exist to get out of its way.
+    --
+    -- accel_profile "flat" turns off libinput's pointer acceleration, which otherwise
+    -- scales gain by how fast the hand is moving. With it on there is no single "speed"
+    -- to tune -- the same setting feels right on slow tracking and too loose on a quick
+    -- flick -- which is what makes too-fast and too-sensitive impossible to tell apart.
+    -- Flat makes pointer travel strictly proportional to hand travel, so DPI means one
+    -- thing. Drop this line to get the accelerated feel back.
+    accel_profile = "flat",
+
+    -- 0 = no modification. Anything negative here would discard motion counts the sensor
+    -- already reported, buying slowness at the cost of precision; the DPI in
+    -- ~/.config/solaar/config.yaml moves it at the source instead. See the solaar block
+    -- in lattice's modules/nixos/profiles/graphical.nix.
+    sensitivity   = 0,
+
+    scroll_factor = 0.5,  -- default 1.0; lower = slower scrolling. Unrelated to DPI.
 })
 
 
@@ -350,12 +373,9 @@ hl.bind(mainMod .. " + J", hl.dsp.layout("togglesplit"))    -- dwindle only
 hl.bind(mainMod .. " + B", hl.dsp.exec_cmd("firefox"))
 hl.bind(mainMod .. " + SHIFT + V", hl.dsp.exec_cmd("cliphist list | rofi -dmenu -p clipboard -display-columns 2 | cliphist decode | wl-copy"))
 
--- Screenshots: Print for a region, SHIFT + Print for the whole screen. Opens in satty
--- to annotate (settings in ~/.config/satty); Enter copies, Ctrl+S saves to ~/Documents/Screenshots.
-local slurp = "slurp -d -b 1e1e2e80 -c 89b4faff -s 89b4fa22 -B 1e1e2e80 -w 2"
-local satty = "satty -f -"
-hl.bind("Print",         hl.dsp.exec_cmd("mkdir -p ~/Documents/Screenshots && grim -g \"$(" .. slurp .. ")\" - | " .. satty))
-hl.bind("SHIFT + Print", hl.dsp.exec_cmd("mkdir -p ~/Documents/Screenshots && grim - | " .. satty))
+-- No screenshot bind. It is "Screenshot" in the launcher instead -- the Mac's keyboard has
+-- no Print key to bind, so the entry is the only form that works on both hosts. The script
+-- and its desktop entry are lattice's, in modules/nixos/profiles/graphical.nix.
 
 -- Move focus with mainMod + arrow keys
 hl.bind(mainMod .. " + left",  hl.dsp.focus({ direction = "left" }))
@@ -430,6 +450,18 @@ hl.bind("XF86AudioMute",        hl.dsp.exec_cmd("swayosd-client --output-volume 
 hl.bind("XF86AudioMicMute",     hl.dsp.exec_cmd("swayosd-client --input-volume mute-toggle"),             { locked = true, repeating = true })
 hl.bind("XF86MonBrightnessUp",  hl.dsp.exec_cmd("swayosd-client --brightness raise"),                     { locked = true, repeating = true })
 hl.bind("XF86MonBrightnessDown",hl.dsp.exec_cmd("swayosd-client --brightness lower"),                     { locked = true, repeating = true })
+
+-- Keyboard backlight, on the LCD brightness keys under mainMod. No laptop here has a key
+-- of its own for it -- the MacBook's 2021+ function row simply hasn't got one, and macOS
+-- puts it in Control Center rather than on the keyboard.
+--
+-- Bound to the keysym rather than to mainMod + F1/F2: hid-apple runs this keyboard in
+-- fkeyslast mode, so the physical F1 already *is* XF86MonBrightnessDown and mainMod + F1
+-- would mean holding Fn as well. Going through the keysym also keeps this on whichever
+-- keys carry brightness on the other machine. swayosd raises the pill by itself here,
+-- watching the LED, so there is no --brightness call to make.
+hl.bind(mainMod .. " + XF86MonBrightnessUp",  hl.dsp.exec_cmd("lattice-kbd-backlight raise"),            { locked = true, repeating = true })
+hl.bind(mainMod .. " + XF86MonBrightnessDown",hl.dsp.exec_cmd("lattice-kbd-backlight lower"),            { locked = true, repeating = true })
 
 -- Requires playerctl
 hl.bind("XF86AudioNext",  hl.dsp.exec_cmd("playerctl next"),       { locked = true })

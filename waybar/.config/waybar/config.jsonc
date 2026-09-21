@@ -139,7 +139,11 @@
   // volume and battery both at 100%, and the SSID label ellipsizes rather than let the
   // group reach the clock. 13 chars covers the icon, a space and an 11-char SSID;
   // anything longer is truncated. Full name and address stay in the tooltip.
+  //
+  // Click for the picker: lattice-wifi lists what is in range through rofi, which is
+  // themed and lets an SSID be found by typing. See modules/nixos/profiles/graphical.nix.
   "network": {
+    "on-click": "lattice-wifi",
     "max-length": 13,
     "format-wifi": "{icon} {essid}",
     "format-ethernet": "󰈀 wired",

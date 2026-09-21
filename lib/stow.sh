@@ -46,6 +46,7 @@ stow_packages() {
     # into the repo (auth.json and sessions/ would land in git).
     mkdir -p -m 700 "$HOME/.ssh"
     mkdir -p "$HOME/.pi/agent"
+    mkdir -p "$HOME/.config/solaar"
 
     stow --dir="$DOTFILES_DIR" --target="$HOME" --restow "${DOTFILES_STOW_PACKAGES[@]}"
     log_ok "Dotfiles stowed"

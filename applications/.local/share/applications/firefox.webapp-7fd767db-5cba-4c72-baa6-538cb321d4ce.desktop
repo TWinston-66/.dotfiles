@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Version=1.5
+Name=Icloud
+Icon=/home/winston/.config/mozilla/firefox/uk8qrdih.default/taskbartabs/icons/7fd767db-5cba-4c72-baa6-538cb321d4ce.png
+Exec="/run/current-system/sw/bin/firefox" "-taskbar-tab" "7fd767db-5cba-4c72-baa6-538cb321d4ce" "-new-window" "https://www.icloud.com" "-profile" "/home/winston/.config/mozilla/firefox/uk8qrdih.default" "-container" "0"
+

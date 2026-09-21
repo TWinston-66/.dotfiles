@@ -1,4 +1,8 @@
 [general]
+# HyprQuickFrame spawns satty with its own flags and no --fullscreen, so this has to
+# live here to survive: satty tiles like any other window, and in a quarter-screen tile
+# the ends of both toolbars are cut off with no way to scroll to them.
+fullscreen = true
 copy-command = "wl-copy"
 early-exit = true
 output-filename = "~/Documents/Screenshots/%Y-%m-%d_%H-%M-%S.png"
