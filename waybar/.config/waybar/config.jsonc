@@ -8,8 +8,8 @@
   "spacing": 5,
 
   "modules-left": ["hyprland/workspaces", "privacy", "hyprland/window"],
-  "modules-center": ["clock"],
-  "modules-right": ["tray", "wireplumber", "custom/sunset", "idle_inhibitor", "backlight", "network", "power-profiles-daemon", "battery", "custom/power"],
+  "modules-center": ["custom/sunset", "idle_inhibitor", "clock", "custom/spacer"],
+  "modules-right": ["tray", "wireplumber", "backlight", "network", "custom/tailscale", "power-profiles-daemon", "battery", "custom/power"],
 
   "hyprland/workspaces": {
     "format": "{id}"
@@ -62,14 +62,35 @@
     }
   },
 
+  // Invisible counterweight to the right of the clock. The two bubbles to its left would
+  // otherwise pull the clock off the bar's centre line; this takes the width they add and
+  // draws nothing.
+  //
+  // The exec has to emit a character -- waybar sizes a custom module to its output, and an
+  // empty one collapses to zero whatever the format says. "x" is hidden by the transparent
+  // colour in style.css, where the padding is sized to match the two bubbles.
+  "custom/spacer": {
+    "exec": "echo x",
+    "format": "{}",
+    "tooltip": false
+  },
+
+  // 14px rather than the stock 16: at 16 the tray's icon rendered visibly larger than the
+  // Nerd Font glyphs in the pills beside it. It also has to stay small -- the tray is the
+  // leftmost pill of an already-full right group, and a wider icon squeezes the network
+  // label until waybar ellipsizes the SSID to make room.
   "tray": {
-    "icon-size": 16,
+    "icon-size": 14,
     "spacing": 8
   },
 
   // lattice-sunset emits the JSON and signals RTMIN+1 after every change, so the bar
   // updates on click instead of waiting out an interval. It queries hyprsunset itself,
   // so an external `hyprctl hyprsunset` still shows up here within the interval.
+  //
+  // Lives in modules-center just left of the clock: centring the group rather than the
+  // clock alone is what tucks these two against the clock and gives the right side its
+  // room back. The cost is that the clock sits ~41px right of true centre.
   "custom/sunset": {
     "exec": "lattice-sunset status",
     "return-type": "json",
@@ -93,9 +114,12 @@
     }
   },
 
+  // Muted keeps only the glyph: the word made this the widest state the pill can be in,
+  // and dropping it is what buys the room on the right for custom/tailscale below. The
+  // glyph is still greyed by the .muted class in style.css.
   "wireplumber": {
     "format": "{icon} {volume}%",
-    "format-muted": "󰝟 muted",
+    "format-muted": "󰝟",
     "format-icons": ["󰕿", "󰖀", "󰕾"],
     "on-click": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle",
     "scroll-step": 5
@@ -109,10 +133,12 @@
     "format-icons": ["󰃞", "󰃟", "󰃠"]
   },
 
-  // The last variable-width module on the right, and the bar only has ~35px of slack
-  // before the centred clock on this 1280px-logical screen. 13 chars covers the icon,
-  // a space and an 11-char SSID; anything longer is truncated rather than allowed to
-  // push into the clock. Full name and address stay in the tooltip.
+  // custom/tailscale sits to its right, and with custom/sunset and idle_inhibitor moved
+  // to the centre the pair clears the clock by ~43px in a typical state on this
+  // 1280px-logical screen -- measured off a screenshot, not guessed. Still ~36px with
+  // volume and battery both at 100%, and the SSID label ellipsizes rather than let the
+  // group reach the clock. 13 chars covers the icon, a space and an 11-char SSID;
+  // anything longer is truncated. Full name and address stay in the tooltip.
   "network": {
     "max-length": 13,
     "format-wifi": "{icon} {essid}",
@@ -120,6 +146,21 @@
     "format-disconnected": "󰤮 offline",
     "format-icons": ["󰤟", "󰤢", "󰤥", "󰤨"],
     "tooltip-format": "{ifname}  {ipaddr}/{cidr}"
+  },
+
+  // Tailscale has no Linux GUI, so the pill is the interface: hover for the connection
+  // report, click to bring the tunnel up or down, right-click for the admin console. The
+  // glyph and colour are chosen by lattice-tailscale per state, so nothing here spells the
+  // state out -- the script emits `text` and the class style.css keys off. It signals
+  // RTMIN+2 itself after a toggle, so the interval is only a safety net for changes made
+  // from a shell. Icon-only, and sits just right of network; see the network note above.
+  "custom/tailscale": {
+    "exec": "lattice-tailscale status",
+    "return-type": "json",
+    "signal": 2,
+    "interval": 30,
+    "on-click": "lattice-tailscale toggle",
+    "on-click-right": "lattice-tailscale web"
   },
 
   // Icon-only: the three glyphs are distinct enough to read at a glance, and dropping the

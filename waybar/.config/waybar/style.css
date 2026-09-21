@@ -31,6 +31,7 @@ tooltip label {
 #power-profiles-daemon,
 #custom-sunset,
 #custom-power,
+#custom-tailscale,
 #idle_inhibitor,
 #battery {
   /* alpha() keeps @base as the single source of truth, so a re-accent still lands;
@@ -141,6 +142,49 @@ window#waybar.empty #window {
 
 #network.disconnected {
   color: @overlay0;
+}
+
+/* Tailscale. The glyph tracks the connection and the colour tracks the exit node: teal
+   when traffic is routed through one, red when the tunnel is up but going out the normal
+   route. Down, signed-out and warning keep their own colours. Icon-only, so it takes the
+   wider toggle padding. */
+#custom-tailscale {
+  padding: 0 11px;
+}
+
+#custom-tailscale.running.exit-node {
+  color: @teal;
+}
+
+#custom-tailscale.running.no-exit-node {
+  color: @red;
+}
+
+#custom-tailscale.starting,
+#custom-tailscale.stopped {
+  color: @overlay0;
+}
+
+#custom-tailscale.needs-login {
+  color: @yellow;
+}
+
+/* Carries .running when tailscaled is up but reporting something; source order after the
+   .running rules lets the warning colour win. */
+#custom-tailscale.warning {
+  color: @peach;
+}
+
+/* Invisible counterweight. The two bubbles left of the clock push it off the bar's centre
+   line, so this sits to the clock's right and takes the width they added. Each bubble is
+   a glyph plus 11px padding and a 2px border (26px), so two of them plus the two 5px gaps
+   is ~81px; less the ~7px glyph this label draws, hence 37px a side. Undrawn: the width is
+   the whole point. */
+#custom-spacer {
+  background: transparent;
+  border: none;
+  color: transparent;
+  padding: 0 37px;
 }
 
 /* Icon-only, so it matches the other toggles' wider padding. */
