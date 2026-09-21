@@ -10,7 +10,7 @@
     headset-signature-passive, logivoice-nr-state, logivoice-ng-state, logivoice-comp-state, logivoice-deesser-state, logivoice-depopper-state, logivoice-limiter-state,
     logivoice-hpf-state, gesture2-gestures, gesture2-divert, gesture2-params]
   _battery: 4096
-  _config_cookie: [52, 66]
+  _config_cookie: [52, 68]
   _modelId: B02340820000
   _sensitive: {smart-shift: false}
   _unitId: 7C0BBB5F

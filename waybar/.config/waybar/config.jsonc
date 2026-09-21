@@ -117,12 +117,22 @@
   // Muted keeps only the glyph: the word made this the widest state the pill can be in,
   // and dropping it is what buys the room on the right for custom/tailscale below. The
   // glyph is still greyed by the .muted class in style.css.
+  //
+  // Click to mute; scroll does nothing, for the same reason backlight has no scroll
+  // handlers -- a stray wheel tick on the way past the bar shouldn't move the volume.
+  // Unlike backlight, this module changes volume in C++ whether or not anything is
+  // configured, so the mechanic can't just be left unconfigured: the only thing that
+  // displaces it is a scroll handler of our own, which is what these two are. They are
+  // empty on purpose and cost nothing -- waybar's forkExec returns early on an empty
+  // command, so no shell is spawned per tick -- and with them present scroll-step has
+  // nothing left to scale, so it's gone.
   "wireplumber": {
     "format": "{icon} {volume}%",
     "format-muted": "󰝟",
     "format-icons": ["󰕿", "󰖀", "󰕾"],
     "on-click": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle",
-    "scroll-step": 5
+    "on-scroll-up": "",
+    "on-scroll-down": ""
   },
 
   // Readout only -- no on-scroll handlers, so scrolling past the bar can't nudge the

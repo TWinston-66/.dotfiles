@@ -359,7 +359,7 @@ local closeWindowBind = hl.bind(mainMod .. " + C", hl.dsp.window.close())
 -- Session menu: lock, log out, suspend, hibernate, reboot, shut down. Themed and wired up
 -- in the lattice flake (modules/nixos/profiles/graphical.nix); the wrapper is what passes
 -- wlogout its config, so don't call bare `wlogout` here.
-hl.bind("CTRL + ALT + Q", hl.dsp.exec_cmd("lattice-power"))
+hl.bind("CTRL + " .. mainMod .. " + Q", hl.dsp.exec_cmd("lattice-power"))
 -- Lock the screen; the session and its apps keep running behind hyprlock. Calls hyprlock
 -- straight out rather than going through `loginctl lock-session`, which only asks logind
 -- to emit a Lock signal that hypridle then has to act on -- nothing happens at all if
