@@ -1,0 +1,22 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+# Shadows the entry qalculate-gtk ships (XDG_DATA_HOME wins over the system profile for
+# the same desktop-file ID), for the sake of the one changed line: Name. "Qalculate!" is
+# not what anyone types when they want a calculator. Same mechanism as rofi.desktop here.
+# Keep the ID, Exec, Icon and StartupWMClass identical to upstream's -- StartupWMClass is
+# what ties the window to this entry, and Hyprland's float-calculator rule matches the
+# same class.
+Name=Calculator
+GenericName=Calculator
+Comment=Powerful and easy to use calculator
+TryExec=qalculate-gtk
+Exec=qalculate-gtk
+Icon=qalculate
+Terminal=false
+StartupNotify=true
+StartupWMClass=qalculate-gtk
+Categories=GTK;Utility;Calculator;Education;Science;Math;
+# Upstream's list, plus the names the app is actually known by -- the launcher matches
+# keywords too, so "qalculate" and "qalc" still find it now that the name doesn't say so.
+Keywords=calculation;arithmetic;scientific;financial;qalculate;qalc;math;

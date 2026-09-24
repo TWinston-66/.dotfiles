@@ -30,6 +30,7 @@ tooltip label {
 #network,
 #power-profiles-daemon,
 #custom-sunset,
+#custom-weather,
 #custom-power,
 #custom-tailscale,
 #idle_inhibitor,
@@ -69,10 +70,13 @@ window#waybar.empty #window {
    chip, an empty one is recessed grey on nothing, and the active one is a solid accent
    block. .empty must come BEFORE .active -- they have equal specificity, so source order
    decides, and an active-but-empty workspace has both classes. */
+/* 6px rather than 7: the pills carry a glyph per open window now, so their width varies
+   with what is running, and the horizontal padding is the only part of that this end
+   controls. Taking a pixel off each side keeps a busy workspace from crowding the title. */
 #workspaces button {
   color: @text;
   background: @surface0;
-  padding: 0 7px;
+  padding: 0 6px;
   margin: 3px 0;
   border-radius: 6px;
 }
@@ -175,16 +179,59 @@ window#waybar.empty #window {
   color: @peach;
 }
 
-/* Invisible counterweight. The two bubbles left of the clock push it off the bar's centre
-   line, so this sits to the clock's right and takes the width they added. Each bubble is
-   a glyph plus 11px padding and a 2px border (26px), so two of them plus the two 5px gaps
-   is ~81px; less the ~7px glyph this label draws, hence 37px a side. Undrawn: the width is
-   the whole point. */
+/* Invisible counterweight, and the only reason the clock lands on the bar's centre line.
+   waybar centres modules-center as a group, not the clock within it, so the clock is only
+   centred when the content on each side of it is the same width. #custom-weather (97px) is
+   wider than #custom-sunset and #idle_inhibitor together, so the shortfall is on the left
+   and this module sits at the head of the group to make it up.
+
+   8px a side, measured rather than derived: at 5px the clock sat 3.33px left of centre, and
+   a pixel added here moves it a pixel right -- the padding lands on one side of the clock,
+   so a 2px width change shifts the centred group by 1px. 8px leaves it 0.22px off, which is
+   a fifth of a logical pixel and well under a physical one at this 2.25 scale.
+
+   Re-measure this if the weather pill's padding, the two toggles' padding, the bar font or
+   its size ever change. Undrawn: the width is the whole point. */
 #custom-spacer {
   background: transparent;
   border: none;
   color: transparent;
-  padding: 0 37px;
+  padding: 0 8px;
+}
+
+/* Weather. The glyph carries the conditions and the colour carries the temperature, so
+   the pill reads "cold, and raining" without spending bar width on either word. Bands are
+   Fahrenheit and are set by lattice-weather; the cutoffs are there, not here.
+
+   Deliberately not @sapphire for .cold even though that is the obvious blue: #network
+   already owns it, and two sapphire pills on one bar read as related when they aren't.
+
+   .stale and .unavailable come last so a cached or missing reading greys out whichever
+   band it was in -- equal specificity, so source order decides, and a stale pill carries
+   both classes. Same ordering constraint as #custom-tailscale.warning above. */
+#custom-weather.freezing {
+  color: @sky;
+}
+
+#custom-weather.cold {
+  color: @blue;
+}
+
+#custom-weather.mild {
+  color: @green;
+}
+
+#custom-weather.warm {
+  color: @peach;
+}
+
+#custom-weather.hot {
+  color: @red;
+}
+
+#custom-weather.stale,
+#custom-weather.unavailable {
+  color: @overlay0;
 }
 
 /* Icon-only, so it matches the other toggles' wider padding. */

@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Version=1.5
+Name=Apple Music
+Icon=/home/winston/.config/mozilla/firefox/uk8qrdih.default/taskbartabs/icons/8f52f345-e1f6-4dfc-90d8-a7531d3f33f0.png
+Exec="/run/current-system/sw/bin/firefox" "-taskbar-tab" "8f52f345-e1f6-4dfc-90d8-a7531d3f33f0" "-new-window" "https://music.apple.com" "-profile" "/home/winston/.config/mozilla/firefox/uk8qrdih.default" "-container" "0"
+

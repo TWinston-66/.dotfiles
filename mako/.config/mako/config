@@ -5,7 +5,7 @@ padding=8
 border-size=2
 border-radius=10
 max-icon-size=48
-default-timeout=15000
+default-timeout=10000
 
 # The default height cap is 100px, which truncated the body to a couple of lines no
 # matter how small the font was. 140 lets the smaller font actually buy more preview.

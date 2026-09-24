@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Version=1.5
+Name=Claude
+Icon=/home/winston/.config/mozilla/firefox/uk8qrdih.default/taskbartabs/icons/1b91e603-0b0a-4293-ad0f-c8754c5986b7.png
+Exec="/run/current-system/sw/bin/firefox" "-taskbar-tab" "1b91e603-0b0a-4293-ad0f-c8754c5986b7" "-new-window" "https://claude.ai" "-profile" "/home/winston/.config/mozilla/firefox/uk8qrdih.default" "-container" "0"
+

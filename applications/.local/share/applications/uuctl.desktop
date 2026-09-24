@@ -1,0 +1,21 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+# Shadows the entry uwsm ships (XDG_DATA_HOME wins over the system profile for the same
+# desktop-file ID), for the sake of two changed lines: Name and Icon. uuctl is UWSM's
+# user-unit manager: it lists the systemd *user* units in a dmenu-like menu -- rofi is
+# one of the backends it detects, so it arrives wearing lattice's theme -- and offers
+# start/stop/restart/reload/enable/disable/kill/freeze/thaw on the one you pick.
+# "uuctl" says none of that, and applications-system is the generic gear every settings
+# app already wears. Same mechanism as qalculate-gtk.desktop and thunar.desktop here.
+Name=User Services
+GenericName=User unit manager
+Comment=Start, stop and inspect systemd user units
+Exec=uuctl
+# Papirus's own mark for a services front end, rather than the generic gear.
+Icon=preferences-system-services
+Terminal=false
+Categories=Utility;Settings;
+# Upstream's list, plus the tool's own name and the verbs it offers, so "uuctl",
+# "systemd" and "restart" all find it now that the name doesn't say so.
+Keywords=units;services;systemd;session;uuctl;uwsm;daemon;start;stop;restart;

@@ -195,8 +195,9 @@ hl.animation({ leaf = "zoomFactor",    enabled = true,  speed = 7,    bezier = "
 -- ignore_alpha skips blurring pixels below that alpha, so waybar's transparent
 -- gutter between pills doesn't get blurred along with the pills themselves.
 -- xray per-layer keeps these sampling the wallpaper, so the cost doesn't grow
--- with however many windows happen to be stacked underneath.
-for _, ns in ipairs({ "waybar", "rofi", "notifications", "swayosd" }) do
+-- with however many windows happen to be stacked underneath. Only the surfaces
+-- pinned to a screen edge get it -- see the rofi rule below for why.
+for _, ns in ipairs({ "waybar", "notifications", "swayosd" }) do
     hl.layer_rule({
         name         = "blur-" .. ns,
         match        = { namespace = ns },
@@ -206,6 +207,18 @@ for _, ns in ipairs({ "waybar", "rofi", "notifications", "swayosd" }) do
         ignore_alpha = 0.2,
     })
 end
+
+-- rofi opens centred on top of whatever window you are working in, so it is the one
+-- shell surface xray gets visibly wrong: sampling the wallpaper erases the window that
+-- is actually underneath, and the menu reads as a hole punched through to the desktop.
+-- It is one small, short-lived surface, so blurring the real window stack costs little.
+hl.layer_rule({
+    name         = "blur-rofi",
+    match        = { namespace = "rofi" },
+    blur         = true,
+    blur_popups  = true,
+    ignore_alpha = 0.2,
+})
 
 -- wlogout calls its layer "logout_dialog", not "wlogout" (checked with `hyprctl layers`
 -- while it was open). It gets its own rule rather than joining the loop above: it is a
@@ -310,6 +323,26 @@ hl.config({
             -- The MX Master overrides this with its own factor below, so this number is
             -- the trackpad's alone.
             scroll_factor  = 0.2,
+
+            -- The pad is a clickpad: one physical button under the whole surface, and
+            -- BTN_LEFT is the only key code it reports. Which button a click *means* is
+            -- therefore libinput's to decide, and it has two ways to decide it. Button
+            -- areas cuts the bottom of the pad into invisible left/middle/right
+            -- rectangles; clickfinger ignores position and counts fingers instead -- one
+            -- left, two right, three middle -- which is what macOS does, and what the
+            -- two-finger *tap* here already did, since tap_button_map defaults to lrm.
+            --
+            -- libinput's own default for an Apple-vendor clickpad is clickfinger, but
+            -- Hyprland forces one method or the other from this flag rather than leaving
+            -- the default in place, so leaving it unset meant button areas. A two-finger
+            -- press came out left while a two-finger tap came out right, and right-click
+            -- was a corner with no edge you could feel. Setting it puts press and tap back
+            -- in agreement and matches the Mac.
+            --
+            -- The one place this still departs from a stock Mac is tap-to-click, which
+            -- macOS ships off and Hyprland ships on; `tap-to-click = false` here is the
+            -- whole difference if the click is ever wanted as the only click.
+            clickfinger_behavior = true,
         },
     },
 })
@@ -373,6 +406,14 @@ hl.bind(mainMod .. " + J", hl.dsp.layout("togglesplit"))    -- dwindle only
 hl.bind(mainMod .. " + B", hl.dsp.exec_cmd("firefox"))
 hl.bind(mainMod .. " + SHIFT + V", hl.dsp.exec_cmd("cliphist list | rofi -dmenu -p clipboard -display-columns 2 | cliphist decode | wl-copy"))
 
+-- Calculator, as a launcher mode rather than an app: rofi's calc plugin, whose engine is
+-- qalculate -- so units and bases convert in place (`0xff to bin`, `1 GiB to MB`) and
+-- solve/diff/matrices work. The plugin is built into the rofi wrapper by lattice, in
+-- modules/nixos/profiles/graphical.nix; bare `rofi` from anywhere else won't have it.
+-- -modes is needed because ~/.dotfiles/rofi/config.rasi enables only drun,run, and rofi
+-- refuses to -show a mode that isn't enabled. Enter copies the result to the clipboard.
+hl.bind("ALT + SHIFT + SPACE", hl.dsp.exec_cmd([[rofi -show calc -modes calc -calc-command "echo -n '{result}' | wl-copy"]]))
+
 -- No screenshot bind. It is "Screenshot" in the launcher instead -- the Mac's keyboard has
 -- no Print key to bind, so the entry is the only form that works on both hosts. The script
 -- and its desktop entry are lattice's, in modules/nixos/profiles/graphical.nix.
@@ -401,6 +442,23 @@ for i = 1, 10 do
     hl.bind(mainMod .. " + SHIFT + " .. key,     hl.dsp.window.move({ workspace = i }))
 end
 
+-- Jump straight to a window by name, wherever it is. The workspace pills in waybar now
+-- show a glyph per window, which says what is running where; this is the other half, for
+-- when the glyph is ambiguous (three Firefox windows look alike) or the window is on a
+-- workspace that isn't on screen.
+--
+-- Not `rofi -show window`: that mode reads the X11 client list over xcb, and rofi 2.0 ships
+-- no wlr-foreign-toplevel client (`strings` on the binary finds no zwlr_foreign_toplevel),
+-- so under the wayland backend it has nothing to list. hyprctl is the list instead, in the
+-- same shape as the cliphist bind above -- rofi -dmenu returns the whole selected line,
+-- so the address can ride along in a column that -display-columns 2 hides.
+--
+-- The pipeline used to sit inline here. It moved into lattice-window-switcher (defined in
+-- lattice's modules/nixos/profiles/graphical.nix) once the MX Master's gesture button
+-- needed the same switcher: Solaar runs commands, not keystrokes, so it cannot reach this
+-- bind, and a jq filter kept in both repos would drift. Both callers run the one script.
+hl.bind(mainMod .. " + TAB", hl.dsp.exec_cmd("lattice-window-switcher"))
+
 -- Example special workspace (scratchpad)
 hl.bind(mainMod .. " + S",         hl.dsp.workspace.toggle_special("magic"))
 hl.bind(mainMod .. " + SHIFT + S", hl.dsp.window.move({ workspace = "special:magic" }))
@@ -415,8 +473,9 @@ hl.bind(mainMod .. " + mouse:273", hl.dsp.window.resize(), { mouse = true })
 
 -- Swallow middle click (BTN_MIDDLE = 274) so it never reaches apps: no paste-on-middle-click,
 -- no middle-click-closes-tab. The clickpad has only a physical left button; libinput invents
--- middle clicks from the bottom-centre click zone and from three-finger taps, so they land by
--- accident (a three-finger workspace swipe that doesn't travel far enough is a paste).
+-- middle clicks from three-finger taps and three-finger presses, so they land by accident (a
+-- three-finger workspace swipe that doesn't travel far enough is a paste). Under the
+-- clickfinger_behavior above there is no longer a bottom-centre click zone to add a third way.
 -- Binds are global, so this covers the MX Master too - delete the line to get middle click back.
 -- No { mouse = true }: that flag is for press-and-hold drag dispatchers (drag/resize above).
 hl.bind("mouse:274", hl.dsp.no_op())
@@ -518,4 +577,22 @@ hl.window_rule({
 
     move  = "20 monitor_h-120",
     float = true,
+})
+
+-- Qalculate! opens floating. Its keypad is a fixed grid with a natural size (766x540
+-- here), and tiling stretches it: given half a workspace the buttons grow to fill the
+-- height and the result area above them becomes a 350px void. The app has no say in it --
+-- nothing in its layout sets a maximum -- so the window manager is the only place to fix
+-- it. Matched on class, which `hyprctl clients` reports as qalculate-gtk.
+--
+-- Deliberately no `size` rule: qalculate remembers its own width in
+-- ~/.config/qalculate/qalculate-gtk.cfg and rewrites that file every time it quits, so a
+-- size pinned here would quietly override whatever the window was last resized to. Float
+-- and centre only, and it opens at the size it remembers.
+hl.window_rule({
+    name  = "float-calculator",
+    match = { class = "qalculate-gtk" },
+
+    float  = true,
+    center = true,
 })

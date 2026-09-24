@@ -1,0 +1,26 @@
+[Desktop Entry]
+Type=Application
+Version=1.5
+# Shadows the entry vesktop ships (XDG_DATA_HOME wins over the system profile for the
+# same desktop-file ID), for the sake of two changed lines: Name and Icon. Vesktop is a
+# Discord client -- an Electron shell around the same web client the official build
+# wraps, picked in lattice's modules/nixos/profiles/graphical.nix because it is cross-arch
+# and the official one is x86-only. "Vesktop" is the packaging, not the thing you are
+# looking for in the launcher, so the launcher says Discord.
+# Same mechanism as qalculate-gtk.desktop and thunar.desktop here.
+# Keep the ID, Exec and StartupWMClass identical to upstream's -- StartupWMClass is what
+# ties the window to this entry.
+Name=Discord
+GenericName=Internet Messenger
+Comment=Alternative Discord client with Vencord built-in
+Exec=vesktop %U
+# Papirus ships both discord.svg and vesktop.svg. The Discord mark is what makes this
+# findable at a glance; vesktop.svg is the same wordless blob in grey.
+Icon=discord
+Terminal=false
+StartupWMClass=Vesktop
+Categories=Network;InstantMessaging;Chat
+MimeType=x-scheme-handler/discord
+# Upstream's list, plus "vesktop" kept so the packaging name still finds it now that the
+# name doesn't say so -- the same courtesy qalculate-gtk.desktop does for "qalc".
+Keywords=discord;vencord;electron;chat;vesktop;

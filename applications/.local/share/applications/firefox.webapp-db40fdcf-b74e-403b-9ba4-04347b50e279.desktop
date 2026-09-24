@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Version=1.5
+Name=YouTube
+Icon=/home/winston/.config/mozilla/firefox/uk8qrdih.default/taskbartabs/icons/db40fdcf-b74e-403b-9ba4-04347b50e279.png
+Exec="/run/current-system/sw/bin/firefox" "-taskbar-tab" "db40fdcf-b74e-403b-9ba4-04347b50e279" "-new-window" "https://www.youtube.com/?feature=ytca" "-profile" "/home/winston/.config/mozilla/firefox/uk8qrdih.default" "-container" "0"
+

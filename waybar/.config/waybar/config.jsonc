@@ -8,11 +8,50 @@
   "spacing": 5,
 
   "modules-left": ["hyprland/workspaces", "privacy", "hyprland/window"],
-  "modules-center": ["custom/sunset", "idle_inhibitor", "clock", "custom/spacer"],
+  "modules-center": ["custom/spacer", "custom/sunset", "idle_inhibitor", "clock", "custom/weather"],
   "modules-right": ["tray", "wireplumber", "backlight", "network", "custom/tailscale", "power-profiles-daemon", "battery", "custom/power"],
 
+  // The number alone says where a window is but not what it is, which stops being enough
+  // as soon as three or four workspaces are in use at once. {windows} appends one glyph
+  // per open window, so a pill reads "2 󰈹" -- number first, so the SUPER+[1-5] target
+  // is still the thing the eye lands on. Empty persistent pills render the id and nothing
+  // else, and keep their .empty styling.
+  //
+  // Rules are matched against the Wayland app_id, not the X11 WM_CLASS, and the two differ
+  // for some apps -- the classes below are the ones `hyprctl clients` reports. Anything
+  // unmatched draws window-rewrite-default rather than disappearing, which is the signal
+  // to come back here and add it. The patterns are ECMAScript regex wrapped in .* so they
+  // hold whether waybar searches or anchors them.
+  //
+  // A rule naming both class and title outranks a class-only rule whatever the order here,
+  // so the three Firefox web apps (modules/nixos/webapps.nix -- they are Taskbar Tabs and
+  // report app_id "firefox" like any other window) win over the plain Firefox rule. They
+  // match on title, so an ordinary tab titled "... Calendar ..." wears the calendar mark
+  // too; harmless, and the alternative is no mark for the web apps at all.
   "hyprland/workspaces": {
-    "format": "{id}"
+    "format": "{id} {windows}",
+    "format-window-separator": " ",
+    "window-rewrite-default": "",
+    "window-rewrite": {
+      "class<com.mitchellh.ghostty>": "",
+      "class<firefox> title<.*Gemini.*>": "󰚩",
+      "class<firefox> title<.*Reminders.*>": "󰄹",
+      "class<firefox> title<.*Calendar.*>": "󰸗",
+      "class<firefox>": "󰈹",
+      "class<thunderbird>": "󰇮",
+      "class<thunar>": "󰉋",
+      "class<.*zathura>": "󰈦",
+      "class<mpv>": "󰎁",
+      "class<imv>": "󰋩",
+      "class<libreoffice.*>": "󰈙",
+      "class<draw.io>": "",
+      "class<.*[Tt]elegram.*>": "",
+      "class<.*[Vv]esktop.*>": "󰙯",
+      "class<.*[Bb]itwarden.*>": "󰌾",
+      "class<qalculate-gtk>": "󰂽",
+      "class<xarchiver>": "󰗄",
+      "class<.*[Cc]ode.*>": "󰨞"
+    }
   },
 
   // Sits between the workspaces and the title rather than on the right, which is full.
@@ -31,16 +70,20 @@
 
   // The left side had ~486px of dead space between the workspaces pill and the centred
   // clock, which is the only reason there is room for this; the right side is full.
-  // 35 chars, sized for the worst case: 5 persistent workspace pills (162px) plus the
-  // privacy module showing both indicators (~85px) still leaves the title clear of the
-  // clock. Without privacy up it has ~115px to spare.
+  //
+  // 26 chars, down from 35: the workspace pills now carry a glyph per window, so they are
+  // no longer a fixed 162px. Four occupied workspaces holding two windows each come to
+  // ~260px, and with the privacy module up (~85px) that leaves ~140px here -- about 26
+  // chars of JetBrains Mono at 12px. The title is deliberately the module that gives: it
+  // ellipsises, and it is the one thing on the bar that is also visible in the window
+  // itself.
   //
   // Firefox separates the title from the app name with an em dash, not a hyphen -- the
   // rewrite below will silently not match if that is ever retyped as "-". Rules are
   // ECMAScript regex over the whole title, and a title that matches nothing is left alone.
   "hyprland/window": {
     "format": "{}",
-    "max-length": 35,
+    "max-length": 26,
     "separate-outputs": true,
     "rewrite": {
       "(.*) \u2014 Mozilla Firefox": "$1",
@@ -62,17 +105,45 @@
     }
   },
 
-  // Invisible counterweight to the right of the clock. The two bubbles to its left would
-  // otherwise pull the clock off the bar's centre line; this takes the width they add and
-  // draws nothing.
+  // Invisible counterweight, and the reason the clock lands on the bar's centre line.
+  // waybar centres modules-center as a group, not the clock inside it, so the clock is only
+  // centred when the content either side of it is the same width. custom/weather is wider
+  // than custom/sunset and idle_inhibitor together, so the shortfall is on the left and
+  // this makes it up; it drew the same job from the right before the weather pill existed.
   //
   // The exec has to emit a character -- waybar sizes a custom module to its output, and an
   // empty one collapses to zero whatever the format says. "x" is hidden by the transparent
-  // colour in style.css, where the padding is sized to match the two bubbles.
+  // colour in style.css, where the padding is sized to match.
   "custom/spacer": {
     "exec": "echo x",
     "format": "{}",
     "tooltip": false
+  },
+
+  // Weather, from Open-Meteo via lattice-weather -- see modules/nixos/profiles/graphical.nix
+  // for the script and modules/nixos/weather.nix for the coordinates. The exec emits the
+  // glyph, both temperatures and a class per temperature band; nothing here spells the
+  // conditions out, because the glyph and the colour in style.css already carry them.
+  //
+  // Paired with the clock rather than filed on the right: "what time is it" and "what is it
+  // doing outside" get read in the same glance, and the right group has no room. It takes
+  // the space custom/spacer used to occupy; that module is still here, moved to the head of
+  // the group to counterweight this one -- see its note above.
+  //
+  // lattice-weather right-aligns both temperatures in a three-character field, so this pill
+  // is a constant width whatever the reading is. That is load-bearing: the counterweight is
+  // a fixed padding, so a pill that grew by a character at -5° would walk the clock off
+  // centre. Do not "tidy up" the padding in the script's printf without re-measuring.
+  //
+  // interval 900 is the API's own cadence, not a guess: Open-Meteo stamps its `current`
+  // block "interval":900, so a faster poll returns the same numbers. A click doesn't have to
+  // wait it out -- lattice-weather refresh signals RTMIN+3 and waybar re-runs the exec.
+  "custom/weather": {
+    "exec": "lattice-weather status",
+    "return-type": "json",
+    "signal": 3,
+    "interval": 900,
+    "on-click": "lattice-weather refresh"
   },
 
   // 14px rather than the stock 16: at 16 the tray's icon rendered visibly larger than the
@@ -90,7 +161,8 @@
   //
   // Lives in modules-center just left of the clock: centring the group rather than the
   // clock alone is what tucks these two against the clock and gives the right side its
-  // room back. The cost is that the clock sits ~41px right of true centre.
+  // room back. This used to cost ~41px of clock centring; custom/spacer at the head of the
+  // group now makes that back, so the clock is on the centre line to within a pixel.
   "custom/sunset": {
     "exec": "lattice-sunset status",
     "return-type": "json",

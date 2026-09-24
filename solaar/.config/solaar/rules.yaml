@@ -1,0 +1,69 @@
+%YAML 1.3
+# MX Master 3 button mapping. Companion to config.yaml in this directory: that file holds
+# the device settings (DPI, smart shift, and the divert-keys values these rules depend on),
+# this one holds what the diverted buttons then do.
+#
+# A rule is one YAML document -- conditions first, then actions -- and the file is a stream
+# of them. Solaar stops at the first rule whose conditions match and whose action runs, so
+# the documents below are written to be mutually exclusive rather than ordered by priority.
+#
+# Solaar's user service has no /run/current-system/sw/bin on its PATH, and Execute is a
+# bare execve with no shell, so every command below is named absolutely.
+#
+# WARNING: Solaar's GUI rule editor rewrites this file wholesale when it saves. These
+# comments do not survive that. Edit the file, not the dialog.
+---
+# Back/forward: volume down/up rather than browser navigation, matching the XF86Audio*
+# binds in hyprland.lua. swayosd-client rather than wpctl directly, so a thumb click draws
+# the same on-screen indicator the keyboard keys do. One click is one step -- a diverted
+# HID++ key reports a single press, so holding does not repeat.
+- Key: [Back Button, pressed]
+- Execute: [/run/current-system/sw/bin/swayosd-client, --output-volume, lower]
+...
+---
+- Key: [Forward Button, pressed]
+- Execute: [/run/current-system/sw/bin/swayosd-client, --output-volume, raise, --max-volume, "100"]
+...
+---
+# Middle click: the window switcher, the same thing SUPER+TAB opens. Diverting it also
+# takes it out of the way of the `mouse:274 -> no_op` bind in hyprland.lua, which exists
+# to kill the touchpad's phantom three-finger middle clicks and caught this button as
+# collateral. Diverted, it stops emitting BTN_MIDDLE at all, so that bind never sees it.
+- Key: [Middle Button, pressed]
+- Execute: [/run/current-system/sw/bin/lattice-window-switcher]
+...
+---
+# The gesture button is a physical SUPER key: held down for exactly as long as the paddle
+# is, released when it is. Nothing below names a workspace -- the paddle just supplies the
+# modifier, and the SUPER+... binds already in hyprland.lua do the rest:
+#
+#   paddle + wheel        cycle workspaces (SUPER + mouse_down/mouse_up)
+#   paddle + left drag    move the window  (SUPER + mouse:272)
+#   paddle + right drag   resize it        (SUPER + mouse:273)
+#   paddle + 1..5         jump to a workspace, without reaching for the keyboard modifier
+#
+# This is deliberately not Solaar's mouse-gesture mode. That mode reports the direction of
+# a gesture only once the button comes back up -- MouseGesturesXY pushes its notification
+# from release_action and offers no mid-gesture hook -- so a gesture can move one workspace
+# per press and no more, however far it is pushed. Segments are split on a 200ms pause
+# rather than on distance, so even a long sweep stays a single event. Holding a modifier
+# instead hands the repeat rate back to the scroll wheel, where it is continuous.
+#
+# KeyPress rather than Execute because a modifier has to stay down between two events;
+# it writes to /dev/uinput, which hardware.uinput in lattice's graphical.nix opens up.
+# If Solaar dies or the Bluetooth link drops mid-hold the release never arrives and SUPER
+# latches -- tap the real SUPER key to clear it.
+- Key: [Mouse Gesture Button, pressed]
+- KeyPress: [Super_L, depress]
+...
+---
+- Key: [Mouse Gesture Button, released]
+- KeyPress: [Super_L, release]
+...
+---
+# The launcher, the same thing ALT+SPACE opens, on the button behind the wheel -- the one
+# that shipped as the ratchet/freewheel toggle, given up to make room. It sits under the
+# same finger as middle click, so the two rofi surfaces are a fingertip apart.
+- Key: [Smart Shift, pressed]
+- Execute: [/run/current-system/sw/bin/rofi, -show, drun]
+...
