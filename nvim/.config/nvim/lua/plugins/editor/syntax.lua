@@ -29,6 +29,7 @@ return {
 			"yaml",
 			"toml",
 			"nix",
+			"cmake",
 			"gitcommit",
 			"markdown",
 		}

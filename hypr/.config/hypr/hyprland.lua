@@ -414,9 +414,16 @@ hl.bind(mainMod .. " + SHIFT + V", hl.dsp.exec_cmd("cliphist list | rofi -dmenu 
 -- refuses to -show a mode that isn't enabled. Enter copies the result to the clipboard.
 hl.bind("ALT + SHIFT + SPACE", hl.dsp.exec_cmd([[rofi -show calc -modes calc -calc-command "echo -n '{result}' | wl-copy"]]))
 
--- No screenshot bind. It is "Screenshot" in the launcher instead -- the Mac's keyboard has
--- no Print key to bind, so the entry is the only form that works on both hosts. The script
--- and its desktop entry are lattice's, in modules/nixos/profiles/graphical.nix.
+-- Screenshot: HyprQuickFrame's selection overlay, then satty. The script and its desktop
+-- entry are lattice's, in modules/nixos/profiles/graphical.nix.
+--
+-- Print is the external keyboard's key (NuPhy Halo65 V2, remapped in its own firmware, so
+-- it emits a real KEY_SYSRQ on both hosts). The Mac's internal keyboard has no Print at
+-- all -- hid-apple puts it on the magic_keyboard_2021_and_2024 fn table, which carries no
+-- KEY_SYSRQ on either layer -- so the bind is simply unreachable there, which is why the
+-- launcher entry stays: "Screenshot" in rofi is the form that works with no keyboard
+-- plugged in.
+hl.bind("Print", hl.dsp.exec_cmd("lattice-screenshot"))
 
 -- Move focus with mainMod + arrow keys
 hl.bind(mainMod .. " + left",  hl.dsp.focus({ direction = "left" }))

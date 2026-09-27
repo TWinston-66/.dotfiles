@@ -66,6 +66,12 @@ if [[ "$OSTYPE" == linux* ]] && command -v xdg-open >/dev/null 2>&1; then
   alias open='xdg-open'
 fi
 
+# Zed's CLI is `zed` on macOS (the cask installs it) but `zeditor` on NixOS, which is the
+# name nixpkgs gives the binary; alias it back so the same word opens the editor on both
+if [[ "$OSTYPE" == linux* ]] && command -v zeditor >/dev/null 2>&1; then
+  alias zed='zeditor'
+fi
+
 export EDITOR="nvim"
 
 export PATH="$HOME/.local/bin:$PATH"

@@ -9,7 +9,6 @@ return {
 		opts = {
 			ensure_installed = {
 				"gopls",
-				"clangd",
 				"rust_analyzer",
 				"ts_ls",
 				"bashls",
@@ -84,6 +83,36 @@ return {
 			})
 			if vim.fn.executable("nixd") == 1 then
 				vim.lsp.enable("nixd")
+			end
+
+			-- also not in mason: upstream publishes no aarch64 Linux clangd, so
+			-- `ensure_installed` only ever logged "The current platform is unsupported".
+			-- clang-tools comes from systemPackages instead. gcc stays the compiler --
+			-- clangd is only the index here, and the nixpkgs clangd is wrapped with the
+			-- same glibc and gcc 15 header paths gcc compiles against, so the two agree
+			-- even on a bare .c file with no compile_commands.json.
+			vim.lsp.config("clangd", {
+				cmd = {
+					"clangd",
+					"--background-index",
+					-- clang-tidy in-process, so C needs no nvim-lint entry. Inert until a
+					-- project drops in a .clang-tidy (or ~/.config/clangd/config.yaml sets
+					-- Diagnostics.ClangTidy.Add) -- clangd enables no checks on its own.
+					"--clang-tidy",
+					"--header-insertion=iwyu",
+					"--completion-style=detailed",
+				},
+			})
+			if vim.fn.executable("clangd") == 1 then
+				vim.lsp.enable("clangd")
+			end
+
+			-- neocmakelsp, also from systemPackages. Upstream notes it only returns
+			-- completions when the client advertises snippetSupport; blink already sets
+			-- that in get_lsp_capabilities, which the "*" config above applies, so no
+			-- per-server capabilities override is needed here.
+			if vim.fn.executable("neocmakelsp") == 1 then
+				vim.lsp.enable("neocmake")
 			end
 
 			require("mason-lspconfig").setup(opts)

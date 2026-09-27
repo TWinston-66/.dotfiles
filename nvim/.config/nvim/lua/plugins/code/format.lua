@@ -17,6 +17,8 @@ return {
                 sh = { "shfmt" },
                 bash = { "shfmt" },
                 nix = { "nixfmt" },
+                c = { "clang_format" },
+                cpp = { "clang_format" },
                 javascript = { "prettierd" },
                 javascriptreact = { "prettierd" },
                 typescript = { "prettierd" },
