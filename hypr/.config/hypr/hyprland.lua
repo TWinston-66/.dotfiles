@@ -240,15 +240,65 @@ hl.layer_rule({
 hl.workspace_rule({ workspace = "w[tv1]", gaps_out = 0, gaps_in = 0 })
 hl.workspace_rule({ workspace = "f[1]",   gaps_out = 0, gaps_in = 0 })
 
--- Keep 1-5 on the bar even when empty, so the workspace pills stop reflowing as windows
--- come and go and the SUPER+[1-5] binds always have a visible target. Persistence belongs
+-- Keep the workspaces on the bar even when empty, so the pills stop reflowing as windows
+-- come and go and the SUPER+[1-9,0] binds always have a visible target. Persistence belongs
 -- to Hyprland, not waybar -- waybar 0.15's hyprland/workspaces has no
 -- persistent-workspaces option, it just reflects these rules and tags the empty ones with
 -- a .empty class (styled muted in ~/.dotfiles/waybar/.config/waybar/style.css).
--- 5 and not 10: each pill is ~32px and the bar only has room before the centred clock.
+--
+-- Five per screen and not ten: each pill is ~32px and the bar only has room before the
+-- centred clock. That still holds with both blocks defined, because waybar leaves
+-- all-outputs at its default false -- each bar renders only the workspaces of the output it
+-- is on, so it is five pills on the laptop and five on the Samsung, never ten on either.
+--
+-- Pinning the two blocks with `monitor` is what makes SUPER+[1-9,0] mean a place rather
+-- than just a number. Unpinned, workspace ids are a single global pool owned by whichever
+-- monitor happened to create them: 1-5 were instantiated on whichever output came up first
+-- at login, the dock's Samsung took 6 as the lowest free id, and SUPER+1 from the external
+-- warped focus back to the laptop instead of switching screen-locally.
+--
+-- The internal panel is eDP-1 on both laptops and wants the same 1-5 on both, so this rule
+-- is generic enough to live here; it is only the scales that differ per host and therefore
+-- have to be generated into /etc/xdg/hypr/lattice.lua by lattice's modules/nixos/display.nix.
+local internal = "eDP-1"
+local external = "desc:Samsung Electric Company U32R59x"
+
 for i = 1, 5 do
-    hl.workspace_rule({ workspace = tostring(i), persistent = true })
+    hl.workspace_rule({
+        workspace  = tostring(i),
+        monitor    = internal,
+        persistent = true,
+        default    = i == 1, -- what the laptop opens on, rather than the lowest id it owns
+    })
 end
+
+-- 6-10 on the dock's Samsung. Booting undocked needs nothing extra: Hyprland skips a
+-- persistent workspace whose pinned monitor is absent -- a rule naming an output that does
+-- not exist creates no workspace at all -- so starting up with the dock unplugged leaves
+-- only 1-5, and the laptop bar looks exactly as it did before this block. A workspace still holding
+-- windows when the monitor goes away is moved to the laptop rather than destroyed, and the
+-- id returns to the Samsung on the next reconnect once it is empty again.
+for i = 6, 10 do
+    hl.workspace_rule({
+        workspace  = tostring(i),
+        monitor    = external,
+        persistent = true,
+        default    = i == 6,
+    })
+end
+
+-- Booting undocked already gives exactly 1-5: at config load Hyprland creates no persistent
+-- workspace for a monitor that isn't there. A monitor that goes away *while running* is the
+-- one case it doesn't settle on its own -- by then 6-10 are live workspace objects, so they
+-- are rehomed to the laptop and then kept alive by their own `persistent`, leaving ten pills
+-- on a bar with room for five. Reloading re-runs the load-time pass, which drops the empty
+-- orphans, so undocking is just a reload. There is no reload dispatcher to hl.dispatch, hence
+-- hyprctl; spawning it is what makes this land after the rehoming rather than in the middle of
+-- it, so no hl.timer is needed to defer it.
+hl.on("monitor.removed", function()
+    hl.exec_cmd("hyprctl reload")
+end)
+
 hl.window_rule({
     name  = "no-gaps-wtv1",
     match = { float = false, workspace = "w[tv1]" },
@@ -406,6 +456,27 @@ hl.bind(mainMod .. " + J", hl.dsp.layout("togglesplit"))    -- dwindle only
 hl.bind(mainMod .. " + B", hl.dsp.exec_cmd("firefox"))
 hl.bind(mainMod .. " + SHIFT + V", hl.dsp.exec_cmd("cliphist list | rofi -dmenu -p clipboard -display-columns 2 | cliphist decode | wl-copy"))
 
+-- Notifications, all four through makoctl, mako's CLI. Hyprland execs these with the
+-- session PATH rather than any wrapper's, which is why lattice puts mako itself in
+-- systemPackages (modules/nixos/profiles/graphical.nix) -- the systemd unit alone installs
+-- the daemon and not the tool that drives it.
+--
+-- N takes down the banner in front of you and SHIFT the whole stack. CTRL brings the last
+-- one back, which is mostly for having cleared a critical banner before reading it: mako's
+-- `restore` pops the newest off the history ring, so it is the undo for the two above.
+-- ALT opens the browser over everything that has already expired -- lattice's
+-- lattice-notifications, shaped like the clipboard bind above, Enter copying the body.
+hl.bind(mainMod .. " + N",         hl.dsp.exec_cmd("makoctl dismiss"))
+hl.bind(mainMod .. " + SHIFT + N", hl.dsp.exec_cmd("makoctl dismiss --all"))
+hl.bind(mainMod .. " + CTRL + N",  hl.dsp.exec_cmd("makoctl restore"))
+hl.bind(mainMod .. " + ALT + N",   hl.dsp.exec_cmd("lattice-notifications"))
+
+-- Do not disturb, the same toggle the bar pill runs -- lattice-dnd flips mako's `dnd` mode
+-- and signals waybar, so the pill follows a keypress and the keypress follows a click. D
+-- rather than a fourth modifier on N: this one is a state you leave on for a while, not a
+-- one-shot action on what is currently on screen.
+hl.bind(mainMod .. " + SHIFT + D", hl.dsp.exec_cmd("lattice-dnd toggle"))
+
 -- Calculator, as a launcher mode rather than an app: rofi's calc plugin, whose engine is
 -- qalculate -- so units and bases convert in place (`0xff to bin`, `1 GiB to MB`) and
 -- solve/diff/matrices work. The plugin is built into the rofi wrapper by lattice, in
@@ -448,23 +519,6 @@ for i = 1, 10 do
     hl.bind(mainMod .. " + " .. key,             hl.dsp.focus({ workspace = i}))
     hl.bind(mainMod .. " + SHIFT + " .. key,     hl.dsp.window.move({ workspace = i }))
 end
-
--- Jump straight to a window by name, wherever it is. The workspace pills in waybar now
--- show a glyph per window, which says what is running where; this is the other half, for
--- when the glyph is ambiguous (three Firefox windows look alike) or the window is on a
--- workspace that isn't on screen.
---
--- Not `rofi -show window`: that mode reads the X11 client list over xcb, and rofi 2.0 ships
--- no wlr-foreign-toplevel client (`strings` on the binary finds no zwlr_foreign_toplevel),
--- so under the wayland backend it has nothing to list. hyprctl is the list instead, in the
--- same shape as the cliphist bind above -- rofi -dmenu returns the whole selected line,
--- so the address can ride along in a column that -display-columns 2 hides.
---
--- The pipeline used to sit inline here. It moved into lattice-window-switcher (defined in
--- lattice's modules/nixos/profiles/graphical.nix) once the MX Master's gesture button
--- needed the same switcher: Solaar runs commands, not keystrokes, so it cannot reach this
--- bind, and a jq filter kept in both repos would drift. Both callers run the one script.
-hl.bind(mainMod .. " + TAB", hl.dsp.exec_cmd("lattice-window-switcher"))
 
 -- Example special workspace (scratchpad)
 hl.bind(mainMod .. " + S",         hl.dsp.workspace.toggle_special("magic"))
@@ -510,10 +564,17 @@ hl.bind(mainMod .. " + R", hl.dsp.exec_cmd(resizeModeNotify))
 hl.bind(mainMod .. " + R", hl.dsp.submap("resize"))
 
 -- Laptop multimedia keys for volume and LCD brightness, shown with swayosd
+--
+-- The two mute keys go through lattice-deck rather than straight at swayosd-client, which
+-- runs the same swayosd call and then repaints the Stream Deck's key for it. Nothing else
+-- tells the deck: waybar watches PipeWire for itself, but streamdeck-ui only knows what it
+-- is told, so a mute from here would otherwise leave the deck showing sound until its
+-- five-minute sync came round. Volume up and down stay direct -- they do not change the
+-- state the key draws, and a press that repeats on hold should not spawn a script each tick.
 hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("swayosd-client --output-volume raise --max-volume 100"), { locked = true, repeating = true })
 hl.bind("XF86AudioLowerVolume", hl.dsp.exec_cmd("swayosd-client --output-volume lower"),                  { locked = true, repeating = true })
-hl.bind("XF86AudioMute",        hl.dsp.exec_cmd("swayosd-client --output-volume mute-toggle"),            { locked = true, repeating = true })
-hl.bind("XF86AudioMicMute",     hl.dsp.exec_cmd("swayosd-client --input-volume mute-toggle"),             { locked = true, repeating = true })
+hl.bind("XF86AudioMute",        hl.dsp.exec_cmd("lattice-deck mute"),                                     { locked = true })
+hl.bind("XF86AudioMicMute",     hl.dsp.exec_cmd("lattice-deck mic"),                                      { locked = true })
 hl.bind("XF86MonBrightnessUp",  hl.dsp.exec_cmd("swayosd-client --brightness raise"),                     { locked = true, repeating = true })
 hl.bind("XF86MonBrightnessDown",hl.dsp.exec_cmd("swayosd-client --brightness lower"),                     { locked = true, repeating = true })
 
@@ -529,10 +590,11 @@ hl.bind("XF86MonBrightnessDown",hl.dsp.exec_cmd("swayosd-client --brightness low
 hl.bind(mainMod .. " + XF86MonBrightnessUp",  hl.dsp.exec_cmd("lattice-kbd-backlight raise"),            { locked = true, repeating = true })
 hl.bind(mainMod .. " + XF86MonBrightnessDown",hl.dsp.exec_cmd("lattice-kbd-backlight lower"),            { locked = true, repeating = true })
 
--- Requires playerctl
+-- Requires playerctl. Play/pause goes through lattice-deck for the same reason the mute
+-- keys above do: it is the one of the four that changes what the deck's key draws.
 hl.bind("XF86AudioNext",  hl.dsp.exec_cmd("playerctl next"),       { locked = true })
-hl.bind("XF86AudioPause", hl.dsp.exec_cmd("playerctl play-pause"), { locked = true })
-hl.bind("XF86AudioPlay",  hl.dsp.exec_cmd("playerctl play-pause"), { locked = true })
+hl.bind("XF86AudioPause", hl.dsp.exec_cmd("lattice-deck play"),    { locked = true })
+hl.bind("XF86AudioPlay",  hl.dsp.exec_cmd("lattice-deck play"),    { locked = true })
 hl.bind("XF86AudioPrev",  hl.dsp.exec_cmd("playerctl previous"),   { locked = true })
 
 

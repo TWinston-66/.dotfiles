@@ -7,6 +7,11 @@ border-radius=10
 max-icon-size=48
 default-timeout=10000
 
+# Default is 5, which is not a history so much as an undo. 50 is what makes the browser on
+# SUPER+ALT+N (lattice-notifications) worth opening -- and it is a ring buffer of the
+# already-expired, so the cost of a larger one is nothing but memory.
+max-history=50
+
 # The default height cap is 100px, which truncated the body to a couple of lines no
 # matter how small the font was. 140 lets the smaller font actually buy more preview.
 height=140
@@ -14,5 +19,24 @@ height=140
 # Colours, including the per-urgency borders, come from lattice (lattice.theme).
 include=/etc/xdg/mako/lattice
 
+# Which screen the banners land on, from lattice (lattice.display.notificationOutput): the
+# external monitor where a host names one, the focused output otherwise. It is a connector
+# name, which differs per laptop, so it cannot be an `output=` line here the way the rest of
+# this file is shared. Included rather than left to mako's default because an `output=` in
+# an included file is still a global setting -- the section context of the including file
+# resumes after it.
+include=/etc/xdg/mako/lattice-output
+
 [urgency=critical]
 default-timeout=0
+
+# Do not disturb, toggled by the bar pill and SUPER+SHIFT+D (lattice-dnd). Deliberately not
+# qualified by urgency: the reason for wanting this is a screen share, and the banners that
+# must not land on camera are precisely the critical ones -- a battery warning is critical,
+# so exempting that urgency would leave the feature doing nothing it was asked for.
+#
+# Nothing is lost, only deferred. An invisible notification is still live, so leaving the
+# mode shows whatever arrived during it, and anything that timed out meanwhile is in the
+# history on SUPER+ALT+N.
+[mode=dnd]
+invisible=1

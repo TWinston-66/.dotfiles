@@ -8,7 +8,7 @@
   "spacing": 5,
 
   "modules-left": ["hyprland/workspaces", "privacy", "hyprland/window"],
-  "modules-center": ["custom/spacer", "custom/sunset", "idle_inhibitor", "clock", "custom/weather"],
+  "modules-center": ["custom/sunset", "custom/dnd", "custom/idle", "clock", "custom/weather", "custom/spacer"],
   "modules-right": ["tray", "wireplumber", "backlight", "network", "custom/tailscale", "power-profiles-daemon", "battery", "custom/power"],
 
   // The number alone says where a window is but not what it is, which stops being enough
@@ -107,9 +107,12 @@
 
   // Invisible counterweight, and the reason the clock lands on the bar's centre line.
   // waybar centres modules-center as a group, not the clock inside it, so the clock is only
-  // centred when the content either side of it is the same width. custom/weather is wider
-  // than custom/sunset and idle_inhibitor together, so the shortfall is on the left and
-  // this makes it up; it drew the same job from the right before the weather pill existed.
+  // centred when the content either side of it is the same width.
+  //
+  // It has now worked from both sides. It sat at the head of the group while custom/weather
+  // was wider than the toggles it faced; adding custom/dnd turned that around -- three
+  // toggles outweigh the weather pill -- so it is back at the tail, making the shortfall up
+  // on the right. The padding in style.css is measured, and the measurement is what moved.
   //
   // The exec has to emit a character -- waybar sizes a custom module to its output, and an
   // empty one collapses to zero whatever the format says. "x" is hidden by the transparent
@@ -171,19 +174,43 @@
     "on-click": "lattice-sunset toggle"
   },
 
-  // Sits next to custom/sunset because both are click-toggles rather than readouts.
-  // Holds a zwp_idle_inhibit_manager_v1 lock on waybar's own surface, which suppresses
-  // ext_idle_notifier_v1 -- so this stops hypridle's 300s lock and 900s
-  // suspend-then-hibernate, not just the screen blank. Icon-only to save bar width; the
-  // colour carries the state.
-  "idle_inhibitor": {
-    "format": "{icon}",
-    "tooltip-format-activated": "Staying awake",
-    "tooltip-format-deactivated": "Idle timers active",
-    "format-icons": {
-      "activated": "󰅶",
-      "deactivated": "󰾪"
-    }
+  // Do not disturb. The whole of the mechanism is `[mode=dnd] invisible=1` in
+  // ~/.dotfiles/mako -- lattice-dnd only flips mako's mode and signals here, so mako owns
+  // the state and this pill reads it back rather than tracking it. Same contract as
+  // custom/sunset above, and the same reason: a pill that keeps its own copy can disagree
+  // with the thing it claims to describe.
+  //
+  // The tooltip counts what is waiting, which is not the same as what was missed. A hidden
+  // notification is still live, so the count is what will appear the moment the mode goes
+  // off; a normal notification that timed out while it was on is already in the history,
+  // and SUPER+ALT+N is where that lives.
+  "custom/dnd": {
+    "exec": "lattice-dnd status",
+    "return-type": "json",
+    "signal": 4,
+    "interval": 30,
+    "on-click": "lattice-dnd toggle"
+  },
+
+  // Sits next to custom/sunset and custom/dnd because all three are click-toggles rather
+  // than readouts, and like those two it is a lattice-* script rather than a built-in.
+  //
+  // The built-in idle_inhibitor was here until the Stream Deck grew a key for the same
+  // thing and the two could not be made to agree: waybar's inhibitor is a
+  // zwp_idle_inhibit_manager_v1 lock held on waybar's own surface, and nothing outside
+  // waybar can read it or let it go. lattice-idle stops hypridle instead -- the thing that
+  // actually locks, blanks and dims -- which is a state both surfaces can read. Same two
+  // glyphs, same colours, and now the pill follows a press on the deck.
+  //
+  // Icon-only to save bar width; the colour carries the state. The interval is a backstop
+  // for a hypridle stopped from somewhere else entirely; the signal is what makes a click
+  // land immediately.
+  "custom/idle": {
+    "exec": "lattice-idle status",
+    "return-type": "json",
+    "signal": 5,
+    "interval": 30,
+    "on-click": "lattice-idle toggle"
   },
 
   // Muted keeps only the glyph: the word made this the widest state the pill can be in,
@@ -215,7 +242,7 @@
     "format-icons": ["󰃞", "󰃟", "󰃠"]
   },
 
-  // custom/tailscale sits to its right, and with custom/sunset and idle_inhibitor moved
+  // custom/tailscale sits to its right, and with custom/sunset and custom/idle moved
   // to the centre the pair clears the clock by ~43px in a typical state on this
   // 1280px-logical screen -- measured off a screenshot, not guessed. Still ~36px with
   // volume and battery both at 100%, and the SSID label ellipsizes rather than let the
@@ -251,7 +278,7 @@
 
   // Icon-only: the three glyphs are distinct enough to read at a glance, and dropping the
   // labels frees ~42px on a 1280px-wide bar -- which is what makes room for
-  // idle_inhibitor without the right side colliding with the centred clock. The profile
+  // custom/idle without the right side colliding with the centred clock. The profile
   // name is still one hover away.
   "power-profiles-daemon": {
     "format": "{icon}",

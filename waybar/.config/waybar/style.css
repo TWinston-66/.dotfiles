@@ -30,10 +30,11 @@ tooltip label {
 #network,
 #power-profiles-daemon,
 #custom-sunset,
+#custom-dnd,
 #custom-weather,
 #custom-power,
 #custom-tailscale,
-#idle_inhibitor,
+#custom-idle,
 #battery {
   /* alpha() keeps @base as the single source of truth, so a re-accent still lands;
      the Hyprland layer rule on the "waybar" namespace blurs whatever shows through. */
@@ -182,7 +183,7 @@ window#waybar.empty #window {
 /* Invisible counterweight, and the only reason the clock lands on the bar's centre line.
    waybar centres modules-center as a group, not the clock within it, so the clock is only
    centred when the content on each side of it is the same width. #custom-weather (97px) is
-   wider than #custom-sunset and #idle_inhibitor together, so the shortfall is on the left
+   wider than #custom-sunset and #custom-idle together, so the shortfall is on the left
    and this module sits at the head of the group to make it up.
 
    8px a side, measured rather than derived: at 5px the clock sat 3.33px left of centre, and
@@ -240,17 +241,18 @@ window#waybar.empty #window {
   padding: 0 11px;
 }
 
-/* Keep-awake: teal while it holds the inhibit lock, muted when idle timers are live --
-   same on/off convention as #custom-sunset above. */
-#idle_inhibitor {
+/* Keep-awake: teal while hypridle is stopped, muted when the idle timers are live -- same
+   on/off convention as #custom-sunset above. The classes come from lattice-idle rather
+   than from waybar's own inhibitor, which this replaced; see the note in config.jsonc. */
+#custom-idle {
   padding: 0 11px;
 }
 
-#idle_inhibitor.activated {
+#custom-idle.awake {
   color: @teal;
 }
 
-#idle_inhibitor.deactivated {
+#custom-idle.idle {
   color: @overlay1;
 }
 
@@ -268,7 +270,8 @@ window#waybar.empty #window {
 
 /* Night light: accent when the filter is on, muted when it's off, so the bar reads
    at a glance. Classes come from lattice-sunset's JSON. */
-#custom-sunset {
+#custom-sunset,
+#custom-dnd {
   padding: 0 11px;
 }
 
@@ -277,6 +280,19 @@ window#waybar.empty #window {
 }
 
 #custom-sunset.cool {
+  color: @overlay1;
+}
+
+/* Do not disturb. Coloured while the mode is on and muted while it is off, which is the
+   convention the other two toggles follow -- the state worth noticing is the one that gets
+   a colour. Yellow rather than peach or teal because those two are already on this bar and
+   both are a click away from it: sunset's warm state is peach and custom-idle's is teal,
+   and three toggles in a row want three answers. */
+#custom-dnd.on {
+  color: @yellow;
+}
+
+#custom-dnd.off {
   color: @overlay1;
 }
 

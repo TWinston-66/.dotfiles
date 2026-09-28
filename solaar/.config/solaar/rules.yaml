@@ -25,14 +25,6 @@
 - Execute: [/run/current-system/sw/bin/swayosd-client, --output-volume, raise, --max-volume, "100"]
 ...
 ---
-# Middle click: the window switcher, the same thing SUPER+TAB opens. Diverting it also
-# takes it out of the way of the `mouse:274 -> no_op` bind in hyprland.lua, which exists
-# to kill the touchpad's phantom three-finger middle clicks and caught this button as
-# collateral. Diverted, it stops emitting BTN_MIDDLE at all, so that bind never sees it.
-- Key: [Middle Button, pressed]
-- Execute: [/run/current-system/sw/bin/lattice-window-switcher]
-...
----
 # The gesture button is a physical SUPER key: held down for exactly as long as the paddle
 # is, released when it is. Nothing below names a workspace -- the paddle just supplies the
 # modifier, and the SUPER+... binds already in hyprland.lua do the rest:
