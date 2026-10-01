@@ -7,10 +7,10 @@
     headset-mic-mute, headset-mic-snr, headset-ai-nr, headset-ai-nr-level, headset-sidetone, headset-mic-gain, headset-mix-balance, headset-auto-sleep,
     headset-onboard-eq, headset-eq-active-preset, headset-advanced-eq, headset_led_control, headset-onboard-effect, headset_per_zone_lighting, headset-signature-startup,
     headset-signature-shutdown, headset-signature-passive, logivoice-nr-state, logivoice-ng-state, logivoice-comp-state, logivoice-deesser-state, logivoice-depopper-state,
-    logivoice-limiter-state, logivoice-hpf-state, gesture2-gestures, gesture2-divert, gesture2-params, onboard_profiles, scroll-ratchet-torque, speed-change,
-    pointer_speed, dpi_extended, report_rate_extended]
+    logivoice-limiter-state, logivoice-hpf-state, gesture2-gestures, gesture2-divert, gesture2-params, onboard_profiles, scroll-ratchet-torque, report_rate_extended,
+    speed-change]
   _battery: 4096
-  _config_cookie: [220, 209]
+  _config_cookie: [3, 239]
   _modelId: B02340820000
   _sensitive: {smart-shift: false}
   _unitId: 7C0BBB5F

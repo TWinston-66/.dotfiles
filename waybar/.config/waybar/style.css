@@ -22,19 +22,19 @@ tooltip label {
 }
 
 #workspaces,
-#window,
 #clock,
 #tray,
 #wireplumber,
 #backlight,
 #network,
-#power-profiles-daemon,
+#custom-power-profile,
 #custom-sunset,
 #custom-dnd,
 #custom-weather,
 #custom-power,
 #custom-tailscale,
 #custom-idle,
+#custom-wallpaper,
 #battery {
   /* alpha() keeps @base as the single source of truth, so a re-accent still lands;
      the Hyprland layer rule on the "waybar" namespace blurs whatever shows through. */
@@ -54,26 +54,14 @@ tooltip label {
   padding: 0;
 }
 
-/* Quieter than the clock so the two don't compete for the eye. The empty class lands on
-   the whole bar rather than on #window, per waybar-hyprland-window(5) -- an empty pill
-   would otherwise sit there on a bare workspace. */
-#window {
-  color: @subtext1;
-}
-
-window#waybar.empty #window {
-  background: transparent;
-  border: none;
-  padding: 0;
-}
-
 /* Three states, deliberately far apart: an occupied workspace is bright text on a raised
    chip, an empty one is recessed grey on nothing, and the active one is a solid accent
    block. .empty must come BEFORE .active -- they have equal specificity, so source order
    decides, and an active-but-empty workspace has both classes. */
 /* 6px rather than 7: the pills carry a glyph per open window now, so their width varies
    with what is running, and the horizontal padding is the only part of that this end
-   controls. Taking a pixel off each side keeps a busy workspace from crowding the title. */
+   controls. Taking a pixel off each side keeps a busy workspace from shoving the toggles
+   that follow it along the left group. */
 #workspaces button {
   color: @text;
   background: @surface0;
@@ -133,6 +121,16 @@ window#waybar.empty #window {
   color: @lavender;
 }
 
+/* The microphone instance, wireplumber#mic. waybar names both widgets #wireplumber and
+   hangs the config id on as a class, so the .muted rule below dresses whichever of the two
+   is muted and only this rule tells them apart. Pink because nothing else on the bar wears
+   it: two audio pills side by side want two answers, and #privacy-item.audio-in already
+   owns red for "something is listening right now". */
+#wireplumber.mic {
+  color: @pink;
+  padding: 0 11px;
+}
+
 #wireplumber.muted {
   color: @overlay0;
 }
@@ -180,26 +178,6 @@ window#waybar.empty #window {
   color: @peach;
 }
 
-/* Invisible counterweight, and the only reason the clock lands on the bar's centre line.
-   waybar centres modules-center as a group, not the clock within it, so the clock is only
-   centred when the content on each side of it is the same width. #custom-weather (97px) is
-   wider than #custom-sunset and #custom-idle together, so the shortfall is on the left
-   and this module sits at the head of the group to make it up.
-
-   8px a side, measured rather than derived: at 5px the clock sat 3.33px left of centre, and
-   a pixel added here moves it a pixel right -- the padding lands on one side of the clock,
-   so a 2px width change shifts the centred group by 1px. 8px leaves it 0.22px off, which is
-   a fifth of a logical pixel and well under a physical one at this 2.25 scale.
-
-   Re-measure this if the weather pill's padding, the two toggles' padding, the bar font or
-   its size ever change. Undrawn: the width is the whole point. */
-#custom-spacer {
-  background: transparent;
-  border: none;
-  color: transparent;
-  padding: 0 8px;
-}
-
 /* Weather. The glyph carries the conditions and the colour carries the temperature, so
    the pill reads "cold, and raining" without spending bar width on either word. Bands are
    Fahrenheit and are set by lattice-weather; the cutoffs are there, not here.
@@ -235,10 +213,26 @@ window#waybar.empty #window {
   color: @overlay0;
 }
 
-/* Icon-only, so it matches the other toggles' wider padding. */
-#power-profiles-daemon {
+/* Icon-only, so it matches the other toggles' wider padding. The colour is the profile's
+   own, and the one lattice-power-profile heads its tooltip with -- balanced keeps the mauve
+   this pill has always been, so the bar looks unchanged until a profile is actually set. */
+#custom-power-profile {
   color: @mauve;
   padding: 0 11px;
+}
+
+#custom-power-profile.power-saver {
+  color: @green;
+}
+
+#custom-power-profile.performance {
+  color: @peach;
+}
+
+/* Nothing serving net.hadess.PowerProfiles. The graphs come from sysfs and still draw, so
+   the pill greys out rather than emptying; the tooltip says what is missing. */
+#custom-power-profile.unknown {
+  color: @overlay0;
 }
 
 /* Keep-awake: teal while hypridle is stopped, muted when the idle timers are live -- same
@@ -294,6 +288,16 @@ window#waybar.empty #window {
 
 #custom-dnd.off {
   color: @overlay1;
+}
+
+/* Wallpaper. The only pill in the left group that is an action rather than a state, so
+   it takes one flat colour and no second class -- there is no "off" for it to be in.
+   Lavender because the three toggles beside it have peach, yellow and teal, and because
+   it is the theme's accentAlt, which is the other colour every wallpaper in the pool is
+   drawn with. Icon-only, so it matches the toggles' wider padding. */
+#custom-wallpaper {
+  color: @lavender;
+  padding: 0 11px;
 }
 
 /* Session menu: the one pill that can end the session, so it sits at the far end in

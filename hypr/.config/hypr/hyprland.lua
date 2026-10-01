@@ -212,12 +212,26 @@ end
 -- shell surface xray gets visibly wrong: sampling the wallpaper erases the window that
 -- is actually underneath, and the menu reads as a hole punched through to the desktop.
 -- It is one small, short-lived surface, so blurring the real window stack costs little.
+-- xray has to be written out: an omitted key is not "off", it falls through to
+-- decoration:blur:xray, which is true above -- so leaving it unset was the one thing
+-- that could not turn it off.
+--
+-- no_anim because the "Screenshot" entry below launches HyprQuickFrame from this very
+-- menu, and HQF freezes the screen the instant it maps -- it screencopies the output,
+-- shows that still while you drag the selection, and grim then photographs the still,
+-- not the live screen (the freeze layer is only ever hidden in Edit mode, and even
+-- there 200ms after grim has already run). The layersOut fade is ~150ms, so rofi was
+-- still on screen, half faded, when the freeze was taken, and that ghost -- wallpaper
+-- showing through it, per the xray bug above -- ended up baked into the saved PNG. A
+-- launcher that vanishes the moment you pick something leaves nothing to freeze.
 hl.layer_rule({
     name         = "blur-rofi",
     match        = { namespace = "rofi" },
     blur         = true,
     blur_popups  = true,
+    xray         = false,
     ignore_alpha = 0.2,
+    no_anim      = true,
 })
 
 -- wlogout calls its layer "logout_dialog", not "wlogout" (checked with `hyprctl layers`
@@ -575,6 +589,20 @@ hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("swayosd-client --output-volume 
 hl.bind("XF86AudioLowerVolume", hl.dsp.exec_cmd("swayosd-client --output-volume lower"),                  { locked = true, repeating = true })
 hl.bind("XF86AudioMute",        hl.dsp.exec_cmd("lattice-deck mute"),                                     { locked = true })
 hl.bind("XF86AudioMicMute",     hl.dsp.exec_cmd("lattice-deck mic"),                                      { locked = true })
+
+-- The same three keys under SHIFT drive the microphone instead of the speakers: swayosd's
+-- --input-volume is --output-volume pointed at the default source, and it raises a pill
+-- with a mic glyph rather than a speaker so the two are told apart on screen.
+--
+-- Worth having even though the Mac's function row carries XF86AudioMicMute already: that
+-- key only mutes, and nothing on either keyboard here moves the input gain. The bar's
+-- microphone pill (wireplumber#mic in ~/.dotfiles/waybar) is the readout these move.
+--
+-- Shift-mute goes through lattice-deck for the reason XF86AudioMicMute does -- it is the
+-- one of the three that changes what the Stream Deck's mic key draws.
+hl.bind("SHIFT + XF86AudioRaiseVolume", hl.dsp.exec_cmd("swayosd-client --input-volume raise --max-volume 100"), { locked = true, repeating = true })
+hl.bind("SHIFT + XF86AudioLowerVolume", hl.dsp.exec_cmd("swayosd-client --input-volume lower"),                  { locked = true, repeating = true })
+hl.bind("SHIFT + XF86AudioMute",        hl.dsp.exec_cmd("lattice-deck mic"),                                     { locked = true })
 hl.bind("XF86MonBrightnessUp",  hl.dsp.exec_cmd("swayosd-client --brightness raise"),                     { locked = true, repeating = true })
 hl.bind("XF86MonBrightnessDown",hl.dsp.exec_cmd("swayosd-client --brightness lower"),                     { locked = true, repeating = true })
 

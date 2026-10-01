@@ -39,7 +39,7 @@ return {
 			enabled = true,
 			ui_select = false,
 			sources = {
-				explorer = { hidden = true },
+				explorer = { hidden = true, ignored = true },
 			},
 		},
 		scroll = { enabled = true },
