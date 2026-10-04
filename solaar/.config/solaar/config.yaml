@@ -10,7 +10,7 @@
     logivoice-limiter-state, logivoice-hpf-state, gesture2-gestures, gesture2-divert, gesture2-params, onboard_profiles, scroll-ratchet-torque, speed-change,
     pointer_speed, dpi_extended, report_rate, report_rate_extended]
   _battery: 4096
-  _config_cookie: [166, 69]
+  _config_cookie: [168, 32]
   _modelId: B02340820000
   _sensitive: {smart-shift: false}
   _unitId: 7C0BBB5F
