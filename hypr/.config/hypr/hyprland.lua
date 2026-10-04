@@ -48,9 +48,14 @@ end
 ---- MY PROGRAMS ----
 ---------------------
 
--- Set programs that you use
-local terminal    = "ghostty"
-local fileManager = "thunar"
+-- Set programs that you use. The apps start through `uwsm app --`, which gives each one its
+-- own systemd scope instead of leaving it a child of this compositor, so systemd-oomd can
+-- kill one app rather than the whole session (lattice's modules/nixos/desktop/session.nix).
+-- rofi does the same for whatever it launches, from run-command in its config.rasi.
+local app         = "uwsm app -- "
+local terminal    = app .. "ghostty"
+local fileManager = app .. "thunar"
+local browser     = app .. "firefox"
 local menu        = "rofi -show drun"
 
 
@@ -477,7 +482,7 @@ hl.bind(mainMod .. " + V", hl.dsp.window.float({ action = "toggle" }), { descrip
 hl.bind("ALT + SPACE", hl.dsp.exec_cmd(menu), { description = "App launcher" })
 hl.bind(mainMod .. " + P", hl.dsp.window.pseudo(), { description = "Pseudotile window" })
 hl.bind(mainMod .. " + J", hl.dsp.layout("togglesplit"), { description = "Toggle split direction" })    -- dwindle only
-hl.bind(mainMod .. " + B", hl.dsp.exec_cmd("firefox"), { description = "Browser" })
+hl.bind(mainMod .. " + B", hl.dsp.exec_cmd(browser), { description = "Browser" })
 hl.bind(mainMod .. " + SHIFT + V", hl.dsp.exec_cmd("cliphist list | rofi -dmenu -p clipboard -display-columns 2 | cliphist decode | wl-copy"), { description = "Clipboard history" })
 
 -- Every described bind in one picker: these binds' descriptions, the tmux notes, nvim's

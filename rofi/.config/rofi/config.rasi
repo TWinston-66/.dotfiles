@@ -7,6 +7,11 @@ configuration {
   display-run: "run";
   drun-display-format: "{name}";
   terminal: "ghostty";
+  /* Each launch gets its own systemd scope instead of running as a child of the compositor,
+     so systemd-oomd can kill one app rather than the whole session. See the app-graphical
+     slice in lattice's modules/nixos/desktop/session.nix. */
+  run-command: "uwsm app -- {cmd}";
+  run-shell-command: "uwsm app -- {terminal} -e {cmd}";
 }
 
 @import "/etc/xdg/rofi/lattice.rasi"
