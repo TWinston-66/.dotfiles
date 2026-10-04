@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
-# curl -fsSL https://raw.githubusercontent.com/TWinston-66/dotfiles/main/bootstrap.sh | bash
+# curl -fsSL https://raw.githubusercontent.com/TWinston-66/.dotfiles/main/bootstrap.sh | bash
 
 set -euo pipefail
 
-REPO_URL="${DOTFILES_REPO_URL:-https://github.com/TWinston-66/dotfiles.git}"
+REPO_URL="${DOTFILES_REPO_URL:-https://github.com/TWinston-66/.dotfiles.git}"
 TARGET_DIR="${DOTFILES_DIR:-$HOME/.dotfiles}"
 
 if [ -d "$TARGET_DIR/.git" ]; then

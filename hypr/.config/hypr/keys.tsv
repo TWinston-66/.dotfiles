@@ -14,6 +14,8 @@ mouse	Gesture paddle (hold)	Acts as SUPER: with scroll or drag
 mouse	Back / Forward	Speaker volume
 mouse	Smart Shift button	App launcher
 
+tmux	C-a arrows	Focus pane in that direction
+tmux	C-a ;	Focus previous pane
 tmux	C-a z	Zoom pane
 tmux	C-a x	Kill pane
 tmux	C-a d	Detach
