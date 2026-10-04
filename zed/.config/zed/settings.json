@@ -30,5 +30,12 @@
   "disable_ai": true,
   "ui_font_size": 16,
   "buffer_font_size": 15,
-  "theme": "One Dark"
+  "theme": "One Dark",
+  "linux": {
+    "ui_font_size": 14,
+    "buffer_font_size": 13,
+    "terminal": {
+      "font_size": 12.0
+    }
+  }
 }

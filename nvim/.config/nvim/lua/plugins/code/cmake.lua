@@ -13,6 +13,7 @@ return {
 		"CMakeGenerate",
 		"CMakeBuild",
 		"CMakeRun",
+		"CMakeDebug",
 		"CMakeQuickStart",
 		"CMakeSelectBuildTarget",
 		"CMakeSelectLaunchTarget",
@@ -37,11 +38,21 @@ return {
 			action = "soft_link",
 			target = vim.uv.cwd,
 		},
+
+		-- :CMakeDebug through the gdb adapter in debug.lua. Upstream defaults to
+		-- codelldb, which is not installed here, so the command would fail to start.
+		cmake_dap_configuration = {
+			name = "cpp",
+			type = "gdb",
+			request = "launch",
+			stopAtBeginningOfMainSubprogram = false,
+		},
 	},
 	keys = {
 		{ "<leader>mg", "<cmd>CMakeGenerate<cr>", desc = "CMake Generate" },
 		{ "<leader>mb", "<cmd>CMakeBuild<cr>", desc = "CMake Build" },
 		{ "<leader>mr", "<cmd>CMakeRun<cr>", desc = "CMake Run" },
+		{ "<leader>md", "<cmd>CMakeDebug<cr>", desc = "CMake Debug" },
 		{ "<leader>mt", "<cmd>CMakeSelectBuildTarget<cr>", desc = "CMake Select Build Target" },
 		{ "<leader>ml", "<cmd>CMakeSelectLaunchTarget<cr>", desc = "CMake Select Launch Target" },
 		{ "<leader>my", "<cmd>CMakeSelectBuildType<cr>", desc = "CMake Select Build Type" },

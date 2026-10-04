@@ -1,4 +1,4 @@
-@import url("file:///etc/xdg/waybar/lattice.css");
+@import url("/etc/xdg/waybar/lattice.css");
 
 * {
   font-family: "JetBrains Mono", "Symbols Nerd Font";
@@ -22,7 +22,8 @@ tooltip label {
 }
 
 #workspaces,
-#clock,
+#custom-clock,
+#custom-capslock,
 #tray,
 #wireplumber,
 #backlight,
@@ -35,11 +36,15 @@ tooltip label {
 #custom-tailscale,
 #custom-idle,
 #custom-wallpaper,
-#battery {
+#custom-theme,
+#custom-battery {
   /* alpha() keeps @base as the single source of truth, so a re-accent still lands;
-     the Hyprland layer rule on the "waybar" namespace blurs whatever shows through. */
+     the Hyprland layer rule on the "waybar" namespace blurs whatever shows through.
+     The border is the accent, thinned, so every pill wears the wallpaper's colour while
+     its text keeps the colour that means something -- the accent goes on the frame,
+     never on a reading. */
   background: alpha(@base, 0.82);
-  border: 2px solid @surface0;
+  border: 2px solid alpha(@accent, 0.45);
   border-radius: 9px;
   padding: 0 10px;
 }
@@ -68,6 +73,15 @@ tooltip label {
   padding: 0 6px;
   margin: 3px 0;
   border-radius: 6px;
+  /* The GTK theme gives every button a 1200ms background-image transition, and the active
+     pill's gradient is a background image -- so switching workspace faded it in over more
+     than a second. One short transition for everything instead. */
+  transition: all 150ms cubic-bezier(0, 0, 0.2, 1);
+  /* adw-gtk3, the GTK theme, makes every button bold with a 1px border and a 16px floor on
+     its width. These are workspace chips, not buttons, so all three are taken back. */
+  font-weight: normal;
+  border: none;
+  min-width: 0;
 }
 
 #workspaces button.empty {
@@ -80,8 +94,11 @@ tooltip label {
   box-shadow: none;
 }
 
+/* The same two colours at the same 45deg as Hyprland's active border, so the focused
+   workspace and the focused window read as one thing. A gradient also never matches a
+   flat state colour, which keeps active apart from .urgent on the red wallpaper. */
 #workspaces button.active {
-  background: @accent;
+  background: linear-gradient(45deg, @accent, @accentAlt);
   color: @crust;
 }
 
@@ -99,7 +116,7 @@ tooltip label {
 
 #privacy-item {
   background: alpha(@base, 0.82);
-  border: 2px solid @surface0;
+  border: 2px solid alpha(@accent, 0.45);
   border-radius: 9px;
   padding: 0 9px;
 }
@@ -112,7 +129,18 @@ tooltip label {
   color: @red;
 }
 
-#clock {
+/* Yellow because that is caps lock's colour on the lock screen too ($lockCaps), and with
+   the border at full strength like the clock's so it is noticed rather than just seen. */
+#custom-capslock {
+  border-color: @yellow;
+  color: @yellow;
+  font-weight: bold;
+}
+
+/* The bar's centre, so the one pill whose border is the accent at full strength rather
+   than thinned like the rest. A filled accent pill was tried and was too much here. */
+#custom-clock {
+  border-color: @accent;
   color: @accent;
   font-weight: bold;
 }
@@ -250,15 +278,15 @@ tooltip label {
   color: @overlay1;
 }
 
-#battery {
+#custom-battery {
   color: @green;
 }
 
-#battery.warning:not(.charging) {
+#custom-battery.warning:not(.charging) {
   color: @peach;
 }
 
-#battery.critical:not(.charging) {
+#custom-battery.critical:not(.charging) {
   color: @red;
 }
 
@@ -292,11 +320,18 @@ tooltip label {
 
 /* Wallpaper. The only pill in the left group that is an action rather than a state, so
    it takes one flat colour and no second class -- there is no "off" for it to be in.
-   Lavender because the three toggles beside it have peach, yellow and teal, and because
-   it is the theme's accentAlt, which is the other colour every wallpaper in the pool is
-   drawn with. Icon-only, so it matches the toggles' wider padding. */
+   accentAlt, the other colour every wallpaper in the pool is drawn with, so the control
+   that changes the accent shows the one it is on. Icon-only, so it matches the toggles'
+   wider padding. */
 #custom-wallpaper {
-  color: @lavender;
+  color: @accentAlt;
+  padding: 0 11px;
+}
+
+/* Theme: the accent itself, beside the wallpaper's accentAlt, so the pair of controls reads
+   as the pair of colours. */
+#custom-theme {
+  color: @accent;
   padding: 0 11px;
 }
 

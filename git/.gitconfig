@@ -66,3 +66,9 @@
 		bold cyan => syntax "#446170", \
 		bold yellow => syntax "#6b635b"
 	syntax-theme = Catppuccin Mocha
+
+# The theme lattice-theme has picked, as a delta feature named lattice that it also turns
+# on. Last in the file so its `features` wins over the one above; git skips an include it
+# cannot find, which keeps catppuccin-mocha on macOS.
+[include]
+	path = ~/.cache/lattice/theme.gitconfig

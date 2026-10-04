@@ -161,6 +161,16 @@ hl.config({
     },
 })
 
+-- The borders follow the wallpaper and the theme: lattice-palette writes this file on every
+-- pick and flavour switch and evals the same Lua into the running compositor (lattice's
+-- modules/nixos/profiles/graphical.nix). Loading it here too is what keeps the pick through
+-- a `hyprctl reload`, which would otherwise rerun the default above. Guarded like the
+-- monitor rules: there is no such file before lattice has seeded it, or on macOS.
+local latticeTheme = loadfile((os.getenv("HOME") or "") .. "/.cache/lattice/theme.lua")
+if latticeTheme then
+    latticeTheme()
+end
+
 -- Default curves and animations, see https://wiki.hypr.land/Configuring/Advanced-and-Cool/Animations/
 hl.curve("easeOutQuint",   { type = "bezier", points = { {0.23, 1},    {0.32, 1}    } })
 hl.curve("easeInOutCubic", { type = "bezier", points = { {0.65, 0.05}, {0.36, 1}    } })
@@ -450,25 +460,31 @@ hl.device({
 local mainMod = "SUPER" -- Sets "Windows" key as main modifier
 
 -- Example binds, see https://wiki.hypr.land/Configuring/Basics/Binds/ for more
-hl.bind(mainMod .. " + T", hl.dsp.exec_cmd(terminal))
-local closeWindowBind = hl.bind(mainMod .. " + C", hl.dsp.window.close())
+hl.bind(mainMod .. " + T", hl.dsp.exec_cmd(terminal), { description = "Terminal" })
+local closeWindowBind = hl.bind(mainMod .. " + C", hl.dsp.window.close(), { description = "Close window" })
 -- closeWindowBind:set_enabled(false)
 -- Session menu: lock, log out, suspend, hibernate, reboot, shut down. Themed and wired up
 -- in the lattice flake (modules/nixos/profiles/graphical.nix); the wrapper is what passes
 -- wlogout its config, so don't call bare `wlogout` here.
-hl.bind("CTRL + " .. mainMod .. " + Q", hl.dsp.exec_cmd("lattice-power"))
+hl.bind("CTRL + " .. mainMod .. " + Q", hl.dsp.exec_cmd("lattice-power"), { description = "Power menu" })
 -- Lock the screen; the session and its apps keep running behind hyprlock. Calls hyprlock
 -- straight out rather than going through `loginctl lock-session`, which only asks logind
 -- to emit a Lock signal that hypridle then has to act on -- nothing happens at all if
 -- hypridle is down. `pidof` first so holding the bind can't stack a second lock screen.
-hl.bind(mainMod .. " + L", hl.dsp.exec_cmd("pidof hyprlock || hyprlock"))
-hl.bind(mainMod .. " + E", hl.dsp.exec_cmd(fileManager))
-hl.bind(mainMod .. " + V", hl.dsp.window.float({ action = "toggle" }))
-hl.bind("ALT + SPACE", hl.dsp.exec_cmd(menu))
-hl.bind(mainMod .. " + P", hl.dsp.window.pseudo())
-hl.bind(mainMod .. " + J", hl.dsp.layout("togglesplit"))    -- dwindle only
-hl.bind(mainMod .. " + B", hl.dsp.exec_cmd("firefox"))
-hl.bind(mainMod .. " + SHIFT + V", hl.dsp.exec_cmd("cliphist list | rofi -dmenu -p clipboard -display-columns 2 | cliphist decode | wl-copy"))
+hl.bind(mainMod .. " + L", hl.dsp.exec_cmd("pidof hyprlock || hyprlock"), { description = "Lock screen" })
+hl.bind(mainMod .. " + E", hl.dsp.exec_cmd(fileManager), { description = "File manager" })
+hl.bind(mainMod .. " + V", hl.dsp.window.float({ action = "toggle" }), { description = "Toggle floating" })
+hl.bind("ALT + SPACE", hl.dsp.exec_cmd(menu), { description = "App launcher" })
+hl.bind(mainMod .. " + P", hl.dsp.window.pseudo(), { description = "Pseudotile window" })
+hl.bind(mainMod .. " + J", hl.dsp.layout("togglesplit"), { description = "Toggle split direction" })    -- dwindle only
+hl.bind(mainMod .. " + B", hl.dsp.exec_cmd("firefox"), { description = "Browser" })
+hl.bind(mainMod .. " + SHIFT + V", hl.dsp.exec_cmd("cliphist list | rofi -dmenu -p clipboard -display-columns 2 | cliphist decode | wl-copy"), { description = "Clipboard history" })
+
+-- Every described bind in one picker: these binds' descriptions, the tmux notes, nvim's
+-- desc fields and the extras in keys.tsv beside this file -- lattice-keys, in lattice's
+-- modules/nixos/profiles/graphical.nix. A bind with no description stays out of it, so the
+-- description is what puts a key on the sheet.
+hl.bind(mainMod .. " + slash", hl.dsp.exec_cmd("lattice-keys"), { description = "Keybinding cheatsheet" })
 
 -- Notifications, all four through makoctl, mako's CLI. Hyprland execs these with the
 -- session PATH rather than any wrapper's, which is why lattice puts mako itself in
@@ -480,16 +496,16 @@ hl.bind(mainMod .. " + SHIFT + V", hl.dsp.exec_cmd("cliphist list | rofi -dmenu 
 -- `restore` pops the newest off the history ring, so it is the undo for the two above.
 -- ALT opens the browser over everything that has already expired -- lattice's
 -- lattice-notifications, shaped like the clipboard bind above, Enter copying the body.
-hl.bind(mainMod .. " + N",         hl.dsp.exec_cmd("makoctl dismiss"))
-hl.bind(mainMod .. " + SHIFT + N", hl.dsp.exec_cmd("makoctl dismiss --all"))
-hl.bind(mainMod .. " + CTRL + N",  hl.dsp.exec_cmd("makoctl restore"))
-hl.bind(mainMod .. " + ALT + N",   hl.dsp.exec_cmd("lattice-notifications"))
+hl.bind(mainMod .. " + N",         hl.dsp.exec_cmd("makoctl dismiss"), { description = "Dismiss notification" })
+hl.bind(mainMod .. " + SHIFT + N", hl.dsp.exec_cmd("makoctl dismiss --all"), { description = "Dismiss all notifications" })
+hl.bind(mainMod .. " + CTRL + N",  hl.dsp.exec_cmd("makoctl restore"), { description = "Restore last notification" })
+hl.bind(mainMod .. " + ALT + N",   hl.dsp.exec_cmd("lattice-notifications"), { description = "Notification history" })
 
 -- Do not disturb, the same toggle the bar pill runs -- lattice-dnd flips mako's `dnd` mode
 -- and signals waybar, so the pill follows a keypress and the keypress follows a click. D
 -- rather than a fourth modifier on N: this one is a state you leave on for a while, not a
 -- one-shot action on what is currently on screen.
-hl.bind(mainMod .. " + SHIFT + D", hl.dsp.exec_cmd("lattice-dnd toggle"))
+hl.bind(mainMod .. " + SHIFT + D", hl.dsp.exec_cmd("lattice-dnd toggle"), { description = "Toggle do not disturb" })
 
 -- Calculator, as a launcher mode rather than an app: rofi's calc plugin, whose engine is
 -- qalculate -- so units and bases convert in place (`0xff to bin`, `1 GiB to MB`) and
@@ -497,7 +513,7 @@ hl.bind(mainMod .. " + SHIFT + D", hl.dsp.exec_cmd("lattice-dnd toggle"))
 -- modules/nixos/profiles/graphical.nix; bare `rofi` from anywhere else won't have it.
 -- -modes is needed because ~/.dotfiles/rofi/config.rasi enables only drun,run, and rofi
 -- refuses to -show a mode that isn't enabled. Enter copies the result to the clipboard.
-hl.bind("ALT + SHIFT + SPACE", hl.dsp.exec_cmd([[rofi -show calc -modes calc -calc-command "echo -n '{result}' | wl-copy"]]))
+hl.bind("ALT + SHIFT + SPACE", hl.dsp.exec_cmd([[rofi -show calc -modes calc -calc-command "echo -n '{result}' | wl-copy"]]), { description = "Calculator" })
 
 -- Screenshot: HyprQuickFrame's selection overlay, then satty. The script and its desktop
 -- entry are lattice's, in modules/nixos/profiles/graphical.nix.
@@ -508,43 +524,43 @@ hl.bind("ALT + SHIFT + SPACE", hl.dsp.exec_cmd([[rofi -show calc -modes calc -ca
 -- KEY_SYSRQ on either layer -- so the bind is simply unreachable there, which is why the
 -- launcher entry stays: "Screenshot" in rofi is the form that works with no keyboard
 -- plugged in.
-hl.bind("Print", hl.dsp.exec_cmd("lattice-screenshot"))
+hl.bind("Print", hl.dsp.exec_cmd("lattice-screenshot"), { description = "Screenshot" })
 
 -- Move focus with mainMod + arrow keys
-hl.bind(mainMod .. " + left",  hl.dsp.focus({ direction = "left" }))
-hl.bind(mainMod .. " + right", hl.dsp.focus({ direction = "right" }))
-hl.bind(mainMod .. " + up",    hl.dsp.focus({ direction = "up" }))
-hl.bind(mainMod .. " + down",  hl.dsp.focus({ direction = "down" }))
+hl.bind(mainMod .. " + left",  hl.dsp.focus({ direction = "left" }),  { description = "Move focus" })
+hl.bind(mainMod .. " + right", hl.dsp.focus({ direction = "right" }), { description = "Move focus" })
+hl.bind(mainMod .. " + up",    hl.dsp.focus({ direction = "up" }),    { description = "Move focus" })
+hl.bind(mainMod .. " + down",  hl.dsp.focus({ direction = "down" }),  { description = "Move focus" })
 
 -- Move the focused window with mainMod + SHIFT + arrow keys (crosses onto the next monitor at the edge)
-hl.bind(mainMod .. " + SHIFT + left",  hl.dsp.window.move({ direction = "left" }))
-hl.bind(mainMod .. " + SHIFT + right", hl.dsp.window.move({ direction = "right" }))
-hl.bind(mainMod .. " + SHIFT + up",    hl.dsp.window.move({ direction = "up" }))
-hl.bind(mainMod .. " + SHIFT + down",  hl.dsp.window.move({ direction = "down" }))
+hl.bind(mainMod .. " + SHIFT + left",  hl.dsp.window.move({ direction = "left" }),  { description = "Move window" })
+hl.bind(mainMod .. " + SHIFT + right", hl.dsp.window.move({ direction = "right" }), { description = "Move window" })
+hl.bind(mainMod .. " + SHIFT + up",    hl.dsp.window.move({ direction = "up" }),    { description = "Move window" })
+hl.bind(mainMod .. " + SHIFT + down",  hl.dsp.window.move({ direction = "down" }),  { description = "Move window" })
 
 -- Send the whole current workspace to the monitor on the left/right with mainMod + CTRL + arrow keys
-hl.bind(mainMod .. " + CTRL + left",  hl.dsp.workspace.move({ monitor = "l" }))
-hl.bind(mainMod .. " + CTRL + right", hl.dsp.workspace.move({ monitor = "r" }))
+hl.bind(mainMod .. " + CTRL + left",  hl.dsp.workspace.move({ monitor = "l" }), { description = "Send workspace to monitor" })
+hl.bind(mainMod .. " + CTRL + right", hl.dsp.workspace.move({ monitor = "r" }), { description = "Send workspace to monitor" })
 
 -- Switch workspaces with mainMod + [0-9]
 -- Move active window to a workspace with mainMod + SHIFT + [0-9]
 for i = 1, 10 do
     local key = i % 10 -- 10 maps to key 0
-    hl.bind(mainMod .. " + " .. key,             hl.dsp.focus({ workspace = i}))
-    hl.bind(mainMod .. " + SHIFT + " .. key,     hl.dsp.window.move({ workspace = i }))
+    hl.bind(mainMod .. " + " .. key,             hl.dsp.focus({ workspace = i}),        { description = "Switch to workspace" })
+    hl.bind(mainMod .. " + SHIFT + " .. key,     hl.dsp.window.move({ workspace = i }), { description = "Move window to workspace" })
 end
 
 -- Example special workspace (scratchpad)
-hl.bind(mainMod .. " + S",         hl.dsp.workspace.toggle_special("magic"))
-hl.bind(mainMod .. " + SHIFT + S", hl.dsp.window.move({ workspace = "special:magic" }))
+hl.bind(mainMod .. " + S",         hl.dsp.workspace.toggle_special("magic"), { description = "Toggle scratchpad" })
+hl.bind(mainMod .. " + SHIFT + S", hl.dsp.window.move({ workspace = "special:magic" }), { description = "Move window to scratchpad" })
 
 -- Scroll through existing workspaces with mainMod + scroll
-hl.bind(mainMod .. " + mouse_down", hl.dsp.focus({ workspace = "e+1" }))
-hl.bind(mainMod .. " + mouse_up",   hl.dsp.focus({ workspace = "e-1" }))
+hl.bind(mainMod .. " + mouse_down", hl.dsp.focus({ workspace = "e+1" }), { description = "Cycle workspaces" })
+hl.bind(mainMod .. " + mouse_up",   hl.dsp.focus({ workspace = "e-1" }), { description = "Cycle workspaces" })
 
 -- Move/resize windows with mainMod + LMB/RMB and dragging
-hl.bind(mainMod .. " + mouse:272", hl.dsp.window.drag(),   { mouse = true })
-hl.bind(mainMod .. " + mouse:273", hl.dsp.window.resize(), { mouse = true })
+hl.bind(mainMod .. " + mouse:272", hl.dsp.window.drag(),   { mouse = true, description = "Drag window" })
+hl.bind(mainMod .. " + mouse:273", hl.dsp.window.resize(), { mouse = true, description = "Resize window" })
 
 -- Swallow middle click (BTN_MIDDLE = 274) so it never reaches apps: no paste-on-middle-click,
 -- no middle-click-closes-tab. The clickpad has only a physical left button; libinput invents
@@ -556,26 +572,28 @@ hl.bind(mainMod .. " + mouse:273", hl.dsp.window.resize(), { mouse = true })
 hl.bind("mouse:274", hl.dsp.no_op())
 
 -- Fullscreen the focused window
-hl.bind(mainMod .. " + F", hl.dsp.window.fullscreen({ action = "toggle" }))
+hl.bind(mainMod .. " + F", hl.dsp.window.fullscreen({ action = "toggle" }), { description = "Toggle fullscreen" })
 
 -- Keyboard resize: hold mainMod+R to enter, arrows to resize in steps, Escape/Enter to exit
 -- ("" is the root/default submap - there is no submap literally named "default")
 -- Note: -1 does NOT mean "persistent" for notify's duration (unlike its icon arg) -
 -- it underflows and the notification vanishes almost instantly. Use a long explicit
 -- duration instead; it gets dismissed early anyway when the submap exits.
-local resizeModeNotify = "hyprctl notify 2 600000 \"rgb(89b4fa)\" \"  RESIZE MODE  —  arrows to resize, Esc/Enter to exit\""
+-- The colour is the theme's accent, read from lattice's theme.sh when the bind fires, so it
+-- follows lattice-theme and the wallpaper; Catppuccin blue where there is none (macOS).
+local resizeModeNotify = [[sh -c 'accent="#89b4fa"; . "$HOME/.cache/lattice/theme.sh" 2>/dev/null; hyprctl notify 2 600000 "rgb(${accent#\#})" "  RESIZE MODE  —  arrows to resize, Esc/Enter to exit"']]
 hl.define_submap("resize", function()
-    hl.bind("left",   hl.dsp.window.resize({ x = -20, y = 0,  relative = true }))
-    hl.bind("right",  hl.dsp.window.resize({ x = 20,  y = 0,  relative = true }))
-    hl.bind("up",     hl.dsp.window.resize({ x = 0,   y = -20, relative = true }))
-    hl.bind("down",   hl.dsp.window.resize({ x = 0,   y = 20,  relative = true }))
-    hl.bind("escape", hl.dsp.exec_cmd("hyprctl dismissnotify"))
-    hl.bind("escape", hl.dsp.submap(""))
-    hl.bind("return", hl.dsp.exec_cmd("hyprctl dismissnotify"))
-    hl.bind("return", hl.dsp.submap(""))
+    hl.bind("left",   hl.dsp.window.resize({ x = -20, y = 0,  relative = true }), { description = "Resize window" })
+    hl.bind("right",  hl.dsp.window.resize({ x = 20,  y = 0,  relative = true }), { description = "Resize window" })
+    hl.bind("up",     hl.dsp.window.resize({ x = 0,   y = -20, relative = true }), { description = "Resize window" })
+    hl.bind("down",   hl.dsp.window.resize({ x = 0,   y = 20,  relative = true }), { description = "Resize window" })
+    hl.bind("escape", hl.dsp.exec_cmd("hyprctl dismissnotify"), { description = "Leave resize mode" })
+    hl.bind("escape", hl.dsp.submap(""), { description = "Leave resize mode" })
+    hl.bind("return", hl.dsp.exec_cmd("hyprctl dismissnotify"), { description = "Leave resize mode" })
+    hl.bind("return", hl.dsp.submap(""), { description = "Leave resize mode" })
 end)
-hl.bind(mainMod .. " + R", hl.dsp.exec_cmd(resizeModeNotify))
-hl.bind(mainMod .. " + R", hl.dsp.submap("resize"))
+hl.bind(mainMod .. " + R", hl.dsp.exec_cmd(resizeModeNotify), { description = "Resize mode" })
+hl.bind(mainMod .. " + R", hl.dsp.submap("resize"), { description = "Resize mode" })
 
 -- Laptop multimedia keys for volume and LCD brightness, shown with swayosd
 --
@@ -585,10 +603,10 @@ hl.bind(mainMod .. " + R", hl.dsp.submap("resize"))
 -- is told, so a mute from here would otherwise leave the deck showing sound until its
 -- five-minute sync came round. Volume up and down stay direct -- they do not change the
 -- state the key draws, and a press that repeats on hold should not spawn a script each tick.
-hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("swayosd-client --output-volume raise --max-volume 100"), { locked = true, repeating = true })
-hl.bind("XF86AudioLowerVolume", hl.dsp.exec_cmd("swayosd-client --output-volume lower"),                  { locked = true, repeating = true })
-hl.bind("XF86AudioMute",        hl.dsp.exec_cmd("lattice-deck mute"),                                     { locked = true })
-hl.bind("XF86AudioMicMute",     hl.dsp.exec_cmd("lattice-deck mic"),                                      { locked = true })
+hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("swayosd-client --output-volume raise --max-volume 100"), { locked = true, repeating = true, description = "Speaker volume" })
+hl.bind("XF86AudioLowerVolume", hl.dsp.exec_cmd("swayosd-client --output-volume lower"),                  { locked = true, repeating = true, description = "Speaker volume" })
+hl.bind("XF86AudioMute",        hl.dsp.exec_cmd("lattice-deck mute"),                                     { locked = true, description = "Mute speakers" })
+hl.bind("XF86AudioMicMute",     hl.dsp.exec_cmd("lattice-deck mic"),                                      { locked = true, description = "Mute microphone" })
 
 -- The same three keys under SHIFT drive the microphone instead of the speakers: swayosd's
 -- --input-volume is --output-volume pointed at the default source, and it raises a pill
@@ -600,11 +618,11 @@ hl.bind("XF86AudioMicMute",     hl.dsp.exec_cmd("lattice-deck mic"),            
 --
 -- Shift-mute goes through lattice-deck for the reason XF86AudioMicMute does -- it is the
 -- one of the three that changes what the Stream Deck's mic key draws.
-hl.bind("SHIFT + XF86AudioRaiseVolume", hl.dsp.exec_cmd("swayosd-client --input-volume raise --max-volume 100"), { locked = true, repeating = true })
-hl.bind("SHIFT + XF86AudioLowerVolume", hl.dsp.exec_cmd("swayosd-client --input-volume lower"),                  { locked = true, repeating = true })
-hl.bind("SHIFT + XF86AudioMute",        hl.dsp.exec_cmd("lattice-deck mic"),                                     { locked = true })
-hl.bind("XF86MonBrightnessUp",  hl.dsp.exec_cmd("swayosd-client --brightness raise"),                     { locked = true, repeating = true })
-hl.bind("XF86MonBrightnessDown",hl.dsp.exec_cmd("swayosd-client --brightness lower"),                     { locked = true, repeating = true })
+hl.bind("SHIFT + XF86AudioRaiseVolume", hl.dsp.exec_cmd("swayosd-client --input-volume raise --max-volume 100"), { locked = true, repeating = true, description = "Microphone volume" })
+hl.bind("SHIFT + XF86AudioLowerVolume", hl.dsp.exec_cmd("swayosd-client --input-volume lower"),                  { locked = true, repeating = true, description = "Microphone volume" })
+hl.bind("SHIFT + XF86AudioMute",        hl.dsp.exec_cmd("lattice-deck mic"),                                     { locked = true, description = "Mute microphone" })
+hl.bind("XF86MonBrightnessUp",  hl.dsp.exec_cmd("swayosd-client --brightness raise"),                     { locked = true, repeating = true, description = "Screen brightness" })
+hl.bind("XF86MonBrightnessDown",hl.dsp.exec_cmd("swayosd-client --brightness lower"),                     { locked = true, repeating = true, description = "Screen brightness" })
 
 -- Keyboard backlight, on the LCD brightness keys under mainMod. No laptop here has a key
 -- of its own for it -- the MacBook's 2021+ function row simply hasn't got one, and macOS
@@ -615,15 +633,15 @@ hl.bind("XF86MonBrightnessDown",hl.dsp.exec_cmd("swayosd-client --brightness low
 -- would mean holding Fn as well. Going through the keysym also keeps this on whichever
 -- keys carry brightness on the other machine. swayosd raises the pill by itself here,
 -- watching the LED, so there is no --brightness call to make.
-hl.bind(mainMod .. " + XF86MonBrightnessUp",  hl.dsp.exec_cmd("lattice-kbd-backlight raise"),            { locked = true, repeating = true })
-hl.bind(mainMod .. " + XF86MonBrightnessDown",hl.dsp.exec_cmd("lattice-kbd-backlight lower"),            { locked = true, repeating = true })
+hl.bind(mainMod .. " + XF86MonBrightnessUp",  hl.dsp.exec_cmd("lattice-kbd-backlight raise"),            { locked = true, repeating = true, description = "Keyboard backlight" })
+hl.bind(mainMod .. " + XF86MonBrightnessDown",hl.dsp.exec_cmd("lattice-kbd-backlight lower"),            { locked = true, repeating = true, description = "Keyboard backlight" })
 
 -- Requires playerctl. Play/pause goes through lattice-deck for the same reason the mute
 -- keys above do: it is the one of the four that changes what the deck's key draws.
-hl.bind("XF86AudioNext",  hl.dsp.exec_cmd("playerctl next"),       { locked = true })
-hl.bind("XF86AudioPause", hl.dsp.exec_cmd("lattice-deck play"),    { locked = true })
-hl.bind("XF86AudioPlay",  hl.dsp.exec_cmd("lattice-deck play"),    { locked = true })
-hl.bind("XF86AudioPrev",  hl.dsp.exec_cmd("playerctl previous"),   { locked = true })
+hl.bind("XF86AudioNext",  hl.dsp.exec_cmd("playerctl next"),       { locked = true, description = "Next / previous track" })
+hl.bind("XF86AudioPause", hl.dsp.exec_cmd("lattice-deck play"),    { locked = true, description = "Play / pause" })
+hl.bind("XF86AudioPlay",  hl.dsp.exec_cmd("lattice-deck play"),    { locked = true, description = "Play / pause" })
+hl.bind("XF86AudioPrev",  hl.dsp.exec_cmd("playerctl previous"),   { locked = true, description = "Next / previous track" })
 
 
 --------------------------------

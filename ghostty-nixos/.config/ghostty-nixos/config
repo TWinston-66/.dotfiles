@@ -1,3 +1,11 @@
 # Ghostty scales fonts by GTK's text DPI, so the size here is smaller than on macOS
 # to look the same at the laptop's 1.5 display scale.
 font-size = 8.4
+
+# Send touchpad sideways scroll to the terminal (nvim) rather than switching tabs.
+# Needs the patched build from lattice until Ghostty 1.4.0.
+gtk-horizontal-tab-scroll = false
+
+# The flavour lattice-theme has picked, as explicit colours, which win over the `theme` line
+# in the shared config. lattice-palette rewrites it and asks Ghostty to reload.
+config-file = ?~/.cache/lattice/theme.ghostty

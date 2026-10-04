@@ -39,3 +39,6 @@ set recolor                   "false"
 set recolor-keephue           "true"
 set recolor-lightcolor        "rgba(30,30,46,1)"
 set recolor-darkcolor         "rgba(205,214,244,1)"
+
+# The theme lattice-theme has picked, over the Mocha above, read at launch.
+include ~/.cache/lattice/theme.zathura

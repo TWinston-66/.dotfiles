@@ -119,7 +119,9 @@ return {
 
 			vim.api.nvim_create_autocmd("LspAttach", {
 				callback = function(event)
-					local keymap_opts = { buffer = event.buf }
+					local opts = function(desc)
+						return { buffer = event.buf, desc = desc }
+					end
 					local keymap = vim.keymap
 
 					local fzf = function(picker)
@@ -128,15 +130,15 @@ return {
 						end
 					end
 
-					keymap.set("n", "gd", fzf("lsp_definitions"), keymap_opts)
-					keymap.set("n", "gD", vim.lsp.buf.declaration, keymap_opts)
-					keymap.set("n", "gr", fzf("lsp_references"), keymap_opts)
-					keymap.set("n", "gi", fzf("lsp_implementations"), keymap_opts)
-					keymap.set("n", "gy", fzf("lsp_typedefs"), keymap_opts)
-					keymap.set("n", "<leader>fd", fzf("diagnostics_document"), keymap_opts)
-					keymap.set("n", "K", vim.lsp.buf.hover, keymap_opts)
-					keymap.set("n", "<leader>rn", vim.lsp.buf.rename, keymap_opts)
-					keymap.set({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, keymap_opts)
+					keymap.set("n", "gd", fzf("lsp_definitions"), opts("Go to Definition"))
+					keymap.set("n", "gD", vim.lsp.buf.declaration, opts("Go to Declaration"))
+					keymap.set("n", "gr", fzf("lsp_references"), opts("References"))
+					keymap.set("n", "gi", fzf("lsp_implementations"), opts("Implementations"))
+					keymap.set("n", "gy", fzf("lsp_typedefs"), opts("Type Definitions"))
+					keymap.set("n", "<leader>fd", fzf("diagnostics_document"), opts("Search Diagnostics"))
+					keymap.set("n", "K", vim.lsp.buf.hover, opts("Hover Docs"))
+					keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts("Rename Symbol"))
+					keymap.set({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, opts("Code Action"))
 				end,
 			})
 		end,

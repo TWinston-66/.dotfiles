@@ -46,6 +46,8 @@ prompt {
 }
 
 entry {
+  /* Set explicitly: inheriting from `*` leaves the typed text a dim grey. */
+  text-color: @text;
   cursor: text;
   placeholder: "search";
   placeholder-color: @overlay0;

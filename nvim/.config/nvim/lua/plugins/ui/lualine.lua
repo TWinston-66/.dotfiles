@@ -28,7 +28,9 @@ return {
 
 		return {
 			options = {
-				theme = "catppuccin-nvim",
+				-- Follows whichever colorscheme lattice-theme has up: every one of them ships
+				-- a lualine theme under its colors_name, which is what "auto" looks up first.
+				theme = "auto",
 				globalstatus = vim.o.laststatus == 3,
 			},
 			sections = {

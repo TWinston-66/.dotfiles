@@ -6,6 +6,9 @@
   "margin-left": 10,
   "margin-right": 10,
   "spacing": 5,
+  // Restyles in place when style.css or anything it @imports changes -- which is how the
+  // runtime theme (lattice-palette) reaches the bar without a SIGUSR2 rebuilding it.
+  "reload_style_on_change": true,
 
   // The centre group holds the clock and nothing else, which is what pays for the right
   // side. waybar centres modules-center as a group, so a module put beside the clock has
@@ -18,9 +21,9 @@
   // to the left edge and had ~210px going spare the moment the window title came out.
   // They stay in one run, weather last, so it is still the pill next to the clock and
   // "what time is it" and "what is it doing outside" are still one glance apart.
-  "modules-left": ["hyprland/workspaces", "privacy", "custom/sunset", "custom/dnd", "custom/idle", "custom/wallpaper", "custom/weather"],
-  "modules-center": ["clock"],
-  "modules-right": ["tray", "wireplumber", "wireplumber#mic", "backlight", "network", "custom/tailscale", "custom/power-profile", "battery", "custom/power"],
+  "modules-left": ["hyprland/workspaces", "privacy", "custom/capslock", "custom/sunset", "custom/dnd", "custom/idle", "custom/wallpaper", "custom/theme", "custom/weather"],
+  "modules-center": ["custom/clock"],
+  "modules-right": ["tray", "wireplumber", "wireplumber#mic", "backlight", "network", "custom/tailscale", "custom/power-profile", "custom/battery", "custom/power"],
 
   // The number alone says where a window is but not what it is, which stops being enough
   // as soon as three or four workspaces are in use at once. {windows} appends one glyph
@@ -54,7 +57,7 @@
       "class<.*zathura>": "󰈦",
       "class<mpv>": "󰎁",
       "class<imv>": "󰋩",
-      "class<libreoffice.*>": "󰈙",
+      "class<coda-qt>": "󰈙",
       "class<draw.io>": "",
       "class<.*[Tt]elegram.*>": "",
       "class<.*[Vv]esktop.*>": "󰙯",
@@ -80,17 +83,25 @@
     "transition-duration": 200
   },
 
-  "clock": {
-    "format": "{:%a %b %d  %H:%M}",
-    "tooltip-format": "<tt>{calendar}</tt>",
-    "calendar": {
-      "format": {
-        "months": "<span color='#cdd6f4'><b>{}</b></span>",
-        "weekdays": "<span color='#a6adc8'>{}</span>",
-        "days": "<span color='#bac2de'>{}</span>",
-        "today": "<span color='#89b4fa'><b><u>{}</u></b></span>"
-      }
-    }
+  // Caps lock, for the keyboards without an LED for it. Only on the bar while it is on --
+  // lattice-capslock prints empty text otherwise -- so it sits with privacy, the other pill
+  // that is only there to say something is happening. See modules/nixos/profiles/graphical.nix.
+  "custom/capslock": {
+    "exec": "lattice-capslock",
+    "return-type": "json",
+    "tooltip": true
+  },
+
+  // The clock, from lattice-clock rather than waybar's built-in module: that one's calendar
+  // colours could only be literals here, and this file is only re-read on a full reload.
+  // lattice-clock draws the hover calendar from the run-time theme and redraws it when the
+  // theme changes. A click opens lattice-calendar, the month with previous / today / next
+  // buttons under it. Both in modules/nixos/profiles/graphical.nix.
+  "custom/clock": {
+    "exec": "lattice-clock",
+    "return-type": "json",
+    "tooltip": true,
+    "on-click": "lattice-calendar"
   },
 
   // Weather, from Open-Meteo via lattice-weather -- see modules/nixos/profiles/graphical.nix
@@ -204,6 +215,20 @@
     "on-click": "lattice-wallpaper next",
     "on-click-right": "lattice-wallpaper-menu",
     "on-click-middle": "lattice-wallpaper random"
+  },
+
+  // The flavour, the wallpaper pill's other half: that one moves the accent, this one the
+  // whole palette under it -- bar, borders, menus, lock screen, terminal, tmux and nvim.
+  // Left click steps to the next flavour, right click opens lattice-theme-menu, a strip of
+  // each flavour's colours hung where the wallpaper menu hangs. Both keep the wallpaper
+  // that is up and redraw it in the new flavour. See lattice-theme in
+  // modules/nixos/profiles/graphical.nix.
+  "custom/theme": {
+    "format": "󰏘",
+    "tooltip": true,
+    "tooltip-format": "Theme",
+    "on-click": "lattice-theme next",
+    "on-click-right": "lattice-theme-menu"
   },
 
   // Muted keeps only the glyph: the word made this the widest state the pill can be in,
@@ -379,15 +404,14 @@
     "on-click": "lattice-power"
   },
 
-  "battery": {
-    "states": {
-      "warning": 25,
-      "critical": 10
-    },
-    "format": "{icon} {capacity}%",
-    "format-charging": "󰂄 {capacity}%",
-    "format-plugged": "󰚥 {capacity}%",
-    "format-icons": ["󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"],
-    "tooltip-format": "{timeTo}"
+  // The battery, from lattice-battery-pill rather than waybar's built-in module: that one
+  // works the percentage out from energy_now / energy_full and never reads the kernel's
+  // capacity, so on the Mac it read 77% while upower, fastfetch and the power-profile
+  // tooltip all read 80%. The script sets the charging / plugged / warning / critical
+  // classes the stylesheet colours. See modules/nixos/profiles/graphical.nix.
+  "custom/battery": {
+    "exec": "lattice-battery-pill",
+    "return-type": "json",
+    "tooltip": true
   }
 }

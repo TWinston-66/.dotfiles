@@ -11,12 +11,30 @@ if [ -z "$TMUX" ] && command -v tmux >/dev/null 2>&1; then
   exit
 fi
 
-export FZF_DEFAULT_OPTS=" \
+# The theme lattice-theme has picked (lattice's modules/nixos/theme.nix writes these on
+# every theme switch and wallpaper pick). Each tool is pointed at its file rather than
+# given the colours, so it follows without a new shell: fzf, bat and delta read theirs on
+# every run, starship at every prompt, lazygit and btop at launch. None of these exist on
+# macOS, which keeps the Catppuccin Mocha literals below and in each tool's own config.
+_lattice="$HOME/.cache/lattice"
+
+if [ -r "$_lattice/theme.fzf" ]; then
+  export FZF_DEFAULT_OPTS_FILE="$_lattice/theme.fzf"
+else
+  export FZF_DEFAULT_OPTS=" \
 --color=bg+:#313244,bg:#1e1e2e,spinner:#f5e0dc,hl:#f38ba8 \
 --color=fg:#cdd6f4,header:#f38ba8,info:#cba6f7,pointer:#f5e0dc \
 --color=marker:#b4befe,fg+:#cdd6f4,prompt:#cba6f7,hl+:#f38ba8 \
 --color=selected-bg:#45475a \
 --color=border:#6c7086,label:#cdd6f4"
+fi
+[ -r "$_lattice/starship.toml" ] && export STARSHIP_CONFIG="$_lattice/starship.toml"
+[ -r "$_lattice/theme.bat" ] && export BAT_CONFIG_PATH="$_lattice/theme.bat"
+[ -r "$_lattice/theme.lazygit.yml" ] &&
+  export LG_CONFIG_FILE="$XDG_CONFIG_HOME/lazygit/config.yml,$_lattice/theme.lazygit.yml"
+# btop.conf names catppuccin_mocha, and --themes-dir is searched ahead of
+# ~/.config/btop/themes, so the generated file of that name there wins.
+[ -r "$_lattice/catppuccin_mocha.theme" ] && alias btop="btop --themes-dir $_lattice"
 
 eval "$(fzf --zsh)"
 
@@ -99,6 +117,24 @@ if [ -f "$_zsh_hl" ]; then
   ZSH_HIGHLIGHT_STYLES[double-quoted-argument]='fg=#f9e2af'
   ZSH_HIGHLIGHT_STYLES[comment]='fg=#6c7086,italic'
   ZSH_HIGHLIGHT_STYLES[bracket-error]='fg=#f38ba8'
+
+  # The theme's own, over the Mocha above, and again at any prompt after it changes -- the
+  # styles are read as each line is drawn, so a switch recolours shells already open.
+  if [ -r "$_lattice/theme.zsh" ]; then
+    zmodload -F zsh/stat b:zstat
+    _lattice_zsh_mtime=0
+    _lattice_zsh_reload() {
+      local mtime
+      mtime=$(zstat +mtime "$_lattice/theme.zsh" 2>/dev/null) || return
+      if [[ $mtime != "$_lattice_zsh_mtime" ]]; then
+        _lattice_zsh_mtime=$mtime
+        source "$_lattice/theme.zsh"
+      fi
+    }
+    _lattice_zsh_reload
+    autoload -Uz add-zsh-hook
+    add-zsh-hook precmd _lattice_zsh_reload
+  fi
 
   source "$_zsh_hl"
 fi

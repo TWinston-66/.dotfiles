@@ -1,0 +1,31 @@
+# Extras for lattice-keys, the SUPER + / cheatsheet (lattice's modules/nixos/profiles/graphical.nix).
+#
+# Most of the sheet is read live -- Hyprland binds with a description, tmux binds with a note
+# (-N), nvim maps with a desc -- so the place to put a key on it is normally its own config.
+# This file is for the rest: things no config can report, a few tmux defaults worth seeing
+# (defaults are left out, or the sheet would be all tmux), and rows to drop.
+#
+# Tab-separated: <section> <keys> <description>. A description of "-" hides that row
+# instead, matched on section and keys exactly as the sheet shows them.
+
+# Not binds: a Hyprland gesture and the MX Master's Solaar rules (~/.config/solaar/rules.yaml).
+hypr	3-finger swipe	Switch workspace
+mouse	Gesture paddle (hold)	Acts as SUPER: with scroll or drag
+mouse	Back / Forward	Speaker volume
+mouse	Smart Shift button	App launcher
+
+tmux	C-a z	Zoom pane
+tmux	C-a x	Kill pane
+tmux	C-a d	Detach
+tmux	C-a [	Copy mode
+tmux	C-a s	Choose session
+tmux	C-a w	Choose window
+tmux	C-a n / p	Next / previous window
+tmux	C-a f	tmux-fzf menu
+
+nvim	Tab	Accept completion (blink)
+nvim	gcc / gc	Toggle comment (line / motion)
+
+# yanky's own p and P: the same keys doing what they always did.
+nvim	p	-
+nvim	P	-
