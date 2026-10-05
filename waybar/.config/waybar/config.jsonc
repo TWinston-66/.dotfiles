@@ -21,7 +21,7 @@
   // to the left edge and had ~210px going spare the moment the window title came out.
   // They stay in one run, weather last, so it is still the pill next to the clock and
   // "what time is it" and "what is it doing outside" are still one glance apart.
-  "modules-left": ["hyprland/workspaces", "privacy", "custom/capslock", "custom/sunset", "custom/dnd", "custom/idle", "custom/wallpaper", "custom/theme", "custom/weather"],
+  "modules-left": ["hyprland/workspaces", "privacy", "custom/capslock", "custom/sunset", "custom/dnd", "custom/idle", "custom/wallpaper", "custom/theme", "custom/vault", "custom/bitwarden", "custom/weather"],
   "modules-center": ["custom/clock"],
   "modules-right": ["tray", "wireplumber", "wireplumber#mic", "backlight", "network", "custom/tailscale", "custom/power-profile", "custom/battery", "custom/power"],
 
@@ -229,6 +229,34 @@
     "tooltip-format": "Theme",
     "on-click": "lattice-theme next",
     "on-click-right": "lattice-theme-menu"
+  },
+
+  // The Obsidian vault's git state: uncommitted files as a count, then ↑ for commits not
+  // pushed and ↓ for commits on GitHub not pulled, coloured by the worst of them. A
+  // readout rather than a toggle, so it sits after them and before the weather. The script
+  // checks GitHub on its own every five minutes and signals RTMIN+7 when it has; the
+  // interval only re-reads the working tree. Click fetches now, right-click opens lazygit
+  // in the vault. See lattice-vault in modules/nixos/desktop/bar.nix.
+  "custom/vault": {
+    "exec": "lattice-vault status",
+    "return-type": "json",
+    "signal": 7,
+    "interval": 10,
+    "on-click": "lattice-vault fetch",
+    "on-click-right": "lattice-vault open"
+  },
+
+  // Bitwarden, out of the tray and into a pill of its own -- the tray module draws every
+  // icon in one box, so the app's tray icon is off and lattice-bitwarden stands in. The
+  // glyph is the lock state as the SSH agent sees it; click shows or hides the app's
+  // window, which lives on special:bitwarden (a rule in ~/.dotfiles/hypr), or starts the
+  // app if it is down. See modules/nixos/bitwarden.nix.
+  "custom/bitwarden": {
+    "exec": "lattice-bitwarden status",
+    "return-type": "json",
+    "signal": 8,
+    "interval": 10,
+    "on-click": "lattice-bitwarden toggle"
   },
 
   // Muted keeps only the glyph: the word made this the widest state the pill can be in,

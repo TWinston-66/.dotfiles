@@ -37,6 +37,8 @@ tooltip label {
 #custom-idle,
 #custom-wallpaper,
 #custom-theme,
+#custom-vault,
+#custom-bitwarden,
 #custom-battery {
   /* alpha() keeps @base as the single source of truth, so a re-accent still lands;
      the Hyprland layer rule on the "waybar" namespace blurs whatever shows through.
@@ -288,6 +290,57 @@ tooltip label {
 
 #custom-battery.critical:not(.charging) {
   color: @red;
+}
+
+/* The vault's git state, worst first in lattice-vault: red for a conflict or a history
+   that has split from GitHub's, peach for uncommitted work, yellow for commits not yet
+   pushed, sapphire for commits waiting to be pulled, green for in step. A clean pill whose
+   last good fetch is old greys out -- the local half is still true, but "in step" no
+   longer is. */
+#custom-vault {
+  color: @green;
+  padding: 0 11px;
+}
+
+#custom-vault.dirty {
+  color: @peach;
+}
+
+#custom-vault.ahead {
+  color: @yellow;
+}
+
+#custom-vault.behind {
+  color: @sapphire;
+}
+
+#custom-vault.diverged,
+#custom-vault.conflict {
+  color: @red;
+}
+
+#custom-vault.clean.stale {
+  color: @overlay1;
+}
+
+/* Bitwarden: green while the vault is open and the SSH agent serves keys, muted while it
+   is locked, red when the app is not running at all -- then there is no agent and no
+   browser unlock. The border goes to full accent while its scratchpad is on screen. */
+#custom-bitwarden {
+  color: @green;
+  padding: 0 11px;
+}
+
+#custom-bitwarden.locked {
+  color: @overlay1;
+}
+
+#custom-bitwarden.stopped {
+  color: @red;
+}
+
+#custom-bitwarden.shown {
+  border-color: @accent;
 }
 
 /* Night light: accent when the filter is on, muted when it's off, so the bar reads

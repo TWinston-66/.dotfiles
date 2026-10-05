@@ -702,6 +702,23 @@ hl.window_rule({
     float = true,
 })
 
+-- Bitwarden lives on its own scratchpad. Its tray icon is off, so waybar's tray holds
+-- only blueman and the app has a pill of its own (lattice-bitwarden, in the lattice repo's
+-- modules/nixos/bitwarden.nix), which shows and hides this workspace. Without a tray,
+-- closing the window quits the app and systemd brings it straight back; `silent` is what
+-- keeps that, and the window opened at login, from landing on the workspace in use.
+--
+-- No focus_on_activate: the app activates its own window a second or two after every
+-- start, so with it the scratchpad popped open over the workspace in use at login and
+-- after each restart. Nothing it asks for needs the window anyway -- SSH signing is not
+-- set to prompt, and the browser unlock is polkit's own dialog.
+hl.window_rule({
+    name  = "bitwarden-scratchpad",
+    match = { class = "^[Bb]itwarden$" },
+
+    workspace = "special:bitwarden silent",
+})
+
 -- Qalculate! opens floating. Its keypad is a fixed grid with a natural size (766x540
 -- here), and tiling stretches it: given half a workspace the buttons grow to fill the
 -- height and the result area above them becomes a 350px void. The app has no say in it --
