@@ -488,11 +488,11 @@ hl.bind(mainMod .. " + SHIFT + V", hl.dsp.exec_cmd("cliphist list | rofi -dmenu 
 -- Every described bind in one picker: these binds' descriptions, the tmux notes, nvim's
 -- desc fields and the extras in keys.tsv beside this file -- lattice-keys, in lattice's
 -- modules/nixos/desktop/menus.nix. A bind with no description stays out of it, so the
--- description is what puts a key on the sheet. Vim's own keys come from the same file as
--- the browser cheatsheet under SHIFT, which is written fresh against the live nvim config
--- each time it opens.
+-- description is what puts a key on the sheet. Under SHIFT, the same rows as a browser page
+-- (`lattice cheatsheet`), written fresh from the live configs each time it opens, on the tab
+-- for whatever has focus.
 hl.bind(mainMod .. " + slash", hl.dsp.exec_cmd("lattice-keys"), { description = "Keybinding cheatsheet" })
-hl.bind(mainMod .. " + SHIFT + slash", hl.dsp.exec_cmd("lattice-keys sheet"), { description = "Neovim cheatsheet (browser)" })
+hl.bind(mainMod .. " + SHIFT + slash", hl.dsp.exec_cmd("lattice-keys sheet"), { description = "Keybinding cheatsheet (browser)" })
 
 -- Notifications, all four through makoctl, mako's CLI. Hyprland execs these with the
 -- session PATH rather than any wrapper's, which is why lattice puts mako itself in

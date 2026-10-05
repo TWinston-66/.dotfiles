@@ -24,6 +24,35 @@ tmux	C-a s	Choose session
 tmux	C-a w	Choose window
 tmux	C-a n / p	Next / previous window
 tmux	C-a f	tmux-fzf menu
+tmux	C-a 1-9	Go to window by number
+tmux	C-a l	Last window
+tmux	C-a ,	Rename window
+tmux	C-a &	Kill window
+tmux	C-a $	Rename session
+tmux	C-a q	Show pane numbers (press one to jump)
+tmux	C-a { / }	Swap pane with the one before / after
+tmux	C-a !	Break pane out into its own window
+tmux	C-a Space	Next pane layout
+tmux	C-a E	Spread panes out evenly
+tmux	C-a M-arrows	Resize pane by 5
+tmux	C-a ]	Paste
+tmux	C-a =	Paste from a list of earlier copies
+tmux	C-a C-s / C-r	Save / restore all sessions (resurrect)
+tmux	C-a C-a	Send C-a through to the program
+tmux	C-a :	Command prompt
+tmux	C-a ?	List every key
+tmux	C-a /	Describe a key
+
+# Copy mode is emacs-style here (mode-keys emacs). Mouse drag and double-click copy too.
+tmux	copy: C-Space	Start selection
+tmux	copy: M-w	Copy selection and leave
+tmux	copy: C-s / C-r	Search down / up
+tmux	copy: n / N	Next / previous match
+tmux	copy: M-v / C-v	Page up / down
+tmux	copy: M-< / M->	Top / bottom of history
+tmux	copy: R	Rectangle selection
+tmux	copy: q	Leave copy mode
+tmux	WheelUp	Scroll back (enters copy mode)
 
 # No nvim rows here: Vim's own keys and the plugin keys no dump can see are in lattice's
-# modules/nixos/desktop/nvim-sheet/keys.json, which the browser cheatsheet shows too.
+# modules/nixos/desktop/cheatsheet/nvim.json, which the browser cheatsheet shows too.
