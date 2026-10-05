@@ -1,4 +1,4 @@
-# Extras for lattice-keys, the SUPER + / cheatsheet (lattice's modules/nixos/profiles/graphical.nix).
+# Extras for lattice-keys, the SUPER + / cheatsheet (lattice's modules/nixos/desktop/menus.nix).
 #
 # Most of the sheet is read live -- Hyprland binds with a description, tmux binds with a note
 # (-N), nvim maps with a desc -- so the place to put a key on it is normally its own config.
@@ -25,9 +25,5 @@ tmux	C-a w	Choose window
 tmux	C-a n / p	Next / previous window
 tmux	C-a f	tmux-fzf menu
 
-nvim	Tab	Accept completion (blink)
-nvim	gcc / gc	Toggle comment (line / motion)
-
-# yanky's own p and P: the same keys doing what they always did.
-nvim	p	-
-nvim	P	-
+# No nvim rows here: Vim's own keys and the plugin keys no dump can see are in lattice's
+# modules/nixos/desktop/nvim-sheet/keys.json, which the browser cheatsheet shows too.
