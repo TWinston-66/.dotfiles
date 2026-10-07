@@ -45,6 +45,9 @@ setup_nixos() {
 
     DOTFILES_STOW_PACKAGES+=(hypr ghostty-nixos waybar mako rofi satty swayosd gtk qt6ct applications zathura solaar mpv)
     stow_packages
+    # Solaar rewrites a cookie in its config.yaml on every start. The file stays tracked for
+    # its settings, but out of `git status`; see README to commit a change on purpose.
+    git -C "$DOTFILES_DIR" update-index --skip-worktree solaar/.config/solaar/config.yaml
     install_tpm
 
     log_title "Done"

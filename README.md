@@ -70,6 +70,15 @@ brew update && brew upgrade   # macOS packages
 scripts/rebuild.sh            # NixOS packages, from the lattice checkout
 ```
 
+Solaar rewrites `solaar/.config/solaar/config.yaml` every time it starts, so `dotfiles.sh`
+marks it skip-worktree and git stops reporting it. To commit a settings change on purpose:
+
+```sh
+git update-index --no-skip-worktree solaar/.config/solaar/config.yaml
+git commit solaar/.config/solaar/config.yaml
+git update-index --skip-worktree solaar/.config/solaar/config.yaml
+```
+
 Bumping `VERSION` on `main` publishes a GitHub release.
 
 ## License
