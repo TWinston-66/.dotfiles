@@ -38,6 +38,7 @@ tooltip label {
 #custom-wallpaper,
 #custom-theme,
 #custom-vault,
+#custom-backup,
 #custom-bitwarden,
 #custom-battery {
   /* alpha() keeps @base as the single source of truth, so a re-accent still lands;
@@ -321,6 +322,32 @@ tooltip label {
 
 #custom-vault.clean.stale {
   color: @overlay1;
+}
+
+/* Backups: green with the drive in and the last backup recent, sapphire while one runs,
+   peach a week after the last backup, red at two weeks or when a run or check failed.
+   The border goes to full accent while the backups are mounted for browsing, since that
+   holds off pruning. */
+#custom-backup {
+  color: @green;
+  padding: 0 11px;
+}
+
+#custom-backup.running {
+  color: @sapphire;
+}
+
+#custom-backup.warning {
+  color: @peach;
+}
+
+#custom-backup.critical,
+#custom-backup.failed {
+  color: @red;
+}
+
+#custom-backup.browsing {
+  border-color: @accent;
 }
 
 /* Bitwarden: green while the vault is open and the SSH agent serves keys, muted while it

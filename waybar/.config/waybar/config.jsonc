@@ -21,7 +21,7 @@
   // to the left edge and had ~210px going spare the moment the window title came out.
   // They stay in one run, weather last, so it is still the pill next to the clock and
   // "what time is it" and "what is it doing outside" are still one glance apart.
-  "modules-left": ["hyprland/workspaces", "privacy", "custom/capslock", "custom/sunset", "custom/dnd", "custom/idle", "custom/wallpaper", "custom/theme", "custom/vault", "custom/bitwarden", "custom/weather"],
+  "modules-left": ["hyprland/workspaces", "privacy", "custom/capslock", "custom/sunset", "custom/dnd", "custom/idle", "custom/wallpaper", "custom/theme", "custom/vault", "custom/backup", "custom/bitwarden", "custom/weather"],
   "modules-center": ["custom/clock"],
   "modules-right": ["tray", "wireplumber", "wireplumber#mic", "backlight", "network", "custom/tailscale", "custom/power-profile", "custom/battery", "custom/power"],
 
@@ -244,6 +244,21 @@
     "interval": 10,
     "on-click": "lattice-vault fetch",
     "on-click-right": "lattice-vault open"
+  },
+
+  // Backups to the external drive (modules/nixos/backup.nix). Hidden unless there is
+  // something to see: the drive is plugged in, the last run failed, or the last backup is
+  // a week old. The text is the age of the last backup, or progress while one runs;
+  // the tooltip has the rest. The runner signals RTMIN+9 on every change, so the interval
+  // is only for the age ticking over. Click backs up now, right-click is the menu
+  // (browse, check, eject).
+  "custom/backup": {
+    "exec": "lattice-backup bar",
+    "return-type": "json",
+    "signal": 9,
+    "interval": 30,
+    "on-click": "lattice-backup now",
+    "on-click-right": "lattice-backup-menu"
   },
 
   // Bitwarden, out of the tray and into a pill of its own -- the tray module draws every
