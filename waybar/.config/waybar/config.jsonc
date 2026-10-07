@@ -1,7 +1,9 @@
 {
   "layer": "top",
   "position": "top",
-  "height": 28,
+  // No "height": the bar takes its height from style.css (window > box), where a
+  // host's /etc/xdg/waybar drop-in can shrink it. A height set here is a floor CSS can't
+  // go under.
   "margin-top": 4,
   "margin-left": 10,
   "margin-right": 10,

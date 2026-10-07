@@ -11,6 +11,14 @@ window#waybar {
   color: @text;
 }
 
+/* The bar's height, here rather than as "height" in config.jsonc so a host can scale the
+   bar from lattice.display.barScale -- a config height is a floor CSS can't undercut.
+   Deliberately no #waybar: the drop-in is @imported, so it can't win on source order and
+   has to outrank this instead. */
+window > box {
+  min-height: 28px;
+}
+
 tooltip {
   background: alpha(@base, 0.82);
   border: 2px solid @accent;
