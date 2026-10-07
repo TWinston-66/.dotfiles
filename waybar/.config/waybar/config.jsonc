@@ -115,10 +115,9 @@
   // both are gone, because a pill in the centre group costs its width twice and the right
   // side needed the room. See the note on modules-center at the top.
   //
-  // lattice-weather right-aligns both temperatures in a three-character field, so this pill
-  // is a constant width whatever the reading is. Worth keeping: it is the widest thing in
-  // the left group, and a pill that grew by a character at -5° would walk the whole run
-  // towards the clock.
+  // Kept to the glyph and the temperature, with the feels-like reading in the tooltip: the
+  // backup pill appearing earlier in the run used to push a wider version of this pill into
+  // the clock.
   //
   // interval 900 is the API's own cadence, not a guess: Open-Meteo stamps its `current`
   // block "interval":900, so a faster poll returns the same numbers. A click doesn't have to
