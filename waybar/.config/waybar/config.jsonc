@@ -251,11 +251,15 @@
   // glyph is the lock state as the SSH agent sees it; click shows or hides the app's
   // window, which lives on special:bitwarden (a rule in ~/.dotfiles/hypr), or starts the
   // app if it is down. See modules/nixos/bitwarden.nix.
+  //
+  // A minute, not ten seconds: every poll is an `ssh-add -l` that wakes the Electron app
+  // and logs a line, times two bars when docked. A click repaints it at once through the
+  // signal, so only a lock or unlock done in the app itself waits for the next tick.
   "custom/bitwarden": {
     "exec": "lattice-bitwarden status",
     "return-type": "json",
     "signal": 8,
-    "interval": 10,
+    "interval": 60,
     "on-click": "lattice-bitwarden toggle"
   },
 
