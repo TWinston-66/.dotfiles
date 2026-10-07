@@ -28,6 +28,7 @@ setup_macos() {
 
     shared_packages
 
+    DOTFILES_STOW_PACKAGES+=(ghostty)
     stow_packages
 
     install_tpm
@@ -43,7 +44,7 @@ setup_macos() {
 setup_nixos() {
     require_commands stow git tmux
 
-    DOTFILES_STOW_PACKAGES+=(hypr ghostty-nixos waybar mako rofi satty swayosd gtk qt6ct applications zathura solaar mpv)
+    DOTFILES_STOW_PACKAGES+=(hypr foot waybar mako rofi satty swayosd gtk qt6ct applications zathura solaar mpv)
     stow_packages
     # Solaar rewrites a cookie in its config.yaml on every start. The file stays tracked for
     # its settings, but out of `git status`; see README to commit a change on purpose.

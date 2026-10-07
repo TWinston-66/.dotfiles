@@ -17,7 +17,7 @@
 </p>
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/TWinston-66/lattice/main/.github/assets/screenshots/terminals.png" alt="Ghostty, tmux, fastfetch and Neovim" width="100%">
+  <img src="https://raw.githubusercontent.com/TWinston-66/lattice/main/.github/assets/screenshots/terminals.png" alt="tmux, fastfetch and Neovim in a terminal" width="100%">
 </p>
 
 ## Why these dotfiles
@@ -26,8 +26,9 @@
   which works out which OS it's on and does the rest. It's safe to re-run.
 - **Nothing gets lost.** Any file Stow would replace is moved to `~/.dotfiles-backup/`
   first, in a folder stamped with the date.
-- **The same tools everywhere.** Ghostty, tmux, Neovim, zsh and starship behave the
-  same on macOS and NixOS, so the habits carry over.
+- **The same tools everywhere.** tmux, Neovim, zsh and starship behave the same on
+  macOS and NixOS, so the habits carry over. The terminal around them is Ghostty on macOS
+  and foot on NixOS; tmux does the tabs and splits on both.
 - **Edits apply live.** Configs are symlinked rather than copied, so a change to a bar or
   a keybinding needs no rebuild. On NixOS, they read their colours from lattice's
   generated theme files.
@@ -58,9 +59,9 @@ installs the packages and sets the login shell, so this only links configs.
 
 | | Packages |
 | --- | --- |
-| **Everywhere** | bat, btop, ghostty, git, gitmux, lazygit, nvim, pi, sesh, ssh, starship, tealdeer, tmux, zed, zsh |
-| **NixOS** | hypr, waybar, mako, rofi, satty, swayosd, gtk, qt6ct, zathura, solaar, desktop entries, and a NixOS variant of the ghostty config |
-| **macOS** | rectangle, copied in rather than linked, since Rectangle imports and renames its file |
+| **Everywhere** | bat, btop, git, gitmux, lazygit, nvim, pi, sesh, ssh, starship, tealdeer, tmux, zed, zsh |
+| **NixOS** | foot, hypr, waybar, mako, rofi, satty, swayosd, gtk, qt6ct, zathura, solaar, mpv, desktop entries |
+| **macOS** | ghostty; rectangle, copied in rather than linked, since Rectangle imports and renames its file |
 
 ## Update
 

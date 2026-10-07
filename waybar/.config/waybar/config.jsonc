@@ -47,7 +47,7 @@
     "format-window-separator": " ",
     "window-rewrite-default": "",
     "window-rewrite": {
-      "class<com.mitchellh.ghostty>": "",
+      "class<foot>": "",
       "class<firefox> title<.*Gemini.*>": "󰚩",
       "class<firefox> title<.*Reminders.*>": "󰄹",
       "class<firefox> title<.*Calendar.*>": "󰸗",

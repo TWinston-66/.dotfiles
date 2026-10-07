@@ -90,6 +90,33 @@ if [[ "$OSTYPE" == linux* ]] && command -v zeditor >/dev/null 2>&1; then
   alias zed='zeditor'
 fi
 
+# A command that ran 5s or more says so when it finishes, as a desktop notification -- what
+# Ghostty's notify-on-command-finish does on macOS. foot shows it only while its window is
+# out of focus (desktop-notifications.inhibit-when-focused); from inside tmux the request
+# goes out through passthrough, which tmux.conf allows. First in precmd, to see the
+# command's own exit status before another hook replaces it.
+if [[ "$OSTYPE" == linux* ]]; then
+  zmodload zsh/datetime
+  _lattice_cmd_start=0
+  _lattice_notify_preexec() {
+    _lattice_cmd_start=$EPOCHSECONDS
+    _lattice_cmd=${1//[[:cntrl:]]/ }
+  }
+  _lattice_notify_precmd() {
+    local st=$? elapsed osc e=$'\e'
+    ((_lattice_cmd_start)) || return 0
+    elapsed=$((EPOCHSECONDS - _lattice_cmd_start))
+    _lattice_cmd_start=0
+    ((elapsed >= 5)) || return 0
+    osc="$e]777;notify;Command finished;${_lattice_cmd[1,80]} (${elapsed}s, exit $st)$e\\"
+    [[ -n $TMUX ]] && osc="${e}Ptmux;${osc//$e/$e$e}$e\\"
+    printf '%s' "$osc" >/dev/tty
+  }
+  autoload -Uz add-zsh-hook
+  add-zsh-hook preexec _lattice_notify_preexec
+  precmd_functions=(_lattice_notify_precmd $precmd_functions)
+fi
+
 export EDITOR="nvim"
 
 export PATH="$HOME/.local/bin:$PATH"

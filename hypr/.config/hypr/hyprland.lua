@@ -53,7 +53,7 @@ end
 -- kill one app rather than the whole session (lattice's modules/nixos/desktop/session.nix).
 -- rofi does the same for whatever it launches, from run-command in its config.rasi.
 local app         = "uwsm app -- "
-local terminal    = app .. "ghostty"
+local terminal    = app .. "foot"
 local fileManager = app .. "thunar"
 local browser     = app .. "firefox"
 local menu        = "rofi -show drun"
