@@ -56,7 +56,7 @@ local app         = "uwsm app -- "
 local terminal    = app .. "foot"
 local fileManager = app .. "thunar"
 local browser     = app .. "firefox"
-local menu        = "rofi -show drun"
+local menu        = "lattice-launch"
 
 
 -------------------
@@ -717,6 +717,18 @@ hl.window_rule({
     match = { class = "^[Bb]itwarden$" },
 
     workspace = "special:bitwarden silent",
+})
+
+-- A conversation with Claude from the launcher (`??`, or "Continue in a terminal" under a
+-- `?` answer -- lattice-launch, in lattice's modules/nixos/desktop/launcher.nix) floats
+-- over the work it is about instead of halving a tile, and closes like any window.
+hl.window_rule({
+    name  = "float-claude-chat",
+    match = { class = "lattice-ask" },
+
+    float  = true,
+    size   = "(monitor_w*0.5) (monitor_h*0.65)",
+    center = true,
 })
 
 -- Qalculate! opens floating. Its keypad is a fixed grid with a natural size (766x540
