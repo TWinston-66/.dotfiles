@@ -33,23 +33,13 @@ tooltip label {
 #custom-clock,
 #custom-capslock,
 #tray,
-#wireplumber,
-#backlight,
-#network,
-#custom-power-profile,
-#custom-sunset,
-#custom-dnd,
 #custom-weather,
 #custom-power,
-#custom-tailscale,
-#custom-idle,
-#custom-wallpaper,
-#custom-theme,
-#custom-vault,
-#custom-backup,
-#custom-bitwarden,
 #custom-radio,
-#custom-battery {
+#toggles,
+#levels,
+#links,
+#energy {
   /* alpha() keeps @base as the single source of truth, so a re-accent still lands;
      the Hyprland layer rule on the "waybar" namespace blurs whatever shows through.
      The border is the accent, thinned, so every pill wears the wallpaper's colour while
@@ -59,6 +49,36 @@ tooltip label {
   border: 2px solid alpha(@accent, 0.45);
   border-radius: 9px;
   padding: 0 10px;
+}
+
+/* A gap the side groups keep from the clock however full they get. The centred clock takes
+   its width first; each side then gets what is left, and when it is short, GTK shrinks the
+   labels that can ellipsise (the radio, the network name) right up to the clock's border.
+   The margin is the bar's own spacing, so the gap matches the gaps between pills. */
+.modules-left {
+  margin-right: 5px;
+}
+
+.modules-right {
+  margin-left: 5px;
+}
+
+/* Segmented pills (the groups in config.jsonc): the frame comes from the block above
+   and the modules sit inside it with tighter padding, so a run reads as one pill rather
+   than several. A state that used to light a pill's border underlines its segment instead,
+   since the frame is shared. */
+#toggles,
+#levels,
+#links,
+#energy {
+  padding: 0 3px;
+}
+
+#toggles label,
+#levels label,
+#links label,
+#energy label {
+  padding: 0 7px;
 }
 
 #workspaces {
@@ -168,7 +188,6 @@ tooltip label {
    owns red for "something is listening right now". */
 #wireplumber.mic {
   color: @pink;
-  padding: 0 11px;
 }
 
 #wireplumber.muted {
@@ -189,12 +208,7 @@ tooltip label {
 
 /* Tailscale. The glyph tracks the connection and the colour tracks the exit node: teal
    when traffic is routed through one, red when the tunnel is up but going out the normal
-   route. Down, signed-out and warning keep their own colours. Icon-only, so it takes the
-   wider toggle padding. */
-#custom-tailscale {
-  padding: 0 11px;
-}
-
+   route. Down, signed-out and warning keep their own colours. */
 #custom-tailscale.running.exit-node {
   color: @teal;
 }
@@ -253,12 +267,11 @@ tooltip label {
   color: @overlay0;
 }
 
-/* Icon-only, so it matches the other toggles' wider padding. The colour is the profile's
-   own, and the one lattice-power-profile heads its tooltip with -- balanced keeps the mauve
-   this pill has always been, so the bar looks unchanged until a profile is actually set. */
+/* The colour is the profile's own, and the one lattice-power-profile heads its tooltip
+   with -- balanced keeps the mauve this pill has always been, so the bar looks unchanged
+   until a profile is actually set. */
 #custom-power-profile {
   color: @mauve;
-  padding: 0 11px;
 }
 
 #custom-power-profile.power-saver {
@@ -278,10 +291,6 @@ tooltip label {
 /* Keep-awake: teal while hypridle is stopped, muted when the idle timers are live -- same
    on/off convention as #custom-sunset above. The classes come from lattice-idle rather
    than from waybar's own inhibitor, which this replaced; see the note in config.jsonc. */
-#custom-idle {
-  padding: 0 11px;
-}
-
 #custom-idle.awake {
   color: @teal;
 }
@@ -309,7 +318,6 @@ tooltip label {
    longer is. */
 #custom-vault {
   color: @green;
-  padding: 0 11px;
 }
 
 #custom-vault.dirty {
@@ -335,11 +343,10 @@ tooltip label {
 
 /* Backups: green with the drive in and the last backup recent, sapphire while one runs,
    peach a week after the last backup, red at two weeks or when a run or check failed.
-   The border goes to full accent while the backups are mounted for browsing, since that
+   The segment is underlined in the accent while the backups are mounted for browsing, since that
    holds off pruning. */
 #custom-backup {
   color: @green;
-  padding: 0 11px;
 }
 
 #custom-backup.running {
@@ -356,15 +363,14 @@ tooltip label {
 }
 
 #custom-backup.browsing {
-  border-color: @accent;
+  box-shadow: inset 0 -2px @accent;
 }
 
 /* Bitwarden: green while the vault is open and the SSH agent serves keys, muted while it
    is locked, red when the app is not running at all -- then there is no agent and no
-   browser unlock. The border goes to full accent while its scratchpad is on screen. */
+   browser unlock. Its segment is underlined in the accent while its scratchpad is on screen. */
 #custom-bitwarden {
   color: @green;
-  padding: 0 11px;
 }
 
 #custom-bitwarden.locked {
@@ -376,7 +382,30 @@ tooltip label {
 }
 
 #custom-bitwarden.shown {
-  border-color: @accent;
+  box-shadow: inset 0 -2px @accent;
+}
+
+/* Pomodoro: muted while off, red through a work phase, green through a break, muted again
+   while paused, and peach once a break is over and the next one waits for a click. */
+#custom-pomodoro.idle {
+  color: @overlay1;
+}
+
+#custom-pomodoro.work {
+  color: @red;
+}
+
+#custom-pomodoro.break {
+  color: @green;
+}
+
+#custom-pomodoro.ready {
+  color: @peach;
+}
+
+/* After .work and .break, which a paused pill also carries. */
+#custom-pomodoro.paused {
+  color: @overlay1;
 }
 
 /* The radio: plain text while it plays, muted while paused. */
@@ -391,11 +420,6 @@ tooltip label {
 
 /* Night light: accent when the filter is on, muted when it's off, so the bar reads
    at a glance. Classes come from lattice-sunset's JSON. */
-#custom-sunset,
-#custom-dnd {
-  padding: 0 11px;
-}
-
 #custom-sunset.warm {
   color: @peach;
 }
@@ -420,18 +444,15 @@ tooltip label {
 /* Wallpaper. The only pill in the left group that is an action rather than a state, so
    it takes one flat colour and no second class -- there is no "off" for it to be in.
    accentAlt, the other colour every wallpaper in the pool is drawn with, so the control
-   that changes the accent shows the one it is on. Icon-only, so it matches the toggles'
-   wider padding. */
+   that changes the accent shows the one it is on. */
 #custom-wallpaper {
   color: @accentAlt;
-  padding: 0 11px;
 }
 
 /* Theme: the accent itself, beside the wallpaper's accentAlt, so the pair of controls reads
    as the pair of colours. */
 #custom-theme {
   color: @accent;
-  padding: 0 11px;
 }
 
 /* Session menu: the one pill that can end the session, so it sits at the far end in

@@ -19,13 +19,20 @@
   // spent pushing the group's right edge towards the right-hand group. Alone, the clock
   // reaches only 71px either side of centre and the right side gets ~130px back.
   //
-  // So the three click-toggles and the weather moved to the left group, which is anchored
-  // to the left edge and had ~210px going spare the moment the window title came out.
-  // They stay in one run, weather last, so it is still the pill next to the clock and
-  // "what time is it" and "what is it doing outside" are still one glance apart.
-  "modules-left": ["hyprland/workspaces", "privacy", "custom/capslock", "custom/sunset", "custom/dnd", "custom/idle", "custom/wallpaper", "custom/theme", "custom/vault", "custom/backup", "custom/bitwarden", "custom/radio", "custom/weather"],
+  // Each side gets half the bar less half the clock, and on the Mac's 1324px the left ran
+  // out first: the toggles, the radio and a pomodoro countdown don't fit beside the
+  // workspaces. So the weather sits first on the right instead -- still the pill next to
+  // the clock, so "what time is it" and "what is it doing outside" are one glance apart --
+  // and the right side pays for it by segmenting its readouts: the levels (volume, mic,
+  // brightness) share one frame, the connection another, the power profile and battery a
+  // third. A pill's border, padding and the bar's spacing cost ~25px a seam, which is what
+  // makes room.
+  // Privacy went right with the weather: a call or a screen share holds it up for as long
+  // as the pomodoro or the backup, and the left has room for only one of those at a time.
+  // Caps lock is up for seconds, so it stays left and the radio shrinks for it.
+  "modules-left": ["hyprland/workspaces", "custom/capslock", "group/toggles", "custom/radio"],
   "modules-center": ["custom/clock"],
-  "modules-right": ["tray", "wireplumber", "wireplumber#mic", "backlight", "network", "custom/tailscale", "custom/power-profile", "custom/battery", "custom/power"],
+  "modules-right": ["custom/weather", "privacy", "tray", "group/levels", "group/links", "group/energy", "custom/power"],
 
   // The number alone says where a window is but not what it is, which stops being enough
   // as soon as three or four workspaces are in use at once. {windows} appends one glyph
@@ -86,8 +93,7 @@
   },
 
   // Caps lock, for the keyboards without an LED for it. Only on the bar while it is on --
-  // lattice-capslock prints empty text otherwise -- so it sits with privacy, the other pill
-  // that is only there to say something is happening. See modules/nixos/profiles/graphical.nix.
+  // lattice-capslock prints empty text otherwise. See modules/nixos/profiles/graphical.nix.
   "custom/capslock": {
     "exec": "lattice-capslock",
     "return-type": "json",
@@ -139,6 +145,43 @@
   "tray": {
     "icon-size": 14,
     "spacing": 8
+  },
+
+  // The click-toggles and the two wallpaper/theme actions share one segmented pill: one
+  // frame, no gaps, each icon still its own module and click target. As separate pills
+  // each one paid for a border, padding and the bar's spacing around a single glyph, and
+  // on the Mac's 1344px the left group overflowed into the clock and ellipsised the radio.
+  // Styled as #toggles in style.css.
+  "group/toggles": {
+    "orientation": "horizontal",
+    "modules": ["custom/sunset", "custom/dnd", "custom/idle", "custom/wallpaper", "custom/theme", "custom/vault", "custom/backup", "custom/bitwarden", "custom/pomodoro"]
+  },
+
+  // Pomodoro (lattice/modules/nixos/desktop/pomodoro.nix). Last in the toggles so the
+  // countdown growing and shrinking the segment moves nothing else. A timer icon when off;
+  // click starts or pauses, right-click is a menu with skip and stop -- the Mac's trackpad
+  // has no middle click. Ticks every second for the countdown, and RTMIN+11 on every change.
+  "custom/pomodoro": {
+    "exec": "lattice-pomodoro bar",
+    "return-type": "json",
+    "signal": 11,
+    "interval": 1,
+    "on-click": "lattice-pomodoro toggle",
+    "on-click-right": "lattice-pomodoro menu"
+  },
+
+  // The right side's segmented pills; see modules-right above.
+  "group/levels": {
+    "orientation": "horizontal",
+    "modules": ["wireplumber", "wireplumber#mic", "backlight"]
+  },
+  "group/links": {
+    "orientation": "horizontal",
+    "modules": ["network", "custom/tailscale"]
+  },
+  "group/energy": {
+    "orientation": "horizontal",
+    "modules": ["custom/power-profile", "custom/battery"]
   },
 
   // lattice-sunset emits the JSON and signals RTMIN+1 after every change, so the bar
