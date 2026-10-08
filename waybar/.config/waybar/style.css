@@ -408,6 +408,20 @@ tooltip label {
   color: @overlay1;
 }
 
+/* Reading: green once a page has been turned today, peach while the streak waits on
+   today, muted with no streak to keep. */
+#custom-reading.today {
+  color: @green;
+}
+
+#custom-reading.pending {
+  color: @peach;
+}
+
+#custom-reading.idle {
+  color: @overlay1;
+}
+
 /* The radio: plain text while it plays, muted while paused. */
 #custom-radio {
   color: @text;

@@ -154,7 +154,7 @@
   // Styled as #toggles in style.css.
   "group/toggles": {
     "orientation": "horizontal",
-    "modules": ["custom/sunset", "custom/dnd", "custom/idle", "custom/wallpaper", "custom/theme", "custom/vault", "custom/backup", "custom/bitwarden", "custom/pomodoro"]
+    "modules": ["custom/sunset", "custom/dnd", "custom/idle", "custom/wallpaper", "custom/theme", "custom/vault", "custom/backup", "custom/bitwarden", "custom/reading", "custom/pomodoro"]
   },
 
   // Pomodoro (lattice/modules/nixos/desktop/pomodoro.nix). Last in the toggles so the
@@ -288,6 +288,20 @@
     "interval": 10,
     "on-click": "lattice-vault fetch",
     "on-click-right": "lattice-vault open"
+  },
+
+  // Reading on the Kindle, from KoInsight on labpi8 (lattice/modules/nixos/desktop/books.nix).
+  // A book and the streak in days beside it; the tooltip has the book in progress and
+  // today's minutes. Green once something has been read today, peach while a streak is
+  // still waiting on today, muted with no streak. KoInsight only hears from the Kindle when
+  // it syncs -- on sleep, or when it's plugged in, which signals RTMIN+12 -- so a slow
+  // interval is all the polling it needs. Click opens KoInsight.
+  "custom/reading": {
+    "exec": "lattice-books bar",
+    "return-type": "json",
+    "signal": 12,
+    "interval": 600,
+    "on-click": "lattice-books stats"
   },
 
   // Backups to the external drive (modules/nixos/backup.nix). Hidden unless there is
