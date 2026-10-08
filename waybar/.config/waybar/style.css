@@ -48,6 +48,7 @@ tooltip label {
 #custom-vault,
 #custom-backup,
 #custom-bitwarden,
+#custom-radio,
 #custom-battery {
   /* alpha() keeps @base as the single source of truth, so a re-accent still lands;
      the Hyprland layer rule on the "waybar" namespace blurs whatever shows through.
@@ -376,6 +377,16 @@ tooltip label {
 
 #custom-bitwarden.shown {
   border-color: @accent;
+}
+
+/* The radio: plain text while it plays, muted while paused. */
+#custom-radio {
+  color: @text;
+  padding: 0 11px;
+}
+
+#custom-radio.paused {
+  color: @overlay1;
 }
 
 /* Night light: accent when the filter is on, muted when it's off, so the bar reads

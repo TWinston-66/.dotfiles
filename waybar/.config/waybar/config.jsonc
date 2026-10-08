@@ -23,7 +23,7 @@
   // to the left edge and had ~210px going spare the moment the window title came out.
   // They stay in one run, weather last, so it is still the pill next to the clock and
   // "what time is it" and "what is it doing outside" are still one glance apart.
-  "modules-left": ["hyprland/workspaces", "privacy", "custom/capslock", "custom/sunset", "custom/dnd", "custom/idle", "custom/wallpaper", "custom/theme", "custom/vault", "custom/backup", "custom/bitwarden", "custom/weather"],
+  "modules-left": ["hyprland/workspaces", "privacy", "custom/capslock", "custom/sunset", "custom/dnd", "custom/idle", "custom/wallpaper", "custom/theme", "custom/vault", "custom/backup", "custom/bitwarden", "custom/radio", "custom/weather"],
   "modules-center": ["custom/clock"],
   "modules-right": ["tray", "wireplumber", "wireplumber#mic", "backlight", "network", "custom/tailscale", "custom/power-profile", "custom/battery", "custom/power"],
 
@@ -277,6 +277,23 @@
     "signal": 8,
     "interval": 60,
     "on-click": "lattice-bitwarden toggle"
+  },
+
+  // SomaFM (lattice/modules/nixos/desktop/radio.nix). Hidden unless the radio is on; the
+  // text is the channel, the tooltip the track. Click is the player -- cover art, pause,
+  // change channel, stop -- right-click pauses, middle-click stops. The player and every
+  // track change signal RTMIN+10, so the interval only backs that up. Capped in length:
+  // the channel names run to "Department Store Christmas", and this group pushes the
+  // weather towards the clock.
+  "custom/radio": {
+    "exec": "lattice-radio bar",
+    "return-type": "json",
+    "signal": 10,
+    "interval": 30,
+    "max-length": 22,
+    "on-click": "lattice-radio menu",
+    "on-click-right": "lattice-radio toggle",
+    "on-click-middle": "lattice-radio stop"
   },
 
   // Muted keeps only the glyph: the word made this the widest state the pill can be in,
