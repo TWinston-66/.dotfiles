@@ -264,10 +264,10 @@ hl.layer_rule({
 })
 
 -- Ref https://wiki.hypr.land/Configuring/Basics/Workspace-Rules/
--- "Smart gaps" / "No gaps when only": a lone tiled window (or a lone fullscreen one)
--- drops its gaps, border and rounding, so a single window sits flush to the screen.
-hl.workspace_rule({ workspace = "w[tv1]", gaps_out = 0, gaps_in = 0 })
-hl.workspace_rule({ workspace = "f[1]",   gaps_out = 0, gaps_in = 0 })
+-- A lone tiled window (or a lone fullscreen one) gets half the usual outer gap, so it
+-- nearly fills the screen without touching the bar, and keeps its border and rounding.
+hl.workspace_rule({ workspace = "w[tv1]", gaps_out = 5, gaps_in = 0 })
+hl.workspace_rule({ workspace = "f[1]",   gaps_out = 5, gaps_in = 0 })
 
 -- Keep the workspaces on the bar even when empty, so the pills stop reflowing as windows
 -- come and go and the SUPER+[1-9,0] binds always have a visible target. Persistence belongs
@@ -327,19 +327,6 @@ end
 hl.on("monitor.removed", function()
     hl.exec_cmd("hyprctl reload")
 end)
-
-hl.window_rule({
-    name  = "no-gaps-wtv1",
-    match = { float = false, workspace = "w[tv1]" },
-    border_size = 0,
-    rounding    = 0,
-})
-hl.window_rule({
-    name  = "no-gaps-f1",
-    match = { float = false, workspace = "f[1]" },
-    border_size = 0,
-    rounding    = 0,
-})
 
 -- See https://wiki.hypr.land/Configuring/Layouts/Dwindle-Layout/ for more
 hl.config({
