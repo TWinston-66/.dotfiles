@@ -28,7 +28,8 @@
   first, in a folder stamped with the date.
 - **The same tools everywhere.** tmux, Neovim, zsh and starship behave the same on
   macOS and NixOS, so the habits carry over. The terminal around them is Ghostty on macOS
-  and foot on NixOS; tmux does the tabs and splits on both.
+  and foot on NixOS; tmux does the tabs and splits on both. On NixOS, lattice ships foot,
+  tmux and the rest of the desktop's configs, so this repo keeps only what is personal.
 - **Edits apply live.** Configs are symlinked rather than copied, so a change to a bar or
   a keybinding needs no rebuild. On NixOS, they read their colours from lattice's
   generated theme files.
@@ -51,7 +52,7 @@ installs the packages and sets the login shell, so this only links configs.
 | --- | :---: | :---: |
 | Install packages from the `Brewfile`, plus Claude Code and pi | ✓ | lattice |
 | Link configs with Stow | ✓ | ✓ |
-| Install tmux plugins | ✓ | ✓ |
+| Install tmux plugins | ✓ | lattice |
 | Set zsh as the login shell | ✓ | lattice |
 | Apply system defaults, display layout and Touch ID for `sudo` | ✓ | |
 
@@ -59,9 +60,9 @@ installs the packages and sets the login shell, so this only links configs.
 
 | | Packages |
 | --- | --- |
-| **Everywhere** | bat, btop, git, gitmux, lazygit, nvim, pi, sesh, ssh, starship, tealdeer, tmux, zed, zsh |
-| **NixOS** | foot, hypr, waybar, mako, rofi, satty, swayosd, gtk, qt6ct, zathura, solaar, mpv, desktop entries |
-| **macOS** | ghostty; rectangle, copied in rather than linked, since Rectangle imports and renames its file |
+| **Everywhere** | bat, btop, git, lazygit, nvim, pi, sesh, ssh, starship, tealdeer, zed, zsh |
+| **NixOS** | hypr, waybar, solaar, desktop entries for apps that wrote their own |
+| **macOS** | ghostty, tmux, gitmux; rectangle, copied in rather than linked, since Rectangle imports and renames its file |
 
 ## Update
 

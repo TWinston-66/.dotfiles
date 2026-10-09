@@ -1,5 +1,0 @@
-[Desktop Entry]
-Type=Application
-Name=Bulk Rename
-Exec=thunar --bulk-rename %F
-NoDisplay=true

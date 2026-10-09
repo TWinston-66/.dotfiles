@@ -1,4 +1,0 @@
-/* libadwaita apps take no GTK theme, only this file, read at launch. Its colours are the
-   theme lattice-theme has picked: theme.gtk.css, rewritten on every theme switch and
-   wallpaper pick, the same file the GTK3 theme imports. GTK CSS has no ~, hence the path. */
-@import url("file:///home/winston/.cache/lattice/theme.gtk.css");

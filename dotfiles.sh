@@ -28,7 +28,8 @@ setup_macos() {
 
     shared_packages
 
-    DOTFILES_STOW_PACKAGES+=(ghostty)
+    # On NixOS, lattice ships tmux and its plugins; here they are this repo's.
+    DOTFILES_STOW_PACKAGES+=(ghostty tmux gitmux)
     stow_packages
 
     install_tpm
@@ -40,16 +41,16 @@ setup_macos() {
     log_info "1. run \`sudo tailscale up\`"
 }
 
-# Packages and the login shell come from lattice, so this only links configs.
+# Packages, the login shell, the terminal, tmux and the desktop's own configs come from
+# lattice, so this only links what is personal.
 setup_nixos() {
-    require_commands stow git tmux
+    require_commands stow git
 
-    DOTFILES_STOW_PACKAGES+=(hypr foot waybar mako rofi satty swayosd gtk qt6ct applications zathura solaar mpv)
+    DOTFILES_STOW_PACKAGES+=(hypr waybar applications solaar)
     stow_packages
     # Solaar rewrites a cookie in its config.yaml on every start. The file stays tracked for
     # its settings, but out of `git status`; see README to commit a change on purpose.
     git -C "$DOTFILES_DIR" update-index --skip-worktree solaar/.config/solaar/config.yaml
-    install_tpm
 
     log_title "Done"
     log_ok "Configs linked."

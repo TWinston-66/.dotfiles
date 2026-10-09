@@ -1,5 +1,0 @@
-[Desktop Entry]
-Type=Application
-Name=GVim
-Exec=gvim -f %F
-NoDisplay=true

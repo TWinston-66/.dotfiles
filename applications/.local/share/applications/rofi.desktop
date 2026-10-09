@@ -1,5 +1,0 @@
-[Desktop Entry]
-Type=Application
-Name=Rofi
-Exec=rofi -show
-NoDisplay=true
