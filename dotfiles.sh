@@ -41,12 +41,12 @@ setup_macos() {
     log_info "1. run \`sudo tailscale up\`"
 }
 
-# Packages, the login shell, the terminal, tmux and the desktop's own configs come from
-# lattice, so this only links what is personal.
+# Packages, the login shell, the terminal, tmux, Hyprland and the desktop's own configs
+# come from lattice, so this only links what is personal.
 setup_nixos() {
     require_commands stow git
 
-    DOTFILES_STOW_PACKAGES+=(hypr applications solaar)
+    DOTFILES_STOW_PACKAGES+=(applications solaar)
     stow_packages
     # Solaar rewrites a cookie in its config.yaml on every start. The file stays tracked for
     # its settings, but out of `git status`; see README to commit a change on purpose.
