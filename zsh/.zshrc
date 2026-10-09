@@ -11,33 +11,6 @@ if [ -z "$TMUX" ] && command -v tmux >/dev/null 2>&1; then
   exit
 fi
 
-# The theme lattice-theme has picked (lattice's modules/nixos/theme.nix writes these on
-# every theme switch and wallpaper pick). Each tool is pointed at its file rather than
-# given the colours, so it follows without a new shell: fzf, bat and delta read theirs on
-# every run, starship at every prompt, lazygit and btop at launch. None of these exist on
-# macOS, which keeps the Catppuccin Mocha literals below and in each tool's own config.
-_lattice="$HOME/.cache/lattice"
-
-if [ -r "$_lattice/theme.fzf" ]; then
-  export FZF_DEFAULT_OPTS_FILE="$_lattice/theme.fzf"
-else
-  export FZF_DEFAULT_OPTS=" \
---color=bg+:#313244,bg:#1e1e2e,spinner:#f5e0dc,hl:#f38ba8 \
---color=fg:#cdd6f4,header:#f38ba8,info:#cba6f7,pointer:#f5e0dc \
---color=marker:#b4befe,fg+:#cdd6f4,prompt:#cba6f7,hl+:#f38ba8 \
---color=selected-bg:#45475a \
---color=border:#6c7086,label:#cdd6f4"
-fi
-[ -r "$_lattice/starship.toml" ] && export STARSHIP_CONFIG="$_lattice/starship.toml"
-[ -r "$_lattice/theme.bat" ] && export BAT_CONFIG_PATH="$_lattice/theme.bat"
-[ -r "$_lattice/theme.lazygit.yml" ] &&
-  export LG_CONFIG_FILE="$XDG_CONFIG_HOME/lazygit/config.yml,$_lattice/theme.lazygit.yml"
-# btop.conf names catppuccin_mocha, and --themes-dir is searched ahead of
-# ~/.config/btop/themes, so the generated file of that name there wins.
-[ -r "$_lattice/catppuccin_mocha.theme" ] && alias btop="btop --themes-dir $_lattice"
-
-eval "$(fzf --zsh)"
-
 if [[ "$OSTYPE" == darwin* && -f "$HOME/.ssh/id_ed25519" ]]; then
   ssh-add --apple-use-keychain "$HOME/.ssh/id_ed25519" >/dev/null 2>&1
 fi
@@ -47,26 +20,13 @@ HISTSIZE=50000
 SAVEHIST=50000
 setopt SHARE_HISTORY HIST_IGNORE_DUPS HIST_IGNORE_SPACE
 
-if command -v brew >/dev/null 2>&1; then
-  FPATH="$(brew --prefix)/share/zsh/site-functions:${FPATH}"
-fi
-autoload -Uz compinit && compinit
-
-eval "$(starship init zsh)"
-
-eval "$(zoxide init zsh)"
-
-# Where zsh plugins live: Homebrew on macOS, the system profile on NixOS
-if command -v brew >/dev/null 2>&1; then
-  _share="$(brew --prefix)/share"
-else
-  _share=/run/current-system/sw/share
-fi
-_zsh_as="$_share/zsh-autosuggestions/zsh-autosuggestions.zsh"
-[ -f "$_zsh_as" ] && source "$_zsh_as"
-unset _zsh_as
-
 export TEALDEER_CONFIG_DIR="$HOME/.config/tealdeer"
+export EDITOR="nvim"
+export PATH="$HOME/.local/bin:$PATH"
+
+if [ -d "/Applications/calibre.app/Contents/MacOS" ]; then
+  export PATH="/Applications/calibre.app/Contents/MacOS:$PATH"
+fi
 
 alias ls='eza --icons -a --group-directories-first'
 alias ll='eza -la --icons --git --header --group-directories-first'
@@ -90,40 +50,35 @@ if [[ "$OSTYPE" == linux* ]] && command -v zeditor >/dev/null 2>&1; then
   alias zed='zeditor'
 fi
 
-# A command that ran 5s or more says so when it finishes, as a desktop notification -- what
-# Ghostty's notify-on-command-finish does on macOS. foot shows it only while its window is
-# out of focus (desktop-notifications.inhibit-when-focused); from inside tmux the request
-# goes out through passthrough, which tmux.conf allows. First in precmd, to see the
-# command's own exit status before another hook replaces it.
-if [[ "$OSTYPE" == linux* ]]; then
-  zmodload zsh/datetime
-  _lattice_cmd_start=0
-  _lattice_notify_preexec() {
-    _lattice_cmd_start=$EPOCHSECONDS
-    _lattice_cmd=${1//[[:cntrl:]]/ }
-  }
-  _lattice_notify_precmd() {
-    local st=$? elapsed osc e=$'\e'
-    ((_lattice_cmd_start)) || return 0
-    elapsed=$((EPOCHSECONDS - _lattice_cmd_start))
-    _lattice_cmd_start=0
-    ((elapsed >= 5)) || return 0
-    osc="$e]777;notify;Command finished;${_lattice_cmd[1,80]} (${elapsed}s, exit $st)$e\\"
-    [[ -n $TMUX ]] && osc="${e}Ptmux;${osc//$e/$e$e}$e\\"
-    printf '%s' "$osc" >/dev/tty
-  }
-  autoload -Uz add-zsh-hook
-  add-zsh-hook preexec _lattice_notify_preexec
-  precmd_functions=(_lattice_notify_precmd $precmd_functions)
+# On lattice, /etc/zshrc has already set up completion, fzf, starship, zoxide, the plugins,
+# the theme's colours and the finished-command notification, and says so with
+# LATTICE_SHELL. The rest of this file is the same for macOS, in Catppuccin Mocha.
+[[ -n $LATTICE_SHELL ]] && return
+
+export FZF_DEFAULT_OPTS=" \
+--color=bg+:#313244,bg:#1e1e2e,spinner:#f5e0dc,hl:#f38ba8 \
+--color=fg:#cdd6f4,header:#f38ba8,info:#cba6f7,pointer:#f5e0dc \
+--color=marker:#b4befe,fg+:#cdd6f4,prompt:#cba6f7,hl+:#f38ba8 \
+--color=selected-bg:#45475a \
+--color=border:#6c7086,label:#cdd6f4"
+
+if command -v brew >/dev/null 2>&1; then
+  FPATH="$(brew --prefix)/share/zsh/site-functions:${FPATH}"
 fi
+autoload -Uz compinit && compinit
 
-export EDITOR="nvim"
+eval "$(fzf --zsh)"
+eval "$(starship init zsh)"
+eval "$(zoxide init zsh)"
 
-export PATH="$HOME/.local/bin:$PATH"
-
-if [ -d "/Applications/calibre.app/Contents/MacOS" ]; then
-  export PATH="/Applications/calibre.app/Contents/MacOS:$PATH"
+if command -v brew >/dev/null 2>&1; then
+  _share="$(brew --prefix)/share"
+else
+  _share=/run/current-system/sw/share
 fi
+_zsh_as="$_share/zsh-autosuggestions/zsh-autosuggestions.zsh"
+[ -f "$_zsh_as" ] && source "$_zsh_as"
+unset _zsh_as
 
 _zsh_hl="$_share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
 if [ -f "$_zsh_hl" ]; then
@@ -144,24 +99,6 @@ if [ -f "$_zsh_hl" ]; then
   ZSH_HIGHLIGHT_STYLES[double-quoted-argument]='fg=#f9e2af'
   ZSH_HIGHLIGHT_STYLES[comment]='fg=#6c7086,italic'
   ZSH_HIGHLIGHT_STYLES[bracket-error]='fg=#f38ba8'
-
-  # The theme's own, over the Mocha above, and again at any prompt after it changes -- the
-  # styles are read as each line is drawn, so a switch recolours shells already open.
-  if [ -r "$_lattice/theme.zsh" ]; then
-    zmodload -F zsh/stat b:zstat
-    _lattice_zsh_mtime=0
-    _lattice_zsh_reload() {
-      local mtime
-      mtime=$(zstat +mtime "$_lattice/theme.zsh" 2>/dev/null) || return
-      if [[ $mtime != "$_lattice_zsh_mtime" ]]; then
-        _lattice_zsh_mtime=$mtime
-        source "$_lattice/theme.zsh"
-      fi
-    }
-    _lattice_zsh_reload
-    autoload -Uz add-zsh-hook
-    add-zsh-hook precmd _lattice_zsh_reload
-  fi
 
   source "$_zsh_hl"
 fi
