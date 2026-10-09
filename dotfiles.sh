@@ -46,7 +46,7 @@ setup_macos() {
 setup_nixos() {
     require_commands stow git
 
-    DOTFILES_STOW_PACKAGES+=(hypr waybar applications solaar)
+    DOTFILES_STOW_PACKAGES+=(hypr applications solaar)
     stow_packages
     # Solaar rewrites a cookie in its config.yaml on every start. The file stays tracked for
     # its settings, but out of `git status`; see README to commit a change on purpose.

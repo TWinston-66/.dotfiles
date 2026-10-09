@@ -61,7 +61,7 @@ installs the packages and sets the login shell, so this only links configs.
 | | Packages |
 | --- | --- |
 | **Everywhere** | bat, btop, git, lazygit, nvim, pi, sesh, ssh, starship, tealdeer, zed, zsh |
-| **NixOS** | hypr, waybar, solaar, desktop entries for apps that wrote their own |
+| **NixOS** | hypr, solaar, desktop entries for apps that wrote their own |
 | **macOS** | ghostty, tmux, gitmux; rectangle, copied in rather than linked, since Rectangle imports and renames its file |
 
 ## Update
