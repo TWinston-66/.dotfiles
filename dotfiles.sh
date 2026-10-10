@@ -46,7 +46,10 @@ setup_macos() {
 setup_nixos() {
     require_commands stow git
 
-    DOTFILES_STOW_PACKAGES+=(applications solaar)
+    # No ~/.local/share/applications package: what was left in it after the hides moved to
+    # lattice was all app-written (Claude Code's URL handler, Chromium's VIA app,
+    # Thunderbird's default-mail entries), and the apps rewrite their own files there.
+    DOTFILES_STOW_PACKAGES+=(solaar)
     stow_packages
     # Solaar rewrites a cookie in its config.yaml on every start. The file stays tracked for
     # its settings, but out of `git status`; see README to commit a change on purpose.

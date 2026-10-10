@@ -1,8 +1,0 @@
-[Desktop Entry]
-Version=1.0
-Terminal=false
-Type=Application
-Name=VIA
-Exec=chromium --profile-directory=Default --app-id=lkpeghlmmahbnmheobdideajnmeofapp
-Icon=chrome-lkpeghlmmahbnmheobdideajnmeofapp-Default
-StartupWMClass=crx_lkpeghlmmahbnmheobdideajnmeofapp
