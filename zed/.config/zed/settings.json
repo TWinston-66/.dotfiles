@@ -32,7 +32,7 @@
   "buffer_font_size": 15,
   "theme": {
     "mode": "dark",
-    "dark": "Gruvbox Material",
+    "dark": "Gruvbox Dark",
     "light": "Gruvbox Material"
   }
 }
