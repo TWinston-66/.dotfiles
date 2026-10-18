@@ -170,6 +170,7 @@ defaults write com.apple.controlcenter "NSStatusItem VisibleCC Bluetooth"  -bool
 defaults write com.apple.controlcenter "NSStatusItem VisibleCC FocusModes" -bool false
 defaults write com.apple.controlcenter "NSStatusItem VisibleCC NowPlaying" -bool false
 defaults write com.apple.Siri StatusMenuVisible -bool true
+defaults -currentHost write com.apple.controlcenter Weather -int 2
 
 #### DOCK ####
 defaults write com.apple.dock orientation -string "bottom"
@@ -207,6 +208,7 @@ if command -v dockutil >/dev/null 2>&1; then
     "/Applications/Zed.app"
     "/Applications/Xcode.app"
     "/System/Applications/iPhone Mirroring.app"
+    "/Applications/SomaFM.app" # iOS app — App Store only, mas can't install it
     "/System/Applications/Passwords.app"
     "/Applications/Cryptomator.app"
     "/System/Applications/System Settings.app"
@@ -243,6 +245,13 @@ if command -v defaultbrowser >/dev/null 2>&1; then
 else
   echo "NOTE: defaultbrowser not installed — skipping default browser (see Brewfile)" >&2
 fi
+
+### SKIM ###
+# Live LaTeX preview: reload on change, Cmd-Shift-click jumps back to Zed (synctex)
+defaults write net.sourceforge.skim-app.skim SKAutoReloadFileUpdate -bool true
+defaults write net.sourceforge.skim-app.skim SKTeXEditorPreset -string ""
+defaults write net.sourceforge.skim-app.skim SKTeXEditorCommand -string "/opt/homebrew/bin/zed"
+defaults write net.sourceforge.skim-app.skim SKTeXEditorArguments -string '"%file":%line'
 
 ### RECTANGLE ###
 # Rectangle imports this file on launch (after a confirm dialog), then renames it
