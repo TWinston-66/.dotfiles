@@ -2,11 +2,9 @@ typeset -U path PATH
 
 export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
 
-if [ -d /opt/homebrew/bin ]; then
-  eval "$(/opt/homebrew/bin/brew shellenv)"
-fi
+eval "$(/opt/homebrew/bin/brew shellenv)"
 
-# Every terminal window is tmux, as on lattice: the first takes the session named main, and a
+# Every terminal window is tmux: the first takes the session named main, and a
 # window opened while main is already on screen gets a session of its own, which dies with
 # the window (and which tmux.conf leaves out of resurrect's saves). Starts main if the server
 # is gone.
@@ -44,8 +42,7 @@ alias cd='z'
 alias where='fd'
 alias lookf='rg'
 
-# Everything below is lattice's /etc/zshrc (modules/nixos/zshrc.zsh), with its live theme
-# files written out: Gruvbox Material with the blue accent.
+# Gruvbox Material with the blue accent, for fzf here and syntax highlighting below.
 export FZF_DEFAULT_OPTS=" \
 --color=bg+:#32302f,bg:#282828,spinner:#dea473,hl:#ea6962 \
 --color=fg:#d4be98,header:#ea6962,info:#d3869b,pointer:#dea473 \
@@ -53,7 +50,7 @@ export FZF_DEFAULT_OPTS=" \
 --color=selected-bg:#45403d \
 --color=border:#7c6f64,label:#d4be98"
 
-_share="$(brew --prefix)/share"
+_share="$HOMEBREW_PREFIX/share"
 FPATH="$_share/zsh/site-functions:${FPATH}"
 autoload -Uz compinit && compinit
 
@@ -68,23 +65,23 @@ source "$_share/zsh-autosuggestions/zsh-autosuggestions.zsh"
 # precmd, to see the command's own exit status before another hook replaces it.
 zmodload zsh/datetime
 autoload -Uz add-zsh-hook
-_lattice_cmd_start=0
-_lattice_notify_preexec() {
-  _lattice_cmd_start=$EPOCHSECONDS
-  _lattice_cmd=${1//[[:cntrl:]]/ }
+_notify_cmd_start=0
+_notify_notify_preexec() {
+  _notify_cmd_start=$EPOCHSECONDS
+  _notify_cmd=${1//[[:cntrl:]]/ }
 }
-_lattice_notify_precmd() {
+_notify_notify_precmd() {
   local st=$? elapsed osc e=$'\e'
-  ((_lattice_cmd_start)) || return 0
-  elapsed=$((EPOCHSECONDS - _lattice_cmd_start))
-  _lattice_cmd_start=0
+  ((_notify_cmd_start)) || return 0
+  elapsed=$((EPOCHSECONDS - _notify_cmd_start))
+  _notify_cmd_start=0
   ((elapsed >= 5)) || return 0
-  osc="$e]777;notify;Command finished;${_lattice_cmd[1,80]} (${elapsed}s, exit $st)$e\\"
+  osc="$e]777;notify;Command finished;${_notify_cmd[1,80]} (${elapsed}s, exit $st)$e\\"
   [[ -n $TMUX ]] && osc="${e}Ptmux;${osc//$e/$e$e}$e\\"
   printf '%s' "$osc" >/dev/tty
 }
-add-zsh-hook preexec _lattice_notify_preexec
-precmd_functions=(_lattice_notify_precmd $precmd_functions)
+add-zsh-hook preexec _notify_notify_preexec
+precmd_functions=(_notify_notify_precmd $precmd_functions)
 
 ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets)
 typeset -gA ZSH_HIGHLIGHT_STYLES

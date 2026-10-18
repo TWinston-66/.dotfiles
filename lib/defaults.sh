@@ -18,8 +18,8 @@ sudo nvram SystemAudioVolume=" " # Disable boot sound
 
 ### APPEARANCE ###
 osascript -e 'tell application "System Events" to tell appearance preferences to set dark mode to true'
-# lattice's blue accent. macOS offers only fixed accents, and Blue (4) is the nearest; the
-# selection highlight takes any colour, so it is lattice's own #7daea3.
+# Gruvbox Material's blue accent. macOS offers only fixed accents, and Blue (4) is the nearest;
+# the selection highlight takes any colour, so it is the theme's own #7daea3.
 defaults write NSGlobalDomain AppleAccentColor -int 4
 defaults write NSGlobalDomain AppleHighlightColor -string "0.490196 0.682353 0.639216 Other"
 

@@ -5,25 +5,20 @@ set -euo pipefail
 DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 export DOTFILES_DIR
 
-source "$DOTFILES_DIR/lib/os.sh"
 source "$DOTFILES_DIR/lib/log.sh"
-source "$DOTFILES_DIR/lib/common/homebrew.sh"
-source "$DOTFILES_DIR/lib/common/shared.sh"
-source "$DOTFILES_DIR/lib/common/shell.sh"
+source "$DOTFILES_DIR/lib/homebrew.sh"
+source "$DOTFILES_DIR/lib/packages.sh"
+source "$DOTFILES_DIR/lib/shell.sh"
 source "$DOTFILES_DIR/lib/stow.sh"
 
 main() {
-    detect_os
-    log_title "dotfiles manager — $DOTFILES_OS"
+    require_apple_silicon
+    log_title "dotfiles"
 
-    setup_macos
-}
-
-setup_macos() {
     sudo_keepalive
-    install_native_prereqs
+    install_xcode_clt
 
-    shared_packages
+    install_packages
     stow_packages
 
     install_tpm
@@ -32,7 +27,23 @@ setup_macos() {
 
     log_title "Done"
     log_ok "Machine configured. Follow steps below."
-    log_info "1. run \`sudo tailscale up\`"
+    log_info "1. Open Tailscale from the menu bar and sign in"
+}
+
+require_apple_silicon() {
+    if [ "$(uname -s)" != Darwin ] || [ "$(uname -m)" != arm64 ]; then
+        echo "Unsupported platform: $(uname -s) $(uname -m) (Apple Silicon macOS only)" >&2
+        exit 1
+    fi
+}
+
+install_xcode_clt() {
+    if ! xcode-select -p >/dev/null 2>&1; then
+        log_step "Installing Xcode Command Line Tools"
+        xcode-select --install
+        log_info "Finish GUI installer, then re-run script."
+        exit 1
+    fi
 }
 
 sudo_keepalive() {
@@ -46,14 +57,14 @@ sudo_keepalive() {
 
 macos_setup() {
   log_step "Applying macOS defaults"
-  bash "$DOTFILES_DIR/lib/macos/defaults.sh"
+  bash "$DOTFILES_DIR/lib/defaults.sh"
 
   log_step "Applying display arrangement"
-  bash "$DOTFILES_DIR/lib/macos/displays.sh"
+  bash "$DOTFILES_DIR/lib/displays.sh"
 
   log_step "Setting up Touch ID for sudo"
   sudo -v
-  bash "$DOTFILES_DIR/lib/macos/touch-sudo.sh"
+  bash "$DOTFILES_DIR/lib/touch-sudo.sh"
 }
 
 main "$@"

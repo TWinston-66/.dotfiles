@@ -3,7 +3,7 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-source "$SCRIPT_DIR/../../lib/log.sh"
+source "$SCRIPT_DIR/log.sh"
 
 SUDO_LOCAL="/etc/pam.d/sudo_local"
 

@@ -1,4 +1,4 @@
-# lattice's theme.foot: Gruvbox Material (medium, material foreground), blue accent.
+# Gruvbox Material (medium, material foreground), blue accent.
 background = #282828
 foreground = #d4be98
 cursor-color = #d4be98
