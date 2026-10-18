@@ -28,8 +28,8 @@ return {
 
 		return {
 			options = {
-				-- Follows whichever colorscheme lattice-theme has up: every one of them ships
-				-- a lualine theme under its colors_name, which is what "auto" looks up first.
+				-- Catppuccin ships a lualine theme under its colors_name, which is what
+				-- "auto" looks up first.
 				theme = "auto",
 				globalstatus = vim.o.laststatus == 3,
 			},

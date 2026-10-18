@@ -16,10 +16,7 @@ main() {
     detect_os
     log_title "dotfiles manager — $DOTFILES_OS"
 
-    case "$DOTFILES_OS" in
-      macos) setup_macos ;;
-      nixos) setup_nixos ;;
-    esac
+    setup_macos
 }
 
 setup_macos() {
@@ -27,9 +24,6 @@ setup_macos() {
     install_native_prereqs
 
     shared_packages
-
-    # On NixOS, lattice ships tmux and its plugins; here they are this repo's.
-    DOTFILES_STOW_PACKAGES+=(ghostty tmux gitmux)
     stow_packages
 
     install_tpm
@@ -39,24 +33,6 @@ setup_macos() {
     log_title "Done"
     log_ok "Machine configured. Follow steps below."
     log_info "1. run \`sudo tailscale up\`"
-}
-
-# Packages, the login shell, the terminal, tmux, Hyprland and the desktop's own configs
-# come from lattice, so this only links what is personal.
-setup_nixos() {
-    require_commands stow git
-
-    # No ~/.local/share/applications package: what was left in it after the hides moved to
-    # lattice was all app-written (Claude Code's URL handler, Chromium's VIA app,
-    # Thunderbird's default-mail entries), and the apps rewrite their own files there.
-    DOTFILES_STOW_PACKAGES+=(solaar)
-    stow_packages
-    # Solaar rewrites a cookie in its config.yaml on every start. The file stays tracked for
-    # its settings, but out of `git status`; see README to commit a change on purpose.
-    git -C "$DOTFILES_DIR" update-index --skip-worktree solaar/.config/solaar/config.yaml
-
-    log_title "Done"
-    log_ok "Configs linked."
 }
 
 sudo_keepalive() {
