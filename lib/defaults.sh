@@ -18,6 +18,7 @@ sudo nvram SystemAudioVolume=" " # Disable boot sound
 
 ### APPEARANCE ###
 osascript -e 'tell application "System Events" to tell appearance preferences to set dark mode to true'
+defaults write NSGlobalDomain AppleIconAppearanceTheme -string "RegularDark" # Icon & widget style: Dark
 # Gruvbox Material's blue accent. macOS offers only fixed accents, and Blue (4) is the nearest;
 # the selection highlight takes any colour, so it is the theme's own #7daea3.
 defaults write NSGlobalDomain AppleAccentColor -int 4
@@ -59,7 +60,7 @@ defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadThreeF
 defaults write NSGlobalDomain com.apple.trackpad.forceClick -bool false
 
 # Tracking and scroll speed
-defaults write NSGlobalDomain com.apple.trackpad.scaling -float 2.5
+defaults write NSGlobalDomain com.apple.trackpad.scaling -float 1.5
 defaults write NSGlobalDomain com.apple.mouse.scaling -float 2.5
 defaults write NSGlobalDomain com.apple.scrollwheel.scaling -float 0.5
 
@@ -153,7 +154,7 @@ defaults write com.apple.screencapture name -string "shot"
 defaults write com.apple.screencapture include-date -bool true
 
 ### MENU BAR / CONTROL CENTER ###
-defaults write com.apple.menuextra.clock Show24Hour -bool true
+defaults write NSGlobalDomain AppleICUForce24HourTime -bool true # the clock follows the system time format
 defaults write com.apple.menuextra.clock ShowAMPM -bool false
 defaults write com.apple.menuextra.clock ShowDate -int 1
 defaults write com.apple.menuextra.clock ShowDayOfWeek -bool true
@@ -168,11 +169,13 @@ defaults write com.apple.controlcenter "NSStatusItem VisibleCC Sound"      -bool
 defaults write com.apple.controlcenter "NSStatusItem VisibleCC Bluetooth"  -bool true
 defaults write com.apple.controlcenter "NSStatusItem VisibleCC FocusModes" -bool false
 defaults write com.apple.controlcenter "NSStatusItem VisibleCC NowPlaying" -bool false
+defaults write com.apple.Siri StatusMenuVisible -bool true
 
 #### DOCK ####
 defaults write com.apple.dock orientation -string "bottom"
 defaults write com.apple.dock mineffect -string "scale"
 defaults write com.apple.dock minimize-to-application -bool true
+defaults write com.apple.dock tilesize -int 48
 defaults write com.apple.dock magnification -bool false
 defaults write com.apple.dock show-recents -bool false
 defaults write com.apple.dock launchanim -bool false
@@ -183,10 +186,7 @@ defaults write com.apple.dock scroll-to-open -bool true
 defaults write com.apple.dock enable-spring-load-actions-on-all-items -bool true
 defaults write com.apple.dock expose-animation-duration -float 0.12
 
-# Auto-hide, no delay, fast animation
-defaults write com.apple.dock autohide -bool true
-defaults write com.apple.dock autohide-delay -float 0
-defaults write com.apple.dock autohide-time-modifier -float 0.15
+defaults write com.apple.dock autohide -bool false # always visible
 
 # Disable all hot corners
 for _c in tl tr bl br; do
@@ -197,12 +197,14 @@ unset _c
 
 if command -v dockutil >/dev/null 2>&1; then
   _dock_apps=(
-    "/Applications/Firefox.app"
+    "/Applications/Safari.app"
     "/System/Applications/Messages.app"
     "/System/Applications/Mail.app"
     "/System/Applications/Reminders.app"
+    "/System/Applications/Notes.app"
     "/System/Applications/Calendar.app"
     "/Applications/Ghostty.app"
+    "/Applications/Zed.app"
     "/System/Applications/iPhone Mirroring.app"
     "/System/Applications/Passwords.app"
     "/Applications/Cryptomator.app"
@@ -233,9 +235,9 @@ defaults write com.apple.AdLib allowIdentifierForAdvertising -bool false
 defaults write com.apple.TimeMachine DoNotOfferNewDisksForBackup -bool true
 
 if command -v defaultbrowser >/dev/null 2>&1; then
-  if ! defaultbrowser 2>/dev/null | grep -q '^\* firefox'; then
+  if ! defaultbrowser 2>/dev/null | grep -q '^\* safari'; then
     echo "NOTE: confirm the default browser dialog that is about to appear" >&2
-    defaultbrowser firefox || true
+    defaultbrowser safari || true
   fi
 else
   echo "NOTE: defaultbrowser not installed — skipping default browser (see Brewfile)" >&2
