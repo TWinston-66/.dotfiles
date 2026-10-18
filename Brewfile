@@ -26,6 +26,7 @@ brew "uv"
 brew "node"
 brew "go"
 brew "golangci-lint"
+brew "cmake"
 brew "lazydocker"
 brew "tealdeer"
 brew "tmux"
@@ -49,15 +50,18 @@ cask "telegram"
 cask "discord"
 cask "docker-desktop"
 cask "iina"
+cask "stremio"
 cask "tor-browser"
 cask "transmission"
 cask "ungoogled-chromium" # VIA keyboard config (WebHID)
 cask "rectangle"
 cask "balenaetcher"
 cask "claude"
+cask "antigravity-cli"
 cask "google-gemini"
 
 mas "Amphetamine", id: 937984704
+mas "wBlock", id: 6746388723
 mas "Xcode", id: 497799835
 mas "Pages", id: 361309726
 mas "Numbers", id: 361304891
