@@ -1,6 +1,6 @@
 gui:
   nerdFontsVersion: "3"
-  # lattice's theme.lazygit.yml: Gruvbox Material, blue accent.
+  # Gruvbox Material, blue accent.
   theme:
     activeBorderColor:
       - "#7daea3"

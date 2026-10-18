@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-shared_packages() {
+install_packages() {
     install_homebrew
     brew_bundle "$DOTFILES_DIR/Brewfile"
     install_claude_code

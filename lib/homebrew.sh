@@ -7,18 +7,8 @@ load_homebrew() {
     return 0
   fi
 
-  local candidate
-  for candidate in \
-    /opt/homebrew/bin/brew \
-    /usr/local/bin/brew
-  do
-    if [ -x "$candidate" ]; then
-      eval "$("$candidate" shellenv)"
-      return 0
-    fi
-  done
-
-  return 1
+  [ -x /opt/homebrew/bin/brew ] || return 1
+  eval "$(/opt/homebrew/bin/brew shellenv)"
 }
 
 install_homebrew() {

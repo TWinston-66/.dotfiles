@@ -66,12 +66,3 @@ run_step() {
     "$@"
   fi
 }
-
-confirm() {
-  if has_gum; then
-    gum confirm "$1"
-  else
-    read -r -p "$1 [y/N] " ans
-    [[ "$ans" =~ ^[Yy]$ ]]
-  fi
-}

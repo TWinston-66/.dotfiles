@@ -20,7 +20,7 @@
     diffFilter = delta --color-only
 
 [delta]
-    features = lattice
+    features = gruvbox-material
     navigate = true
     line-numbers = true
     hyperlinks = true
@@ -40,9 +40,9 @@
 [url "git@github.com:"]
 	insteadOf = https://github.com/
 
-# lattice's theme.gitconfig: Gruvbox Material, blue accent. base16 takes its syntax colours
+# Gruvbox Material, blue accent. base16 takes its syntax colours
 # from the terminal, which Ghostty sets to the same palette.
-[delta "lattice"]
+[delta "gruvbox-material"]
 	blame-palette = "#282828 #222222 #1b1b1b #32302f #45403d"
 	commit-decoration-style = "#7c6f64" bold box ul
 	dark = true
