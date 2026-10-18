@@ -1,24 +1,25 @@
 gui:
   nerdFontsVersion: "3"
+  # lattice's theme.lazygit.yml: Gruvbox Material, blue accent.
   theme:
     activeBorderColor:
-      - "#89b4fa"
+      - "#7daea3"
       - bold
     inactiveBorderColor:
-      - "#a6adc8"
+      - "#baa88c"
     optionsTextColor:
-      - "#89b4fa"
+      - "#7daea3"
     selectedLineBgColor:
-      - "#313244"
+      - "#32302f"
     cherryPickedCommitBgColor:
-      - "#45475a"
+      - "#45403d"
     cherryPickedCommitFgColor:
-      - "#89b4fa"
+      - "#7daea3"
     unstagedChangesColor:
-      - "#f38ba8"
+      - "#ea6962"
     defaultFgColor:
-      - "#cdd6f4"
+      - "#d4be98"
     searchingActiveBorderColor:
-      - "#f9e2af"
+      - "#d8a657"
     authorColors:
-      "*": "#b4befe"
+      "*": "#a89a9f"

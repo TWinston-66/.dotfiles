@@ -1,6 +1,5 @@
 .DS_Store
 .claude/
-nvim/.config/nvim/spell/*.spl
 
 # private key material and connection history should never live in the repo,
 # even untracked — see ssh/.ssh/config for the only file meant to be versioned
@@ -13,3 +12,6 @@ ssh/.ssh/agent/
 pi/.pi/agent/auth.json
 pi/.pi/agent/sessions/
 pi/.pi/agent/models-store.json
+
+# Zed keeps its prompt library in a local LMDB database; machine state, not config
+zed/.config/zed/prompts/

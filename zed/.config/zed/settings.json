@@ -3,9 +3,9 @@
   "cli_default_open_behavior": "new_window",
   "restore_on_startup": "last_session",
   "auto_install_extensions": {
-    "catppuccin": true,
     "codebook": true,
     "git-firefly": true,
+    "gruvbox-material": true,
     "make": true,
     "toml": true
   },
@@ -30,5 +30,9 @@
   "disable_ai": true,
   "ui_font_size": 16,
   "buffer_font_size": 15,
-  "theme": "One Dark"
+  "theme": {
+    "mode": "dark",
+    "dark": "Gruvbox Material",
+    "light": "Gruvbox Material"
+  }
 }
