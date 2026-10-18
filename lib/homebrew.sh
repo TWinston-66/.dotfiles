@@ -30,5 +30,5 @@ install_homebrew() {
 brew_bundle() {
   local brewfile="$1"
   log_step "Installing packages from $(basename "$brewfile")"
-  brew bundle --file="$brewfile"
+  brew bundle --verbose --file="$brewfile"
 }

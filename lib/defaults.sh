@@ -205,6 +205,7 @@ if command -v dockutil >/dev/null 2>&1; then
     "/System/Applications/Calendar.app"
     "/Applications/Ghostty.app"
     "/Applications/Zed.app"
+    "/Applications/Xcode.app"
     "/System/Applications/iPhone Mirroring.app"
     "/System/Applications/Passwords.app"
     "/Applications/Cryptomator.app"
