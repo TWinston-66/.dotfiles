@@ -11,7 +11,7 @@
 
 <p align="center">
   <b>A Mac, set up in one command.</b><br>
-  Ghostty, tmux, Neovim and zsh in Catppuccin Mocha, plus the packages and system settings around them.
+  Ghostty, tmux, zsh and Zed in Gruvbox Material, plus the packages and system settings around them.
 </p>
 
 ## Why these dotfiles
@@ -22,6 +22,11 @@
   first, in a folder stamped with the date.
 - **Edits apply live.** Configs are symlinked rather than copied, so a change takes
   effect without re-running anything.
+
+zsh, starship and tmux are the same as
+[lattice](https://github.com/TWinston-66/lattice)'s, and everything that takes colours wears
+lattice's Gruvbox Material with its blue accent: Ghostty, tmux, the prompt, fzf, syntax
+highlighting, delta, bat, lazygit, btop, Zed and the macOS accent.
 
 The NixOS half used to live here too. It moved into the `home/` folder of
 [lattice](https://github.com/TWinston-66/lattice) when this repo went macOS-only.
@@ -45,8 +50,8 @@ This clones the repo to `~/.dotfiles` (override with `DOTFILES_DIR`) and runs
 
 ## Configs
 
-bat, btop, ghostty, git, gitmux, lazygit, nvim, pi, sesh, ssh, starship, tealdeer, tmux,
-zed and zsh, each a Stow package laid out like `$HOME`. Rectangle's config is copied in
+bat, btop, ghostty, git, gitmux, lazygit, pi, sesh, ssh, starship, tealdeer, tmux, zed
+and zsh, each a Stow package laid out like `$HOME`. Rectangle's config is copied in
 rather than linked, since Rectangle imports and renames its file.
 
 ## Update

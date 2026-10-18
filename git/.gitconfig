@@ -12,7 +12,7 @@
     autoSetupRemote = true
 
 [core]
-    editor = nvim
+    editor = zed --wait
     excludesfile = ~/.gitignore_global
     pager = delta
 
@@ -20,7 +20,7 @@
     diffFilter = delta --color-only
 
 [delta]
-    features = catppuccin-mocha
+    features = lattice
     navigate = true
     line-numbers = true
     hyperlinks = true
@@ -40,28 +40,30 @@
 [url "git@github.com:"]
 	insteadOf = https://github.com/
 
-[delta "catppuccin-mocha"]
-	blame-palette = "#1e1e2e #181825 #11111b #313244 #45475a"
-	commit-decoration-style = "#6c7086" bold box ul
+# lattice's theme.gitconfig: Gruvbox Material, blue accent. base16 takes its syntax colours
+# from the terminal, which Ghostty sets to the same palette.
+[delta "lattice"]
+	blame-palette = "#282828 #222222 #1b1b1b #32302f #45403d"
+	commit-decoration-style = "#7c6f64" bold box ul
 	dark = true
-	file-decoration-style = "#6c7086"
-	file-style = "#cdd6f4"
-	hunk-header-decoration-style = "#6c7086" box ul
+	file-decoration-style = "#7c6f64"
+	file-style = "#d4be98"
+	hunk-header-decoration-style = "#7c6f64" box ul
 	hunk-header-file-style = bold
-	hunk-header-line-number-style = bold "#a6adc8"
+	hunk-header-line-number-style = bold "#baa88c"
 	hunk-header-style = file line-number syntax
-	line-numbers-left-style = "#6c7086"
-	line-numbers-minus-style = bold "#f38ba8"
-	line-numbers-plus-style = bold "#a6e3a1"
-	line-numbers-right-style = "#6c7086"
-	line-numbers-zero-style = "#6c7086"
-	minus-emph-style = bold syntax "#694559"
-	minus-style = syntax "#493447"
-	plus-emph-style = bold syntax "#4e6356"
-	plus-style = syntax "#394545"
+	line-numbers-left-style = "#7c6f64"
+	line-numbers-minus-style = bold "#ea6962"
+	line-numbers-plus-style = bold "#a9b665"
+	line-numbers-right-style = "#7c6f64"
+	line-numbers-zero-style = "#7c6f64"
+	minus-emph-style = bold syntax "#6c3f3c"
+	minus-style = syntax "#4f3534"
+	plus-emph-style = bold syntax "#555a3d"
+	plus-style = syntax "#424434"
 	map-styles = \
-		bold purple => syntax "#5b4e74", \
-		bold blue => syntax "#445375", \
-		bold cyan => syntax "#446170", \
-		bold yellow => syntax "#6b635b"
-	syntax-theme = Catppuccin Mocha
+		bold purple => syntax "#644950", \
+		bold blue => syntax "#465753", \
+		bold cyan => syntax "#48584d", \
+		bold yellow => syntax "#665438"
+	syntax-theme = base16
