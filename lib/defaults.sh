@@ -208,6 +208,7 @@ if command -v dockutil >/dev/null 2>&1; then
     "/Applications/Zed.app"
     "/Applications/Xcode.app"
     "/System/Applications/iPhone Mirroring.app"
+    "/Applications/SomaFM.app" # iOS app — App Store only, mas can't install it
     "/System/Applications/Passwords.app"
     "/Applications/Cryptomator.app"
     "/System/Applications/System Settings.app"
