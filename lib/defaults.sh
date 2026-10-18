@@ -169,6 +169,7 @@ defaults write com.apple.controlcenter "NSStatusItem VisibleCC Sound"      -bool
 defaults write com.apple.controlcenter "NSStatusItem VisibleCC Bluetooth"  -bool true
 defaults write com.apple.controlcenter "NSStatusItem VisibleCC FocusModes" -bool false
 defaults write com.apple.controlcenter "NSStatusItem VisibleCC NowPlaying" -bool false
+defaults write com.apple.Siri StatusMenuVisible -bool true
 
 #### DOCK ####
 defaults write com.apple.dock orientation -string "bottom"
