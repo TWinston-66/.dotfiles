@@ -11,7 +11,7 @@ if [ -z "$TMUX" ] && command -v tmux >/dev/null 2>&1; then
   exit
 fi
 
-if [[ "$OSTYPE" == darwin* && -f "$HOME/.ssh/id_ed25519" ]]; then
+if [[ -f "$HOME/.ssh/id_ed25519" ]]; then
   ssh-add --apple-use-keychain "$HOME/.ssh/id_ed25519" >/dev/null 2>&1
 fi
 
@@ -38,22 +38,6 @@ alias lookf='rg'
 alias nv='nvim'
 alias vim='nvim'
 alias vi='nvim'
-
-# macOS ships its own `open`; only alias it on Linux
-if [[ "$OSTYPE" == linux* ]] && command -v xdg-open >/dev/null 2>&1; then
-  alias open='xdg-open'
-fi
-
-# Zed's CLI is `zed` on macOS (the cask installs it) but `zeditor` on NixOS, which is the
-# name nixpkgs gives the binary; alias it back so the same word opens the editor on both
-if [[ "$OSTYPE" == linux* ]] && command -v zeditor >/dev/null 2>&1; then
-  alias zed='zeditor'
-fi
-
-# On lattice, /etc/zshrc has already set up completion, fzf, starship, zoxide, the plugins,
-# the theme's colours and the finished-command notification, and says so with
-# LATTICE_SHELL. The rest of this file is the same for macOS, in Catppuccin Mocha.
-[[ -n $LATTICE_SHELL ]] && return
 
 export FZF_DEFAULT_OPTS=" \
 --color=bg+:#313244,bg:#1e1e2e,spinner:#f5e0dc,hl:#f38ba8 \
