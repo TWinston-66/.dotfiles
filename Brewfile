@@ -42,7 +42,6 @@ cask "zed"
 cask "ghostty"
 cask "tailscale-app"
 cask "cryptomator"
-cask "obsidian"
 cask "drawio"
 cask "telegram"
 cask "discord"
@@ -58,3 +57,6 @@ cask "google-gemini"
 
 mas "Amphetamine", id: 937984704
 mas "Xcode", id: 497799835
+mas "Pages", id: 361309726
+mas "Numbers", id: 361304891
+mas "Keynote", id: 361285480
