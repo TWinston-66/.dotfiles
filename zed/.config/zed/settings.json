@@ -34,5 +34,22 @@
     "mode": "dark",
     "dark": "Gruvbox Dark",
     "light": "Gruvbox Material"
+  },
+  "lsp": {
+    "texlab": {
+      "settings": {
+        "texlab": {
+          "build": {
+            "onSave": true,
+            "forwardSearchAfter": true,
+            "args": ["-pdf", "-interaction=nonstopmode", "-synctex=1", "%f"]
+          },
+          "forwardSearch": {
+            "executable": "/Applications/Skim.app/Contents/SharedSupport/displayline",
+            "args": ["-r", "-g", "%l", "%p", "%f"]
+          }
+        }
+      }
+    }
   }
 }

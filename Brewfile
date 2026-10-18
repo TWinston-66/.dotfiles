@@ -39,6 +39,8 @@ brew "mole"
 brew "mas"
 
 cask "zed"
+cask "skim" # LaTeX live preview (synctex)
+cask "mactex-no-gui"
 cask "ghostty"
 cask "tailscale-app"
 cask "cryptomator"

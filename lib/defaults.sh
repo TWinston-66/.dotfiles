@@ -245,6 +245,13 @@ else
   echo "NOTE: defaultbrowser not installed — skipping default browser (see Brewfile)" >&2
 fi
 
+### SKIM ###
+# Live LaTeX preview: reload on change, Cmd-Shift-click jumps back to Zed (synctex)
+defaults write net.sourceforge.skim-app.skim SKAutoReloadFileUpdate -bool true
+defaults write net.sourceforge.skim-app.skim SKTeXEditorPreset -string ""
+defaults write net.sourceforge.skim-app.skim SKTeXEditorCommand -string "/opt/homebrew/bin/zed"
+defaults write net.sourceforge.skim-app.skim SKTeXEditorArguments -string '"%file":%line'
+
 ### RECTANGLE ###
 # Rectangle imports this file on launch (after a confirm dialog), then renames it
 # and refuses symlinks — so copy, don't stow. Only re-import when the repo copy changes.
