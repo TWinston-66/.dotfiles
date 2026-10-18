@@ -6,8 +6,16 @@ if [ -d /opt/homebrew/bin ]; then
   eval "$(/opt/homebrew/bin/brew shellenv)"
 fi
 
+# Every terminal window is tmux, as on lattice: the first takes the session named main, and a
+# window opened while main is already on screen gets a session of its own, which dies with
+# the window (and which tmux.conf leaves out of resurrect's saves). Starts main if the server
+# is gone.
 if [ -z "$TMUX" ] && command -v tmux >/dev/null 2>&1; then
-  tmux attach || tmux new -s main
+  case $(tmux display -p -t =main: '#{session_attached}' 2>/dev/null) in
+    0) tmux attach -t =main ;;
+    "") tmux new -A -s main ;;
+    *) tmux new \; set destroy-unattached on ;;
+  esac
   exit
 fi
 
@@ -18,10 +26,10 @@ fi
 HISTFILE=~/.zsh_history
 HISTSIZE=50000
 SAVEHIST=50000
-setopt SHARE_HISTORY HIST_IGNORE_DUPS HIST_IGNORE_SPACE
+setopt SHARE_HISTORY HIST_IGNORE_DUPS HIST_IGNORE_SPACE HIST_FCNTL_LOCK
 
 export TEALDEER_CONFIG_DIR="$HOME/.config/tealdeer"
-export EDITOR="nvim"
+export EDITOR="zed --wait"
 export PATH="$HOME/.local/bin:$PATH"
 
 if [ -d "/Applications/calibre.app/Contents/MacOS" ]; then
@@ -35,55 +43,64 @@ alias cat='bat --style=plain --paging=never'
 alias cd='z'
 alias where='fd'
 alias lookf='rg'
-alias nv='nvim'
-alias vim='nvim'
-alias vi='nvim'
 
+# Everything below is lattice's /etc/zshrc (modules/nixos/zshrc.zsh), with its live theme
+# files written out: Gruvbox Material with the blue accent.
 export FZF_DEFAULT_OPTS=" \
---color=bg+:#313244,bg:#1e1e2e,spinner:#f5e0dc,hl:#f38ba8 \
---color=fg:#cdd6f4,header:#f38ba8,info:#cba6f7,pointer:#f5e0dc \
---color=marker:#b4befe,fg+:#cdd6f4,prompt:#cba6f7,hl+:#f38ba8 \
---color=selected-bg:#45475a \
---color=border:#6c7086,label:#cdd6f4"
+--color=bg+:#32302f,bg:#282828,spinner:#dea473,hl:#ea6962 \
+--color=fg:#d4be98,header:#ea6962,info:#d3869b,pointer:#dea473 \
+--color=marker:#a89a9f,fg+:#d4be98,prompt:#d3869b,hl+:#ea6962 \
+--color=selected-bg:#45403d \
+--color=border:#7c6f64,label:#d4be98"
 
-if command -v brew >/dev/null 2>&1; then
-  FPATH="$(brew --prefix)/share/zsh/site-functions:${FPATH}"
-fi
+_share="$(brew --prefix)/share"
+FPATH="$_share/zsh/site-functions:${FPATH}"
 autoload -Uz compinit && compinit
 
 eval "$(fzf --zsh)"
 eval "$(starship init zsh)"
 eval "$(zoxide init zsh)"
 
-if command -v brew >/dev/null 2>&1; then
-  _share="$(brew --prefix)/share"
-else
-  _share=/run/current-system/sw/share
-fi
-_zsh_as="$_share/zsh-autosuggestions/zsh-autosuggestions.zsh"
-[ -f "$_zsh_as" ] && source "$_zsh_as"
-unset _zsh_as
+source "$_share/zsh-autosuggestions/zsh-autosuggestions.zsh"
 
-_zsh_hl="$_share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
-if [ -f "$_zsh_hl" ]; then
-  ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets)
+# A command that ran 5s or more says so when it finishes, as a desktop notification. From
+# inside tmux the request goes out through passthrough, which tmux.conf allows. First in
+# precmd, to see the command's own exit status before another hook replaces it.
+zmodload zsh/datetime
+autoload -Uz add-zsh-hook
+_lattice_cmd_start=0
+_lattice_notify_preexec() {
+  _lattice_cmd_start=$EPOCHSECONDS
+  _lattice_cmd=${1//[[:cntrl:]]/ }
+}
+_lattice_notify_precmd() {
+  local st=$? elapsed osc e=$'\e'
+  ((_lattice_cmd_start)) || return 0
+  elapsed=$((EPOCHSECONDS - _lattice_cmd_start))
+  _lattice_cmd_start=0
+  ((elapsed >= 5)) || return 0
+  osc="$e]777;notify;Command finished;${_lattice_cmd[1,80]} (${elapsed}s, exit $st)$e\\"
+  [[ -n $TMUX ]] && osc="${e}Ptmux;${osc//$e/$e$e}$e\\"
+  printf '%s' "$osc" >/dev/tty
+}
+add-zsh-hook preexec _lattice_notify_preexec
+precmd_functions=(_lattice_notify_precmd $precmd_functions)
 
-  typeset -gA ZSH_HIGHLIGHT_STYLES
-  ZSH_HIGHLIGHT_STYLES[default]='fg=#cdd6f4'
-  ZSH_HIGHLIGHT_STYLES[unknown-token]='fg=#f38ba8,bold'
-  ZSH_HIGHLIGHT_STYLES[reserved-word]='fg=#cba6f7'
-  ZSH_HIGHLIGHT_STYLES[alias]='fg=#a6e3a1'
-  ZSH_HIGHLIGHT_STYLES[builtin]='fg=#a6e3a1'
-  ZSH_HIGHLIGHT_STYLES[function]='fg=#a6e3a1'
-  ZSH_HIGHLIGHT_STYLES[command]='fg=#a6e3a1'
-  ZSH_HIGHLIGHT_STYLES[precommand]='fg=#a6e3a1,italic'
-  ZSH_HIGHLIGHT_STYLES[path]='fg=#cdd6f4,underline'
-  ZSH_HIGHLIGHT_STYLES[globbing]='fg=#89b4fa'
-  ZSH_HIGHLIGHT_STYLES[single-quoted-argument]='fg=#f9e2af'
-  ZSH_HIGHLIGHT_STYLES[double-quoted-argument]='fg=#f9e2af'
-  ZSH_HIGHLIGHT_STYLES[comment]='fg=#6c7086,italic'
-  ZSH_HIGHLIGHT_STYLES[bracket-error]='fg=#f38ba8'
-
-  source "$_zsh_hl"
-fi
-unset _zsh_hl _share
+ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets)
+typeset -gA ZSH_HIGHLIGHT_STYLES
+ZSH_HIGHLIGHT_STYLES[default]='fg=#d4be98'
+ZSH_HIGHLIGHT_STYLES[unknown-token]='fg=#ea6962,bold'
+ZSH_HIGHLIGHT_STYLES[reserved-word]='fg=#d3869b'
+ZSH_HIGHLIGHT_STYLES[alias]='fg=#a9b665'
+ZSH_HIGHLIGHT_STYLES[builtin]='fg=#a9b665'
+ZSH_HIGHLIGHT_STYLES[function]='fg=#a9b665'
+ZSH_HIGHLIGHT_STYLES[command]='fg=#a9b665'
+ZSH_HIGHLIGHT_STYLES[precommand]='fg=#a9b665,italic'
+ZSH_HIGHLIGHT_STYLES[path]='fg=#d4be98,underline'
+ZSH_HIGHLIGHT_STYLES[globbing]='fg=#7daea3'
+ZSH_HIGHLIGHT_STYLES[single-quoted-argument]='fg=#d8a657'
+ZSH_HIGHLIGHT_STYLES[double-quoted-argument]='fg=#d8a657'
+ZSH_HIGHLIGHT_STYLES[comment]='fg=#7c6f64,italic'
+ZSH_HIGHLIGHT_STYLES[bracket-error]='fg=#ea6962'
+source "$_share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+unset _share
