@@ -99,3 +99,57 @@ install_criterion() {
   echo /usr/local/lib | sudo tee /etc/ld.so.conf.d/usr-local.conf >/dev/null
   sudo ldconfig
 }
+
+CREDENTIALSD_VERSION=0.3.1
+CREDENTIALSD_RPM_VERSION=0.3.1.0-1.1
+CREDENTIALSD_XPI_VERSION=0.2.0
+CREDENTIALSD_XPI_ID=credentialsd-helper@iinuwa.xyz
+
+# credentialsd, passkeys and security keys for Firefox, from its GitHub release: the service,
+# its UI and the native-messaging host as RPMs (dnf pulls in their Fedora dependencies), and
+# the signed add-on, which a Firefox policy installs into every profile. Firefox reads
+# /etc/firefox/policies in place of the policies it ships with, so those are carried over.
+# Installed again only when the versions change.
+install_credentialsd() {
+  local base="https://github.com/linux-credentials/credentialsd/releases/download/v$CREDENTIALSD_VERSION"
+  local arch xpi="/usr/local/share/credentialsd/credentialsd-helper-$CREDENTIALSD_XPI_VERSION.xpi"
+  local policies=/etc/firefox/policies/policies.json shipped=/usr/lib64/firefox/distribution/policies.json
+  local seed tmp
+
+  arch="$(uname -m)"
+
+  if rpm -q "credentialsd-${CREDENTIALSD_RPM_VERSION%-*}" "credentialsd-ui-${CREDENTIALSD_RPM_VERSION%-*}" \
+    "credentialsd-webextension-${CREDENTIALSD_RPM_VERSION%-*}" >/dev/null 2>&1; then
+    log_info "credentialsd already installed"
+  else
+    log_step "Installing credentialsd $CREDENTIALSD_VERSION"
+    sudo dnf install -y \
+      "$base/credentialsd-$CREDENTIALSD_RPM_VERSION.$arch.rpm" \
+      "$base/credentialsd-ui-$CREDENTIALSD_RPM_VERSION.$arch.rpm" \
+      "$base/credentialsd-webextension-$CREDENTIALSD_RPM_VERSION.noarch.rpm"
+  fi
+
+  if [ -f "$xpi" ] && jq -e --arg id "$CREDENTIALSD_XPI_ID" --arg url "file://$xpi" \
+    '.policies.ExtensionSettings[$id].install_url == $url' "$policies" >/dev/null 2>&1; then
+    log_info "credentialsd Firefox add-on already installed"
+    return
+  fi
+
+  log_step "Installing credentialsd Firefox add-on $CREDENTIALSD_XPI_VERSION"
+  sudo mkdir -p "${xpi%/*}" "${policies%/*}"
+  sudo curl -fsSL -o "$xpi" "$base/$CREDENTIALSD_XPI_ID-$CREDENTIALSD_XPI_VERSION.xpi"
+
+  if [ -f "$policies" ]; then
+    seed="$policies"
+  elif [ -f "$shipped" ]; then
+    seed="$shipped"
+  else
+    seed=/dev/null
+  fi
+  tmp="$(mktemp)"
+  jq -s --arg id "$CREDENTIALSD_XPI_ID" --arg url "file://$xpi" \
+    '(.[0] // {}) | .policies.ExtensionSettings[$id] = {installation_mode: "force_installed", install_url: $url}' \
+    "$seed" >"$tmp"
+  sudo install -m 644 "$tmp" "$policies"
+  rm -f "$tmp"
+}

@@ -70,6 +70,7 @@ setup_fedora() {
     install_claude_code
     install_pi
     install_criterion
+    install_credentialsd
     stow_packages
 
     install_tpm
