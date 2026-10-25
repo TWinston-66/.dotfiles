@@ -9,6 +9,7 @@ source "$DOTFILES_DIR/lib/log.sh"
 source "$DOTFILES_DIR/lib/dnf.sh"
 source "$DOTFILES_DIR/lib/flatpak.sh"
 source "$DOTFILES_DIR/lib/kde.sh"
+source "$DOTFILES_DIR/lib/udev.sh"
 source "$DOTFILES_DIR/lib/homebrew.sh"
 source "$DOTFILES_DIR/lib/packages.sh"
 source "$DOTFILES_DIR/lib/shell.sh"
@@ -60,6 +61,7 @@ setup_fedora() {
     enable_copr scottames/ghostty
     dnf_install "$DOTFILES_DIR/packages/fedora.txt"
     enable_service tailscaled
+    install_udev_rules
     flathub_install "$DOTFILES_DIR/packages/flathub.txt"
     install_starship
     install_go_tools
