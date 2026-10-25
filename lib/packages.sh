@@ -4,7 +4,7 @@ set -euo pipefail
 
 install_packages() {
     install_homebrew
-    brew_bundle "$DOTFILES_DIR/Brewfile"
+    brew_bundle "$DOTFILES_DIR/packages/Brewfile"
     install_claude_code
     install_pi
 }

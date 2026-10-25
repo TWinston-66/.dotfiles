@@ -227,7 +227,7 @@ if command -v dockutil >/dev/null 2>&1; then
   fi
   unset _dock_apps _app
 else
-  echo "NOTE: dockutil not installed — skipping Dock contents (see Brewfile)" >&2
+  echo "NOTE: dockutil not installed — skipping Dock contents (see packages/Brewfile)" >&2
 fi
 
 ### PRIVACY ###
@@ -243,7 +243,7 @@ if command -v defaultbrowser >/dev/null 2>&1; then
     defaultbrowser safari || true
   fi
 else
-  echo "NOTE: defaultbrowser not installed — skipping default browser (see Brewfile)" >&2
+  echo "NOTE: defaultbrowser not installed — skipping default browser (see packages/Brewfile)" >&2
 fi
 
 ### SKIM ###
