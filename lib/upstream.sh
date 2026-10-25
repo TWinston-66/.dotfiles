@@ -22,12 +22,13 @@ enable_copr() {
 }
 
 install_starship() {
-  if command -v starship >/dev/null 2>&1; then
+  if command -v starship >/dev/null 2>&1 || [ -x "$HOME/.local/bin/starship" ]; then
     log_info "starship already installed"
     return
   fi
   log_step "Installing starship"
-  curl -fsSL https://starship.rs/install.sh | sh -s -- --yes --bin-dir "$HOME/.local/bin"
+  # The installer ends with setup instructions for every shell; .zshrc already does that.
+  curl -fsSL https://starship.rs/install.sh | sh -s -- --yes --bin-dir "$HOME/.local/bin" >/dev/null
 }
 
 # Built with go install straight into ~/.local/bin, which .zshrc puts on PATH.
