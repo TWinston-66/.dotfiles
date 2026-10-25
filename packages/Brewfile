@@ -48,6 +48,7 @@ cask "discord"
 cask "docker-desktop"
 cask "iina"
 cask "stremio"
+cask "firefox"
 cask "tor-browser"
 cask "transmission"
 cask "ungoogled-chromium" # VIA keyboard config (WebHID)
