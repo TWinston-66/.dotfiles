@@ -36,6 +36,7 @@ ghostty # COPR scottames/ghostty
 
 # Apps
 tailscale
+evolution # mail, calendar and contacts
 torbrowser-launcher # Tor Browser
 transmission-qt
 chromium # Fedora's own, not Flathub's: VIA needs WebHID, which the sandbox blocks

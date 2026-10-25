@@ -110,8 +110,9 @@ kde_setup() {
   fi
 
   ### PANEL ###
-  # The application launcher shows the Fedora logo, and the task manager pins System
-  # Settings, Discover, the file manager, the browser, Ghostty and Shortwave, in that order.
+  # The application launcher shows the Fedora logo, and the task manager pins the file
+  # manager, the browser, Evolution, Ghostty, Zed, Cryptomator and System Settings, in
+  # that order.
   # Solaar's icon is always shown in the system tray rather than in its popup, added to
   # whatever else is shown there (Solaar's tray icon is named indicator-solaar).
   # Through Plasma's scripting, as the clock is, reporting each one it set.
@@ -130,16 +131,17 @@ kde_setup() {
           } else if (["org.kde.plasma.icontasks", "org.kde.plasma.taskmanager"].indexOf(widget.type) >= 0) {
             widget.currentConfigGroup = ["General"];
             widget.writeConfig("launchers", [
-              "applications:systemsettings.desktop",
-              "applications:org.kde.discover.desktop",
               "preferred://filemanager",
               "preferred://browser",
+              "applications:org.gnome.Evolution.desktop",
               "applications:com.mitchellh.ghostty.desktop",
-              "applications:de.haeckerfelix.Shortwave.desktop"
+              "applications:dev.zed.Zed.desktop",
+              "applications:org.cryptomator.Cryptomator.desktop",
+              "applications:systemsettings.desktop"
             ]);
             widget.reloadConfig();
             taskManagers++;
-            print("Task manager " + widget.id + " pins its six apps\n");
+            print("Task manager " + widget.id + " pins its seven apps\n");
           } else if (widget.type === "org.kde.plasma.systemtray") {
             widget.currentConfigGroup = ["General"];
             var shown = widget.readConfig("shownItems", []);
