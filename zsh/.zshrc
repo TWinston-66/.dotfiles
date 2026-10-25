@@ -4,6 +4,8 @@ export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
 
 # Homebrew on macOS; on Fedora the same tools come from dnf under /usr.
 [ -x /opt/homebrew/bin/brew ] && eval "$(/opt/homebrew/bin/brew shellenv)"
+# Before tmux starts, so its server (the status bar, popups) finds what is installed here.
+export PATH="$HOME/.local/bin:$PATH"
 
 # Every terminal window is tmux: the first takes the session named main, and a
 # window opened while main is already on screen gets a session of its own, which dies with
@@ -26,7 +28,6 @@ SAVEHIST=50000
 setopt SHARE_HISTORY HIST_IGNORE_DUPS HIST_IGNORE_SPACE HIST_FCNTL_LOCK
 
 export TEALDEER_CONFIG_DIR="$HOME/.config/tealdeer"
-export PATH="$HOME/.local/bin:$PATH"
 # Zed where it is installed, otherwise git and the rest fall back to vi.
 command -v zed >/dev/null 2>&1 && export EDITOR="zed --wait"
 

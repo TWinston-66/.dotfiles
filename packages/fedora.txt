@@ -12,6 +12,7 @@ zoxide
 gh
 git-delta # git's pager
 jq
+gping # COPR atim/gping
 nmap
 btop
 duf

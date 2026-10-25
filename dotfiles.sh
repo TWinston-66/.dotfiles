@@ -11,6 +11,7 @@ source "$DOTFILES_DIR/lib/homebrew.sh"
 source "$DOTFILES_DIR/lib/packages.sh"
 source "$DOTFILES_DIR/lib/shell.sh"
 source "$DOTFILES_DIR/lib/stow.sh"
+source "$DOTFILES_DIR/lib/upstream.sh"
 
 main() {
     detect_os
@@ -53,7 +54,10 @@ setup_macos() {
 }
 
 setup_fedora() {
+    enable_copr atim/gping
     dnf_install "$DOTFILES_DIR/packages/fedora.txt"
+    install_starship
+    install_go_tools
     stow_packages
 
     install_tpm

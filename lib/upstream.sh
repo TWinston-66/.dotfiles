@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+# Tools Fedora doesn't package, from their own installers. Each is installed only when
+# missing; re-running its installer by hand updates it.
+
+FEDORA_GO_TOOLS=(
+  github.com/jesseduffield/lazygit
+  github.com/jesseduffield/lazydocker
+  github.com/joshmedeski/sesh/v2
+  github.com/arl/gitmux
+)
+
+enable_copr() {
+  local repo="$1"
+  if [ -e "/etc/yum.repos.d/_copr:copr.fedorainfracloud.org:${repo%/*}:${repo#*/}.repo" ]; then
+    return
+  fi
+  log_step "Enabling COPR $repo"
+  sudo dnf copr enable -y "$repo"
+}
+
+install_starship() {
+  if command -v starship >/dev/null 2>&1; then
+    log_info "starship already installed"
+    return
+  fi
+  log_step "Installing starship"
+  curl -fsSL https://starship.rs/install.sh | sh -s -- --yes --bin-dir "$HOME/.local/bin"
+}
+
+# Built with go install straight into ~/.local/bin, which .zshrc puts on PATH.
+install_go_tools() {
+  local module name
+  mkdir -p "$HOME/.local/bin"
+  for module in "${FEDORA_GO_TOOLS[@]}"; do
+    name="${module%/v[0-9]*}"
+    name="${name##*/}"
+    if [ -x "$HOME/.local/bin/$name" ]; then
+      log_info "$name already installed"
+      continue
+    fi
+    run_step "Building $name" env GOBIN="$HOME/.local/bin" go install "$module@latest"
+  done
+}
