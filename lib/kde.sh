@@ -15,6 +15,28 @@ kde_setup() {
   kwriteconfig6 --file kcminputrc --group Keyboard --key RepeatDelay 225
   kwriteconfig6 --file kcminputrc --group Keyboard --key RepeatRate 33
 
+  ### TRACKPAD ###
+  # Natural scrolling, as on the Mac. KWin keeps it per device, in kcminputrc groups named
+  # by vendor and product IDs, so it's set on each touchpad through KWin's D-Bus API, and
+  # KWin saves it there. A touchpad first connected later starts with KDE's default.
+  local devices device touchpads=0
+  if devices="$(busctl --user -j get-property org.kde.KWin /org/kde/KWin/InputDevice \
+    org.kde.KWin.InputDeviceManager devicesSysNames 2>/dev/null)"; then
+    for device in $(jq -r '.data[]' <<<"$devices"); do
+      if [ "$(busctl --user -j get-property org.kde.KWin "/org/kde/KWin/InputDevice/$device" \
+        org.kde.KWin.InputDevice touchpad | jq -r .data)" = true ]; then
+        busctl --user set-property org.kde.KWin "/org/kde/KWin/InputDevice/$device" \
+          org.kde.KWin.InputDevice naturalScroll b true
+        log_info "Natural scrolling on for $(busctl --user -j get-property org.kde.KWin \
+          "/org/kde/KWin/InputDevice/$device" org.kde.KWin.InputDevice name | jq -r .data)"
+        touchpads=$((touchpads + 1))
+      fi
+    done
+    if [ "$touchpads" -eq 0 ]; then log_info "No touchpad found"; fi
+  else
+    log_info "KWin isn't running; scrolling stays as it is"
+  fi
+
   ### HOT CORNERS ###
   # The top-left corner opens the Overview by default; 9 is no screen edge.
   kwriteconfig6 --file kwinrc --group Effect-overview --key BorderActivate 9
