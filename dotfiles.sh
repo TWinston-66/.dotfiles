@@ -12,9 +12,30 @@ source "$DOTFILES_DIR/lib/shell.sh"
 source "$DOTFILES_DIR/lib/stow.sh"
 
 main() {
-    require_apple_silicon
+    detect_os
     log_title "dotfiles"
 
+    case "$DOTFILES_OS" in
+    macos) setup_macos ;;
+    fedora) setup_fedora ;;
+    esac
+}
+
+# Apple Silicon macOS or Fedora, from uname and /etc/os-release (read in a subshell so its
+# variables stay out of this one).
+detect_os() {
+    if [ "$(uname -s)" = Darwin ] && [ "$(uname -m)" = arm64 ]; then
+        DOTFILES_OS=macos
+    elif [ "$(uname -s)" = Linux ] && [ "$( (. /etc/os-release && echo "${ID:-}") 2>/dev/null)" = fedora ]; then
+        DOTFILES_OS=fedora
+    else
+        echo "Unsupported platform: $(uname -s) $(uname -m) (Apple Silicon macOS or Fedora only)" >&2
+        exit 1
+    fi
+    export DOTFILES_OS
+}
+
+setup_macos() {
     sudo_keepalive
     install_xcode_clt
 
@@ -30,11 +51,8 @@ main() {
     log_info "1. Open Tailscale from the menu bar and sign in"
 }
 
-require_apple_silicon() {
-    if [ "$(uname -s)" != Darwin ] || [ "$(uname -m)" != arm64 ]; then
-        echo "Unsupported platform: $(uname -s) $(uname -m) (Apple Silicon macOS only)" >&2
-        exit 1
-    fi
+setup_fedora() {
+    log_info "Fedora detected. Nothing is installed or linked yet; that comes next."
 }
 
 install_xcode_clt() {
