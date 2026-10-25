@@ -25,3 +25,4 @@ golangci-lint
 cmake
 tealdeer
 tmux
+ghostty # COPR scottames/ghostty
