@@ -21,8 +21,16 @@ kde_setup() {
   dbus-send --session --type=method_call --dest=org.kde.KWin /KWin org.kde.KWin.reconfigure || true
 
   ### CLOCK ###
-  # 24-hour time throughout, with ISO dates: en_DK is the English locale that has both.
-  kwriteconfig6 --file plasma-localerc --group Formats --key LC_TIME en_DK.UTF-8
+  # The panel clock in 24-hour time (2; 1 follows the locale), leaving US dates everywhere.
+  # Through Plasma's scripting, since plasmashell rewrites its panel config while running.
+  dbus-send --session --type=method_call --dest=org.kde.plasmashell /PlasmaShell \
+    org.kde.PlasmaShell.evaluateScript string:'
+      panels().forEach(function (panel) {
+        panel.widgets("org.kde.plasma.digitalclock").forEach(function (clock) {
+          clock.currentConfigGroup = ["Appearance"];
+          clock.writeConfig("use24hFormat", 2);
+        });
+      });' >/dev/null || log_info "Plasma isn't running; the clock stays as it is"
 
   ### DOLPHIN ###
   # One view for every folder (Dolphin's default), and that view: Details, hidden files

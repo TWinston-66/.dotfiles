@@ -26,7 +26,6 @@ golangci-lint
 cmake
 tealdeer
 tmux
-glibc-langpack-en # en_DK, for the 24-hour clock (lib/kde.sh)
 ghostty # COPR scottames/ghostty
 
 # Apps
