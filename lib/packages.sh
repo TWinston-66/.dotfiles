@@ -24,8 +24,11 @@ install_pi() {
         return
     fi
     log_step "Installing pi.dev"
-    # Quiet, which also skips its closing "Start pi now?": it only asks when output is a terminal.
-    curl -fsSL https://pi.dev/install.sh | sh >/dev/null
+    # The installer asks its questions on /dev/tty and takes the defaults (install, no PATH
+    # edits, don't start pi) when it can't open one, so it runs detached from the terminal:
+    # setsid through perl, which macOS has and stow needs anyway.
+    curl -fsSL https://pi.dev/install.sh |
+        perl -MPOSIX -e 'POSIX::setsid(); exec @ARGV' sh >/dev/null
 }
 
 install_tpm() {
