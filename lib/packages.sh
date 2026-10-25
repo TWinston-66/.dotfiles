@@ -24,7 +24,8 @@ install_pi() {
         return
     fi
     log_step "Installing pi.dev"
-    curl -fsSL https://pi.dev/install.sh | sh
+    # Quiet, which also skips its closing "Start pi now?": it only asks when output is a terminal.
+    curl -fsSL https://pi.dev/install.sh | sh >/dev/null
 }
 
 install_tpm() {
