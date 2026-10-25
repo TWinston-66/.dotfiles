@@ -65,8 +65,8 @@
             "args": ["-pdf", "-interaction=nonstopmode", "-synctex=1", "%f"]
           },
           "forwardSearch": {
-            "executable": "/Applications/Skim.app/Contents/SharedSupport/displayline",
-            "args": ["-r", "-g", "%l", "%p", "%f"]
+            "executable": "tex-forward-search",
+            "args": ["%l", "%p", "%f"]
           }
         }
       }

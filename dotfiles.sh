@@ -8,6 +8,7 @@ export DOTFILES_DIR
 source "$DOTFILES_DIR/lib/log.sh"
 source "$DOTFILES_DIR/lib/dnf.sh"
 source "$DOTFILES_DIR/lib/flatpak.sh"
+source "$DOTFILES_DIR/lib/kde.sh"
 source "$DOTFILES_DIR/lib/homebrew.sh"
 source "$DOTFILES_DIR/lib/packages.sh"
 source "$DOTFILES_DIR/lib/shell.sh"
@@ -70,6 +71,7 @@ setup_fedora() {
 
     install_tpm
     set_default_shell
+    kde_setup
 
     log_title "Done"
     log_ok "Machine configured. Follow steps below."
