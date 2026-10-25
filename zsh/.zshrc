@@ -28,10 +28,6 @@ export TEALDEER_CONFIG_DIR="$HOME/.config/tealdeer"
 export EDITOR="zed --wait"
 export PATH="$HOME/.local/bin:$PATH"
 
-if [ -d "/Applications/calibre.app/Contents/MacOS" ]; then
-  export PATH="/Applications/calibre.app/Contents/MacOS:$PATH"
-fi
-
 alias ls='eza --icons -a --group-directories-first'
 alias ll='eza -la --icons --git --header --group-directories-first'
 alias tree='eza --tree --icons --git-ignore'
