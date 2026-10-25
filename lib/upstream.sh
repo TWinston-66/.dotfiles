@@ -131,17 +131,22 @@ CREDENTIALSD_VERSION=0.3.1
 CREDENTIALSD_RPM_VERSION=0.3.1.0-1.1
 CREDENTIALSD_XPI_VERSION=0.2.0
 CREDENTIALSD_XPI_ID=credentialsd-helper@iinuwa.xyz
+CREDENTIALSD_PORTAL_VERSION=1.22.1-14.1
 
 # credentialsd, passkeys and security keys for Firefox, from its GitHub release: the service,
 # its UI and the native-messaging host as RPMs (dnf pulls in their Fedora dependencies), and
-# the signed add-on, which a Firefox policy installs into every profile. Firefox reads
+# the signed add-on, which a Firefox policy installs into every profile. Since 0.3 the add-on
+# reaches credentialsd through xdg-desktop-portal's experimental Credential portal, which
+# Fedora's portal lacks, so the release's patched portal replaces it; it turns the portal on
+# with a systemd drop-in of its own. A Fedora update to the portal undoes that until the
+# next run, which puts it back, as a downgrade if need be. Firefox reads
 # /etc/firefox/policies in place of the policies it ships with, so those are carried over.
 # Installed again only when the versions change.
 install_credentialsd() {
   local base="https://github.com/linux-credentials/credentialsd/releases/download/v$CREDENTIALSD_VERSION"
   local arch xpi="/usr/local/share/credentialsd/credentialsd-helper-$CREDENTIALSD_XPI_VERSION.xpi"
   local policies=/etc/firefox/policies/policies.json shipped=/usr/lib64/firefox/distribution/policies.json
-  local seed tmp
+  local seed tmp portal
 
   arch="$(uname -m)"
 
@@ -154,6 +159,20 @@ install_credentialsd() {
       "$base/credentialsd-$CREDENTIALSD_RPM_VERSION.$arch.rpm" \
       "$base/credentialsd-ui-$CREDENTIALSD_RPM_VERSION.$arch.rpm" \
       "$base/credentialsd-webextension-$CREDENTIALSD_RPM_VERSION.noarch.rpm"
+  fi
+
+  if rpm -q "xdg-desktop-portal-$CREDENTIALSD_PORTAL_VERSION" >/dev/null 2>&1; then
+    log_info "credentialsd's xdg-desktop-portal already installed"
+  else
+    log_step "Installing credentialsd's xdg-desktop-portal $CREDENTIALSD_PORTAL_VERSION"
+    portal="$base/xdg-desktop-portal-$CREDENTIALSD_PORTAL_VERSION.$arch.rpm"
+    sudo dnf install -y "$portal"
+    if ! rpm -q "xdg-desktop-portal-$CREDENTIALSD_PORTAL_VERSION" >/dev/null 2>&1; then
+      sudo dnf downgrade -y "$portal"
+    fi
+    # The running portal is restarted onto the new one, with its drop-in.
+    systemctl --user daemon-reload || true
+    systemctl --user try-restart xdg-desktop-portal.service || true
   fi
 
   if [ -f "$xpi" ] && jq -e --arg id "$CREDENTIALSD_XPI_ID" --arg url "file://$xpi" \
