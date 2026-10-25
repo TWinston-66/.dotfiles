@@ -1,0 +1,3 @@
+# NuPhy Halo65 V2: the logged-in user may open its raw HID device, which Chromium's WebHID
+# needs for VIA. Before 73-seat-late.rules, where uaccess tags are acted on.
+KERNEL=="hidraw*", SUBSYSTEM=="hidraw", ATTRS{idVendor}=="19f5", ATTRS{idProduct}=="3315", TAG+="uaccess"

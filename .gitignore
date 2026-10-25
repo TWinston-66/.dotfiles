@@ -13,9 +13,6 @@ pi/.pi/agent/auth.json
 pi/.pi/agent/sessions/
 pi/.pi/agent/models-store.json
 
-# Zed keeps its prompt library in a local LMDB database; machine state, not config
-zed/.config/zed/prompts/
-
 # TPM installs plugins under ~/.local/share/tmux/plugins; this is only a fallback
 # location if TMUX_PLUGIN_MANAGER_PATH is ever unset again
 tmux/.config/tmux/plugins/

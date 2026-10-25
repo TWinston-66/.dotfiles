@@ -7,7 +7,7 @@ set -uo pipefail
 # differs between two monitors of the same model and can change across reconnects.
 
 if ! command -v displayplacer >/dev/null 2>&1; then
-  echo "NOTE: displayplacer not installed — skipping display arrangement (see Brewfile)" >&2
+  echo "NOTE: displayplacer not installed — skipping display arrangement (see packages/Brewfile)" >&2
   exit 0
 fi
 

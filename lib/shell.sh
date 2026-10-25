@@ -6,7 +6,11 @@ login_shell() {
   local user
   user="$(id -un)"
 
-  dscl . -read "/Users/$user" UserShell 2>/dev/null | awk '{print $2}'
+  if [ "$DOTFILES_OS" = macos ]; then
+    dscl . -read "/Users/$user" UserShell 2>/dev/null | awk '{print $2}'
+  else
+    getent passwd "$user" | cut -d: -f7
+  fi
 }
 
 set_default_shell() {
@@ -25,5 +29,10 @@ set_default_shell() {
   if ! grep -qx "$zsh_path" /etc/shells; then
     echo "$zsh_path" | sudo tee -a /etc/shells >/dev/null
   fi
-  sudo chsh -s "$zsh_path" "$(id -un)"
+  # chsh isn't installed on every Fedora; usermod always is.
+  if [ "$DOTFILES_OS" = macos ]; then
+    sudo chsh -s "$zsh_path" "$(id -un)"
+  else
+    sudo usermod --shell "$zsh_path" "$(id -un)"
+  fi
 }

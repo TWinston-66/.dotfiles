@@ -2,5 +2,6 @@
   "theme": "dark",
   "defaultProvider": "openrouter",
   "defaultModel": "~deepseek/deepseek-flash-latest",
-  "defaultThinkingLevel": "high"
+  "defaultThinkingLevel": "high",
+  "lastChangelogVersion": "1.4.0"
 }

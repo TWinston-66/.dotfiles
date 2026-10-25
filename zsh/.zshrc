@@ -2,23 +2,24 @@ typeset -U path PATH
 
 export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
 
-eval "$(/opt/homebrew/bin/brew shellenv)"
+# Homebrew on macOS; on Fedora the same tools come from dnf under /usr.
+[ -x /opt/homebrew/bin/brew ] && eval "$(/opt/homebrew/bin/brew shellenv)"
+# Before tmux starts, so its server (the status bar, popups) finds what is installed here.
+export PATH="$HOME/.local/bin:$PATH"
 
 # Every terminal window is tmux: the first takes the session named main, and a
 # window opened while main is already on screen gets a session of its own, which dies with
 # the window (and which tmux.conf leaves out of resurrect's saves). Starts main if the server
-# is gone.
-if [ -z "$TMUX" ] && command -v tmux >/dev/null 2>&1; then
-  case $(tmux display -p -t =main: '#{session_attached}' 2>/dev/null) in
-    0) tmux attach -t =main ;;
+# is gone. Only with a terminal on stdin and stdout, so a shell that tools like Zed start
+# without one to read the environment carries on past this instead of exiting. Zed's own
+# terminal stays a plain shell, so it never takes main from a Ghostty window.
+if [ -z "$TMUX" ] && [ -t 0 ] && [ -t 1 ] && [ "$TERM_PROGRAM" != zed ] && command -v tmux >/dev/null 2>&1; then
+  case $(tmux display -p -t '=main:' '#{session_attached}' 2>/dev/null) in
+    0) tmux attach -t '=main' ;;
     "") tmux new -A -s main ;;
     *) tmux new \; set destroy-unattached on ;;
   esac
   exit
-fi
-
-if [[ -f "$HOME/.ssh/id_ed25519" ]]; then
-  ssh-add --apple-use-keychain "$HOME/.ssh/id_ed25519" >/dev/null 2>&1
 fi
 
 HISTFILE=~/.zsh_history
@@ -27,12 +28,8 @@ SAVEHIST=50000
 setopt SHARE_HISTORY HIST_IGNORE_DUPS HIST_IGNORE_SPACE HIST_FCNTL_LOCK
 
 export TEALDEER_CONFIG_DIR="$HOME/.config/tealdeer"
-export EDITOR="zed --wait"
-export PATH="$HOME/.local/bin:$PATH"
-
-if [ -d "/Applications/calibre.app/Contents/MacOS" ]; then
-  export PATH="/Applications/calibre.app/Contents/MacOS:$PATH"
-fi
+# Zed where it is installed, otherwise git and the rest fall back to vi.
+command -v zed >/dev/null 2>&1 && export EDITOR="zed --wait"
 
 alias ls='eza --icons -a --group-directories-first'
 alias ll='eza -la --icons --git --header --group-directories-first'
@@ -50,12 +47,12 @@ export FZF_DEFAULT_OPTS=" \
 --color=selected-bg:#45403d \
 --color=border:#7c6f64,label:#d4be98"
 
-_share="$HOMEBREW_PREFIX/share"
+_share="${HOMEBREW_PREFIX:-/usr}/share"
 FPATH="$_share/zsh/site-functions:${FPATH}"
 autoload -Uz compinit && compinit
 
 eval "$(fzf --zsh)"
-eval "$(starship init zsh)"
+command -v starship >/dev/null 2>&1 && eval "$(starship init zsh)"
 eval "$(zoxide init zsh)"
 
 source "$_share/zsh-autosuggestions/zsh-autosuggestions.zsh"

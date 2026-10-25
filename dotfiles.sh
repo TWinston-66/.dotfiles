@@ -6,15 +6,41 @@ DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 export DOTFILES_DIR
 
 source "$DOTFILES_DIR/lib/log.sh"
+source "$DOTFILES_DIR/lib/dnf.sh"
+source "$DOTFILES_DIR/lib/flatpak.sh"
+source "$DOTFILES_DIR/lib/kde.sh"
+source "$DOTFILES_DIR/lib/udev.sh"
 source "$DOTFILES_DIR/lib/homebrew.sh"
 source "$DOTFILES_DIR/lib/packages.sh"
 source "$DOTFILES_DIR/lib/shell.sh"
 source "$DOTFILES_DIR/lib/stow.sh"
+source "$DOTFILES_DIR/lib/upstream.sh"
 
 main() {
-    require_apple_silicon
+    detect_os
     log_title "dotfiles"
 
+    case "$DOTFILES_OS" in
+    macos) setup_macos ;;
+    fedora) setup_fedora ;;
+    esac
+}
+
+# Apple Silicon macOS or Fedora, from uname and /etc/os-release (read in a subshell so its
+# variables stay out of this one).
+detect_os() {
+    if [ "$(uname -s)" = Darwin ] && [ "$(uname -m)" = arm64 ]; then
+        DOTFILES_OS=macos
+    elif [ "$(uname -s)" = Linux ] && [ "$( (. /etc/os-release && echo "${ID:-}") 2>/dev/null)" = fedora ]; then
+        DOTFILES_OS=fedora
+    else
+        echo "Unsupported platform: $(uname -s) $(uname -m) (Apple Silicon macOS or Fedora only)" >&2
+        exit 1
+    fi
+    export DOTFILES_OS
+}
+
+setup_macos() {
     sudo_keepalive
     install_xcode_clt
 
@@ -30,11 +56,30 @@ main() {
     log_info "1. Open Tailscale from the menu bar and sign in"
 }
 
-require_apple_silicon() {
-    if [ "$(uname -s)" != Darwin ] || [ "$(uname -m)" != arm64 ]; then
-        echo "Unsupported platform: $(uname -s) $(uname -m) (Apple Silicon macOS only)" >&2
-        exit 1
-    fi
+setup_fedora() {
+    enable_copr atim/gping
+    enable_copr scottames/ghostty
+    dnf_install "$DOTFILES_DIR/packages/fedora.txt"
+    enable_service tailscaled
+    install_udev_rules
+    flathub_install "$DOTFILES_DIR/packages/flathub.txt"
+    install_starship
+    install_go_tools
+    install_zed
+    install_nerd_symbols
+    install_claude_code
+    install_pi
+    install_criterion
+    stow_packages
+
+    install_tpm
+    set_default_shell
+    kde_setup
+
+    log_title "Done"
+    log_ok "Machine configured. Follow steps below."
+    log_info "1. Log out and back in for zsh to become your shell"
+    log_info "2. Sign in to Tailscale: sudo tailscale up"
 }
 
 install_xcode_clt() {

@@ -4,7 +4,7 @@ set -euo pipefail
 
 install_packages() {
     install_homebrew
-    brew_bundle "$DOTFILES_DIR/Brewfile"
+    brew_bundle "$DOTFILES_DIR/packages/Brewfile"
     install_claude_code
     install_pi
 }
@@ -24,7 +24,11 @@ install_pi() {
         return
     fi
     log_step "Installing pi.dev"
-    curl -fsSL https://pi.dev/install.sh | sh
+    # The installer asks its questions on /dev/tty and takes the defaults (install, no PATH
+    # edits, don't start pi) when it can't open one, so it runs detached from the terminal:
+    # setsid through perl, which macOS has and stow needs anyway.
+    curl -fsSL https://pi.dev/install.sh |
+        perl -MPOSIX -e 'POSIX::setsid(); exec @ARGV' sh >/dev/null
 }
 
 install_tpm() {
@@ -34,8 +38,8 @@ install_tpm() {
         log_info "tpm already installed"
     else
         log_step "Installing tpm"
-        GIT_CONFIG_GLOBAL=/dev/null git clone --depth 1 https://github.com/tmux-plugins/tpm "$tpm_dir"
+        git clone --depth 1 https://github.com/tmux-plugins/tpm "$tpm_dir"
     fi
 
-    run_step "Installing tmux plugins" env GIT_CONFIG_GLOBAL=/dev/null "$tpm_dir/bin/install_plugins"
+    run_step "Installing tmux plugins" "$tpm_dir/bin/install_plugins"
 }

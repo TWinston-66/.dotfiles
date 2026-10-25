@@ -1,152 +1,26 @@
-format = """
-$username\
-$hostname\
-$localip\
-$shlvl\
-$singularity\
-$kubernetes\
-$nats\
-$directory\
-$vcsh\
-$fossil_branch\
-$fossil_metrics\
-$hg_branch\
-$hg_state\
-$pijul_channel\
-$docker_context\
-$package\
-$bun\
-$c\
-$cmake\
-$cobol\
-$cpp\
-$daml\
-$dart\
-$deno\
-$dotnet\
-$elixir\
-$elm\
-$erlang\
-$fennel\
-$fortran\
-$gleam\
-$golang\
-$gradle\
-$haskell\
-$haxe\
-$helm\
-$java\
-$julia\
-$kotlin\
-$lua\
-$maven\
-$mojo\
-$nim\
-$nodejs\
-$ocaml\
-$odin\
-$opa\
-$perl\
-$php\
-$pulumi\
-$purescript\
-$python\
-$quarto\
-$raku\
-$rlang\
-$red\
-$ruby\
-$rust\
-$scala\
-$solidity\
-$swift\
-$terraform\
-$typst\
-$vlang\
-$vagrant\
-$xmake\
-$zig\
-$buf\
-$guix_shell\
-$conda\
-$pixi\
-$meson\
-$spack\
-$memory_usage\
-$aws\
-$gcloud\
-$openstack\
-$azure\
-$direnv\
-$env_var\
-$mise\
-$crystal\
-$custom\
-$sudo\
-$cmd_duration\
-$line_break\
-$jobs\
-$battery\
-$time\
-$status\
-$container\
-$netns\
-$os\
-$shell\
-$character"""
 palette = "gruvbox_material"
 
 [directory]
-style = "bold lavender"
-
-[character]
-success_symbol = "[❯](bold green)"
-error_symbol = "[❯](bold red)"
-vimcmd_symbol = "[❮](bold green)"
+style = "bold grey2"
 
 [git_branch]
-style = "bold mauve"
-
-[git_status]
-style = "bold red"
+style = "bold purple"
 
 [cmd_duration]
-style = "bold peach"
+style = "bold orange"
 
 [username]
 style_user = "bold blue"
-style_root = "bold red"
 
 [hostname]
 style = "bold green"
 
-[time]
-style = "bold sapphire"
-
+# Gruvbox Material. Styles elsewhere that use these names (the prompt character in green
+# and red, git status in red) pick them up from here too.
 [palettes.gruvbox_material]
-base = "#282828"
-blue = "#7daea3"
-crust = "#1b1b1b"
-flamingo = "#d4a29a"
-green = "#a9b665"
-lavender = "#a89a9f"
-mantle = "#222222"
-maroon = "#e17579"
-mauve = "#d3869b"
-overlay0 = "#7c6f64"
-overlay1 = "#928374"
-overlay2 = "#a89984"
-peach = "#e78a4e"
-pink = "#df787f"
 red = "#ea6962"
-rosewater = "#dea473"
-sapphire = "#a0b49f"
-sky = "#83b193"
-subtext0 = "#baa88c"
-subtext1 = "#c7b392"
-surface0 = "#32302f"
-surface1 = "#45403d"
-surface2 = "#5a524c"
-teal = "#89b482"
-text = "#d4be98"
-yellow = "#d8a657"
+orange = "#e78a4e"
+green = "#a9b665"
+blue = "#7daea3"
+purple = "#d3869b"
+grey2 = "#a89984"

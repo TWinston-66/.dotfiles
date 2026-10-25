@@ -1,0 +1,42 @@
+stow
+gum
+zsh
+zsh-autosuggestions
+zsh-syntax-highlighting
+ripgrep
+fd-find # fd
+fzf
+bat
+eza
+zoxide
+gh
+git-delta # git's pager
+jq
+gping # COPR atim/gping
+nmap
+btop
+duf
+du-dust # dust
+procs
+uv
+nodejs
+nodejs-npm # pi installs through npm
+golang
+golangci-lint
+cmake
+gcc # C, for Criterion and the rest (the Mac has clang from the Xcode tools)
+make
+tealdeer
+tmux
+ghostty # COPR scottames/ghostty
+
+# Apps
+tailscale
+torbrowser-launcher # Tor Browser
+transmission-qt
+chromium # Fedora's own, not Flathub's: VIA needs WebHID, which the sandbox blocks
+solaar # Logitech devices, in place of Logi Options+
+okular
+texlive-scheme-full # all of TeX Live, like MacTeX
+latexmk
+flatpak
