@@ -34,8 +34,8 @@ install_tpm() {
         log_info "tpm already installed"
     else
         log_step "Installing tpm"
-        GIT_CONFIG_GLOBAL=/dev/null git clone --depth 1 https://github.com/tmux-plugins/tpm "$tpm_dir"
+        git clone --depth 1 https://github.com/tmux-plugins/tpm "$tpm_dir"
     fi
 
-    run_step "Installing tmux plugins" env GIT_CONFIG_GLOBAL=/dev/null "$tpm_dir/bin/install_plugins"
+    run_step "Installing tmux plugins" "$tpm_dir/bin/install_plugins"
 }

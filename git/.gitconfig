@@ -38,7 +38,7 @@
     path = ~/.gitconfig.local
 
 [url "git@github.com:"]
-	insteadOf = https://github.com/
+	pushInsteadOf = https://github.com/
 
 # Gruvbox Material, blue accent. base16 takes its syntax colours
 # from the terminal, which Ghostty sets to the same palette.

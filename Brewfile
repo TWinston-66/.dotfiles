@@ -27,6 +27,7 @@ brew "node"
 brew "go"
 brew "golangci-lint"
 brew "cmake"
+brew "criterion"
 brew "lazydocker"
 brew "tealdeer"
 brew "tmux"
@@ -43,6 +44,7 @@ cask "zed"
 cask "skim" # LaTeX live preview (synctex)
 cask "mactex-no-gui"
 cask "ghostty"
+cask "font-symbols-only-nerd-font" # icons in Zed's terminal; Ghostty has its own
 cask "tailscale-app"
 cask "cryptomator"
 cask "drawio"
@@ -55,10 +57,12 @@ cask "tor-browser"
 cask "transmission"
 cask "ungoogled-chromium" # VIA keyboard config (WebHID)
 cask "rectangle"
+cask "stats" # menu bar system monitor
 cask "balenaetcher"
 cask "claude"
 cask "antigravity-cli"
 cask "google-gemini"
+cask "logi-options-plus"
 
 mas "Amphetamine", id: 937984704
 mas "wBlock", id: 6746388723

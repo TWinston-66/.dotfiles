@@ -8,18 +8,15 @@ eval "$(/opt/homebrew/bin/brew shellenv)"
 # window opened while main is already on screen gets a session of its own, which dies with
 # the window (and which tmux.conf leaves out of resurrect's saves). Starts main if the server
 # is gone. Only with a terminal on stdin and stdout, so a shell that tools like Zed start
-# without one to read the environment carries on past this instead of exiting.
-if [ -z "$TMUX" ] && [ -t 0 ] && [ -t 1 ] && command -v tmux >/dev/null 2>&1; then
+# without one to read the environment carries on past this instead of exiting. Zed's own
+# terminal stays a plain shell, so it never takes main from a Ghostty window.
+if [ -z "$TMUX" ] && [ -t 0 ] && [ -t 1 ] && [ "$TERM_PROGRAM" != zed ] && command -v tmux >/dev/null 2>&1; then
   case $(tmux display -p -t '=main:' '#{session_attached}' 2>/dev/null) in
     0) tmux attach -t '=main' ;;
     "") tmux new -A -s main ;;
     *) tmux new \; set destroy-unattached on ;;
   esac
   exit
-fi
-
-if [[ -f "$HOME/.ssh/id_ed25519" ]]; then
-  ssh-add --apple-use-keychain "$HOME/.ssh/id_ed25519" >/dev/null 2>&1
 fi
 
 HISTFILE=~/.zsh_history

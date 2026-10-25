@@ -1,6 +1,6 @@
 theme = gruvbox-material
 
-font-size = 14
+font-size = 13
 adjust-cell-height = 10%
 
 window-padding-x = 8

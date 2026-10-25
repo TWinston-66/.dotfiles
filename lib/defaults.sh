@@ -114,7 +114,7 @@ defaults write NSGlobalDomain NSNavPanelExpandedStateForSaveMode -bool true
 defaults write NSGlobalDomain PMPrintingExpandedStateForPrint -bool true
 
 ### FINDER ###
-defaults write com.apple.finder AppleShowAllFiles -bool false # dotfiles stay hidden in Finder
+defaults write com.apple.finder AppleShowAllFiles -bool true # show dotfiles in Finder
 defaults write NSGlobalDomain AppleShowAllExtensions -bool true # Show extensions
 defaults write com.apple.finder ShowPathbar -bool true
 defaults write com.apple.finder ShowStatusBar -bool true
@@ -223,7 +223,7 @@ if command -v dockutil >/dev/null 2>&1; then
     dockutil --add "$_app" --no-restart >/dev/null 2>&1 || true
   done
   if [ -d "$HOME/Documents/Projects" ]; then
-    dockutil --add "$HOME/Documents/Projects" --view grid --display folder --no-restart >/dev/null 2>&1 || true
+    dockutil --add "$HOME/Documents/Projects" --view grid --display folder --sort datemodified --no-restart >/dev/null 2>&1 || true
   fi
   unset _dock_apps _app
 else
