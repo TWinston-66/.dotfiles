@@ -72,6 +72,31 @@ install_nerd_symbols() {
   fc-cache -f "$dir" >/dev/null
 }
 
+GRUVBOX_ICONS_VERSION=6.6.0
+
+# The Gruvbox Plus icons for KDE, dark set only, from their GitHub release into
+# ~/.local/share/icons; kde.sh applies them. Folders keep the pack's default colour.
+# Installed again only when GRUVBOX_ICONS_VERSION changes, which a marker file records.
+install_gruvbox_icons() {
+  local dir="$HOME/.local/share/icons/Gruvbox-Plus-Dark" tmp
+
+  if [ "$(cat "$dir/.version" 2>/dev/null)" = "$GRUVBOX_ICONS_VERSION" ]; then
+    log_info "Gruvbox Plus icons already installed"
+    return
+  fi
+
+  log_step "Installing Gruvbox Plus icons $GRUVBOX_ICONS_VERSION"
+  tmp="$(mktemp -d)"
+  curl -fsSL -o "$tmp/icons.zip" \
+    "https://github.com/SylEleuth/gruvbox-plus-icon-pack/releases/download/v$GRUVBOX_ICONS_VERSION/gruvbox-plus-icon-pack-$GRUVBOX_ICONS_VERSION.zip"
+  unzip -q "$tmp/icons.zip" 'Gruvbox-Plus-Dark/*' -d "$tmp"
+  rm -rf "$dir"
+  mkdir -p "${dir%/*}"
+  mv "$tmp/Gruvbox-Plus-Dark" "$dir"
+  echo "$GRUVBOX_ICONS_VERSION" >"$dir/.version"
+  rm -rf "$tmp"
+}
+
 CRITERION_VERSION=2.5.0
 
 # Criterion, the C test library, from its prebuilt Linux release into /usr/local, where its

@@ -12,6 +12,7 @@ zoxide
 gh
 git-delta # git's pager
 jq
+unzip # the Gruvbox icon pack
 gping # COPR atim/gping
 nmap
 btop

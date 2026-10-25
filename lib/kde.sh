@@ -20,6 +20,16 @@ kde_setup() {
   plasma-apply-colorscheme --accent-color '#7daea3' 2>&1 | while IFS= read -r line; do
     if [ -n "$line" ]; then log_info "$line"; fi
   done
+  # The Gruvbox Plus icons upstream.sh installs, through the helper System Settings uses,
+  # which also tells running apps. Without it, they take the icons at the next login.
+  if [ -x /usr/libexec/plasma-changeicons ]; then
+    /usr/libexec/plasma-changeicons Gruvbox-Plus-Dark 2>&1 | while IFS= read -r line; do
+      if [ -n "$line" ]; then log_info "$line"; fi
+    done
+  else
+    kwriteconfig6 --file kdeglobals --group Icons --key Theme Gruvbox-Plus-Dark
+    log_info "Gruvbox Plus icons set; they take effect at the next login"
+  fi
 
   ### KEYBOARD ###
   # Held keys repeat (rather than offer accents), after 225 ms, 33 times a second: macOS's

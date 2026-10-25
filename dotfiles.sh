@@ -67,6 +67,7 @@ setup_fedora() {
     install_go_tools
     install_zed
     install_nerd_symbols
+    install_gruvbox_icons
     install_claude_code
     install_pi
     install_criterion

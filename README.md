@@ -55,10 +55,11 @@ This clones the repo to `~/.dotfiles` (override with `DOTFILES_DIR`) and runs
 1. Installs `packages/fedora.txt` with dnf (Ghostty and gping from COPR) and
    `packages/flathub.txt` from Flathub, and enables Tailscale.
 2. Installs what Fedora doesn't package from upstream: starship, lazygit, lazydocker,
-   sesh, gitmux, Zed, the Symbols Nerd Font, Claude Code, pi and Criterion.
+   sesh, gitmux, Zed, the Symbols Nerd Font, the Gruvbox Plus icons, Claude Code, pi and
+   Criterion.
 3. Installs the udev rule that lets Chromium reach the keyboard for VIA.
 4. Links the configs with Stow, installs tmux's plugins and sets zsh as the login shell.
-5. Applies KDE settings: the Gruvbox Material colour scheme, key repeat, no hot corner,
+5. Applies KDE settings: the Gruvbox Material colours and icons, key repeat, no hot corner,
    Dolphin, Spectacle, a 24-hour clock, Ghostty as the terminal and Okular's jump back to Zed.
 
 ## Configs
