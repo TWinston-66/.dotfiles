@@ -129,6 +129,8 @@ install_criterion() {
 
 CREDENTIALSD_VERSION=0.3.1
 CREDENTIALSD_RPM_VERSION=0.3.1.0-1.1
+# The version inside those RPMs, which rpm -q matches against.
+CREDENTIALSD_PKG_VERSION=0.3.1~0-1.1
 CREDENTIALSD_XPI_VERSION=0.2.0
 CREDENTIALSD_XPI_ID=credentialsd-helper@iinuwa.xyz
 CREDENTIALSD_PORTAL_VERSION=1.22.1-14.1
@@ -150,8 +152,8 @@ install_credentialsd() {
 
   arch="$(uname -m)"
 
-  if rpm -q "credentialsd-${CREDENTIALSD_RPM_VERSION%-*}" "credentialsd-ui-${CREDENTIALSD_RPM_VERSION%-*}" \
-    "credentialsd-webextension-${CREDENTIALSD_RPM_VERSION%-*}" >/dev/null 2>&1; then
+  if rpm -q "credentialsd-$CREDENTIALSD_PKG_VERSION" "credentialsd-ui-$CREDENTIALSD_PKG_VERSION" \
+    "credentialsd-webextension-$CREDENTIALSD_PKG_VERSION" >/dev/null 2>&1; then
     log_info "credentialsd already installed"
   else
     log_step "Installing credentialsd $CREDENTIALSD_VERSION"
