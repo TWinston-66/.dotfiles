@@ -27,6 +27,8 @@ install_starship() {
     return
   fi
   log_step "Installing starship"
+  # The installer won't create its bin dir, and on a fresh system nothing has yet.
+  mkdir -p "$HOME/.local/bin"
   # The installer ends with setup instructions for every shell; .zshrc already does that.
   curl -fsSL https://starship.rs/install.sh | sh -s -- --yes --bin-dir "$HOME/.local/bin" >/dev/null
 }
