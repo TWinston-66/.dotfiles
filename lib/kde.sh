@@ -23,14 +23,28 @@ kde_setup() {
   ### CLOCK ###
   # The panel clock in 24-hour time (2; 1 follows the locale), leaving US dates everywhere.
   # Through Plasma's scripting, since plasmashell rewrites its panel config while running.
-  dbus-send --session --type=method_call --dest=org.kde.plasmashell /PlasmaShell \
-    org.kde.PlasmaShell.evaluateScript string:'
+  # It reports each clock it set, or that there was none.
+  local clock_result
+  if clock_result="$(dbus-send --session --print-reply --type=method_call --dest=org.kde.plasmashell \
+    /PlasmaShell org.kde.PlasmaShell.evaluateScript string:'
+      var found = 0;
       panels().forEach(function (panel) {
         panel.widgets("org.kde.plasma.digitalclock").forEach(function (clock) {
           clock.currentConfigGroup = ["Appearance"];
           clock.writeConfig("use24hFormat", 2);
+          clock.reloadConfig();
+          found++;
+          print("Panel clock " + clock.id + " set to 24-hour (now " + clock.readConfig("use24hFormat", "unset") + ")");
         });
-      });' >/dev/null || log_info "Plasma isn't running; the clock stays as it is"
+      });
+      if (!found) print("No digital clock found on a panel");')"; then
+    # The reply is a header line, then the printed lines as one string: string "...".
+    tail -n +2 <<<"$clock_result" | sed -e '1s/^ *string "//' -e '$s/"$//' | while IFS= read -r line; do
+      if [ -n "$line" ]; then log_info "$line"; fi
+    done
+  else
+    log_info "Plasma isn't running; the clock stays as it is"
+  fi
 
   ### DOLPHIN ###
   # One view for every folder (Dolphin's default), and that view: Details, hidden files
