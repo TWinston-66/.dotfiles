@@ -57,8 +57,8 @@ This clones the repo to `~/.dotfiles` (override with `DOTFILES_DIR`) and runs
    `packages/flathub.txt` from Flathub, and enables Tailscale with its tray icon
    (accepting advertised routes).
 2. Installs what Fedora doesn't package from upstream: starship, lazygit, lazydocker,
-   sesh, gitmux, Zed, the Symbols Nerd Font, the Gruvbox Plus icons, Claude Code, pi and
-   Criterion.
+   sesh, gitmux, Zed, the Symbols Nerd Font, the Gruvbox Plus icons, Claude Code, pi,
+   Criterion and LibrePods for AirPods.
 3. Installs the udev rule that lets Chromium reach the keyboard for VIA.
 4. Copies the SSH key from the drive labelled `DB`, if it's plugged in, links the configs
    with Stow, installs tmux's plugins and sets zsh as the login shell.

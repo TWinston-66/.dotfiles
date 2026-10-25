@@ -75,6 +75,7 @@ setup_fedora() {
     install_pi
     install_criterion
     install_credentialsd
+    install_librepods
     install_ssh_key
     stow_packages
 

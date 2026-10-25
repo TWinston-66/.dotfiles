@@ -24,6 +24,9 @@ nodejs
 nodejs-npm # pi installs through npm
 golang
 golangci-lint
+cargo # LibrePods is built with it
+dbus-devel # LibrePods
+pulseaudio-libs-devel # LibrePods
 cmake
 gcc # C, for Criterion and the rest (the Mac has clang from the Xcode tools)
 make

@@ -201,3 +201,30 @@ install_credentialsd() {
   sudo install -m 644 "$tmp" "$policies"
   rm -f "$tmp"
 }
+
+LIBREPODS_REV=672e65ad36eebf21ff1c1a508066f9197ee56d17
+
+# LibrePods, AirPods' listening modes, ear detection and battery, from its Linux rewrite
+# (the linux/rust branch, well ahead of its only Linux release) built with cargo into
+# ~/.local/bin, with its launcher and icon, and started at login minimized to the tray.
+# The desktop files name the binary by path, since the Plasma session's PATH may not
+# have ~/.local/bin. Built again only when LIBREPODS_REV changes, which cargo's list of
+# what it installed records.
+install_librepods() {
+  local assets="https://raw.githubusercontent.com/librepods-org/librepods/$LIBREPODS_REV/linux-rust/assets"
+  local bin="$HOME/.local/bin/librepods" id=me.kavishdevar.librepods
+  local launcher="$HOME/.local/share/applications/$id.desktop"
+
+  if cargo install --list --root "$HOME/.local" 2>/dev/null | grep -qF "$LIBREPODS_REV"; then
+    log_info "LibrePods already installed"
+    return
+  fi
+
+  run_step "Building LibrePods" cargo install --locked --force --root "$HOME/.local" \
+    --git https://github.com/librepods-org/librepods --rev "$LIBREPODS_REV" librepods
+
+  mkdir -p "${launcher%/*}" "$HOME/.local/share/icons/hicolor/256x256/apps" "$HOME/.config/autostart"
+  curl -fsSL -o "$HOME/.local/share/icons/hicolor/256x256/apps/$id.png" "$assets/icon.png"
+  curl -fsSL "$assets/$id.desktop" | sed "s|^Exec=.*|Exec=$bin|" >"$launcher"
+  sed "s|^Exec=.*|Exec=$bin --start-minimized|" "$launcher" >"$HOME/.config/autostart/$id.desktop"
+}
