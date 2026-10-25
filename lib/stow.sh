@@ -10,8 +10,10 @@ stow_packages() {
     local backup_dir="$HOME/.dotfiles-backup/$(date +%Y%m%d%H%M%S)"
     local backed_up=0
     local pkg file rel target resolved
+    # Plus the package of files that differ by OS, named after it (macos, fedora).
+    local packages=("${DOTFILES_STOW_PACKAGES[@]}" "$DOTFILES_OS")
 
-    for pkg in "${DOTFILES_STOW_PACKAGES[@]}"; do
+    for pkg in "${packages[@]}"; do
         while IFS= read -r file; do
             rel="${file#"$DOTFILES_DIR/$pkg/"}"
             target="$HOME/$rel"
@@ -41,12 +43,13 @@ stow_packages() {
         log_info "Pre-existing dotfiles backed up to $backup_dir"
     fi
 
-    # Pre-create dirs that hold machine-local state next to the linked
-    # config, so stow links the files instead of folding the whole dir
-    # into the repo (auth.json and sessions/ would land in git).
     mkdir -p -m 700 "$HOME/.ssh"
-    mkdir -p "$HOME/.pi/agent"
 
-    stow --dir="$DOTFILES_DIR" --target="$HOME" --restow "${DOTFILES_STOW_PACKAGES[@]}"
+    # --no-folding links each file rather than whole directories, so what apps write next to
+    # their config stays out of the repo, and the OS package can add a file to a directory
+    # another package also has. The shared packages go first: that turns whole-directory links
+    # left by earlier runs into real directories, which stow can't do while adding the OS package.
+    stow --dir="$DOTFILES_DIR" --target="$HOME" --no-folding --restow "${DOTFILES_STOW_PACKAGES[@]}"
+    stow --dir="$DOTFILES_DIR" --target="$HOME" --no-folding --restow "$DOTFILES_OS"
     log_ok "Dotfiles stowed"
 }
