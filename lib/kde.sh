@@ -24,6 +24,8 @@ kde_setup() {
   # The panel clock in 24-hour time (2; 1 follows the locale), leaving US dates everywhere.
   # Through Plasma's scripting, since plasmashell rewrites its panel config while running.
   # It reports each clock it set, or that there was none.
+  # An en_DK time format, from before, would keep dates ISO, so it goes.
+  kwriteconfig6 --file plasma-localerc --group Formats --key LC_TIME --delete
   local clock_result
   if clock_result="$(dbus-send --session --print-reply --type=method_call --dest=org.kde.plasmashell \
     /PlasmaShell org.kde.PlasmaShell.evaluateScript string:'
