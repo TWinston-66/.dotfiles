@@ -198,7 +198,7 @@ unset _c
 
 if command -v dockutil >/dev/null 2>&1; then
   _dock_apps=(
-    "/Applications/Safari.app"
+    "/Applications/Firefox.app"
     "/System/Applications/Messages.app"
     "/System/Applications/Mail.app"
     "/System/Applications/Reminders.app"
@@ -238,9 +238,9 @@ defaults write com.apple.AdLib allowIdentifierForAdvertising -bool false
 defaults write com.apple.TimeMachine DoNotOfferNewDisksForBackup -bool true
 
 if command -v defaultbrowser >/dev/null 2>&1; then
-  if ! defaultbrowser 2>/dev/null | grep -q '^\* safari'; then
+  if ! defaultbrowser 2>/dev/null | grep -q '^\* firefox'; then
     echo "NOTE: confirm the default browser dialog that is about to appear" >&2
-    defaultbrowser safari || true
+    defaultbrowser firefox || true
   fi
 else
   echo "NOTE: defaultbrowser not installed — skipping default browser (see packages/Brewfile)" >&2
