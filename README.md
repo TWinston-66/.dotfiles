@@ -45,7 +45,8 @@ This clones the repo to `~/.dotfiles` (override with `DOTFILES_DIR`) and runs
 **On macOS**
 
 1. Installs the Xcode Command Line Tools, Homebrew and `packages/Brewfile`, plus Claude Code and pi.
-2. Links the configs with Stow.
+2. Copies the SSH key from the drive labelled `DB`, if it's plugged in, and links the
+   configs with Stow.
 3. Installs tmux's plugins.
 4. Sets zsh as the login shell.
 5. Applies system defaults, the display layout and Touch ID for `sudo`.
@@ -59,7 +60,8 @@ This clones the repo to `~/.dotfiles` (override with `DOTFILES_DIR`) and runs
    sesh, gitmux, Zed, the Symbols Nerd Font, the Gruvbox Plus icons, Claude Code, pi and
    Criterion.
 3. Installs the udev rule that lets Chromium reach the keyboard for VIA.
-4. Links the configs with Stow, installs tmux's plugins and sets zsh as the login shell.
+4. Copies the SSH key from the drive labelled `DB`, if it's plugged in, links the configs
+   with Stow, installs tmux's plugins and sets zsh as the login shell.
 5. Applies KDE settings: the Gruvbox Material colours and icons, key repeat, no hot corner,
    Dolphin, Spectacle, a 24-hour clock, the panel's Fedora launcher icon, pinned apps and Solaar,
    Ghostty as the terminal and Okular's jump back to Zed.

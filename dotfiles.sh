@@ -13,6 +13,7 @@ source "$DOTFILES_DIR/lib/udev.sh"
 source "$DOTFILES_DIR/lib/homebrew.sh"
 source "$DOTFILES_DIR/lib/packages.sh"
 source "$DOTFILES_DIR/lib/shell.sh"
+source "$DOTFILES_DIR/lib/ssh.sh"
 source "$DOTFILES_DIR/lib/stow.sh"
 source "$DOTFILES_DIR/lib/upstream.sh"
 
@@ -45,6 +46,7 @@ setup_macos() {
     install_xcode_clt
 
     install_packages
+    install_ssh_key
     stow_packages
 
     install_tpm
@@ -73,6 +75,7 @@ setup_fedora() {
     install_pi
     install_criterion
     install_credentialsd
+    install_ssh_key
     stow_packages
 
     install_tpm
