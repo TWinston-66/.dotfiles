@@ -93,6 +93,57 @@ kde_setup() {
     log_info "Plasma isn't running; the clock stays as it is"
   fi
 
+  ### PANEL ###
+  # The application launcher shows the Fedora logo, and the task manager pins System
+  # Settings, Discover, the file manager, the browser, Ghostty and Shortwave, in that order.
+  # Solaar's icon is always shown in the system tray rather than in its popup, added to
+  # whatever else is shown there (Solaar's tray icon is named indicator-solaar).
+  # Through Plasma's scripting, as the clock is, reporting each one it set.
+  local panel_result
+  if panel_result="$(dbus-send --session --print-reply --type=method_call --dest=org.kde.plasmashell \
+    /PlasmaShell org.kde.PlasmaShell.evaluateScript string:'
+      var launchers = 0, taskManagers = 0;
+      panels().forEach(function (panel) {
+        panel.widgets().forEach(function (widget) {
+          if (["org.kde.plasma.kickoff", "org.kde.plasma.kicker", "org.kde.plasma.kickerdash"].indexOf(widget.type) >= 0) {
+            widget.currentConfigGroup = ["General"];
+            widget.writeConfig("icon", "start-here-fedora");
+            widget.reloadConfig();
+            launchers++;
+            print("Launcher " + widget.id + " shows the Fedora logo\n");
+          } else if (["org.kde.plasma.icontasks", "org.kde.plasma.taskmanager"].indexOf(widget.type) >= 0) {
+            widget.currentConfigGroup = ["General"];
+            widget.writeConfig("launchers", [
+              "applications:systemsettings.desktop",
+              "applications:org.kde.discover.desktop",
+              "preferred://filemanager",
+              "preferred://browser",
+              "applications:com.mitchellh.ghostty.desktop",
+              "applications:de.haeckerfelix.Shortwave.desktop"
+            ]);
+            widget.reloadConfig();
+            taskManagers++;
+            print("Task manager " + widget.id + " pins its six apps\n");
+          } else if (widget.type === "org.kde.plasma.systemtray") {
+            widget.currentConfigGroup = ["General"];
+            var shown = widget.readConfig("shownItems", []);
+            if (typeof shown === "string") shown = shown ? shown.split(",") : [];
+            if (shown.indexOf("indicator-solaar") < 0) shown.push("indicator-solaar");
+            widget.writeConfig("shownItems", shown);
+            widget.reloadConfig();
+            print("System tray " + widget.id + " always shows Solaar\n");
+          }
+        });
+      });
+      if (!launchers) print("No application launcher found on a panel\n");
+      if (!taskManagers) print("No task manager found on a panel");')"; then
+    tail -n +2 <<<"$panel_result" | sed -e '1s/^ *string "//' -e '$s/"$//' | while IFS= read -r line; do
+      if [ -n "$line" ]; then log_info "$line"; fi
+    done
+  else
+    log_info "Plasma isn't running; the panel stays as it is"
+  fi
+
   ### BATTERY ###
   # The battery shows its percentage in the panel. It lives in the system tray, which keeps
   # its applets in its own config group, out of reach of Plasma's scripting, so the setting
