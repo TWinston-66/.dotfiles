@@ -11,6 +11,6 @@ kde_setup() {
   # Okular: Shift-click in a PDF built with synctex jumps to that line in Zed (inverse search;
   # forward search is tex-forward-search). Zed by full path, since Okular started from the
   # menu doesn't have ~/.local/bin on PATH.
-  kwriteconfig6 --file okularpartrc --group General --key ExternalEditor Custom
-  kwriteconfig6 --file okularpartrc --group General --key ExternalEditorCommand "$HOME/.local/bin/zed %f:%l"
+  kwriteconfig6 --file okularpartrc --group "Core General" --key ExternalEditor Custom
+  kwriteconfig6 --file okularpartrc --group "Core General" --key ExternalEditorCommand "$HOME/.local/bin/zed %f:%l"
 }
