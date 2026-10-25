@@ -26,7 +26,8 @@
   effect without re-running anything.
 
 Everything that takes colours wears Gruvbox Material with a blue accent: Ghostty, tmux,
-the prompt, fzf, syntax highlighting, delta, bat, lazygit, btop, Zed and the macOS accent.
+the prompt, fzf, syntax highlighting, delta, bat, lazygit, btop, Zed, the macOS accent
+and KDE Plasma.
 
 Runs on Apple Silicon Macs and on Fedora with KDE Plasma.
 
@@ -57,8 +58,8 @@ This clones the repo to `~/.dotfiles` (override with `DOTFILES_DIR`) and runs
    sesh, gitmux, Zed, the Symbols Nerd Font, Claude Code, pi and Criterion.
 3. Installs the udev rule that lets Chromium reach the keyboard for VIA.
 4. Links the configs with Stow, installs tmux's plugins and sets zsh as the login shell.
-5. Applies KDE settings: key repeat, no hot corner, Dolphin, Spectacle, a 24-hour clock,
-   Ghostty as the terminal and Okular's jump back to Zed.
+5. Applies KDE settings: the Gruvbox Material colour scheme, key repeat, no hot corner,
+   Dolphin, Spectacle, a 24-hour clock, Ghostty as the terminal and Okular's jump back to Zed.
 
 ## Configs
 

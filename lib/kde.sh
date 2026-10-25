@@ -8,6 +8,19 @@ set -euo pipefail
 kde_setup() {
   log_step "Applying KDE settings"
 
+  ### THEME ###
+  # Gruvbox Material, from the scheme the fedora package stows into color-schemes, with
+  # its blue as the accent (in place of any custom or wallpaper accent). GTK apps follow it
+  # through Breeze-GTK. Applying a scheme copies its colours into kdeglobals, so it's a
+  # command rather than a stowed kdeglobals.
+  local line
+  plasma-apply-colorscheme GruvboxMaterial 2>&1 | while IFS= read -r line; do
+    if [ -n "$line" ]; then log_info "$line"; fi
+  done
+  plasma-apply-colorscheme --accent-color '#7daea3' 2>&1 | while IFS= read -r line; do
+    if [ -n "$line" ]; then log_info "$line"; fi
+  done
+
   ### KEYBOARD ###
   # Held keys repeat (rather than offer accents), after 225 ms, 33 times a second: macOS's
   # InitialKeyRepeat 15 and KeyRepeat 2. Takes effect at the next login.
