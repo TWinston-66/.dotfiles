@@ -22,3 +22,13 @@ dnf_install() {
   log_step "Installing ${missing[*]}"
   sudo dnf install -y "${missing[@]}"
 }
+
+enable_service() {
+  local service="$1"
+  if systemctl is-enabled --quiet "$service" 2>/dev/null; then
+    log_info "$service already enabled"
+    return
+  fi
+  log_step "Enabling $service"
+  sudo systemctl enable --now "$service"
+}

@@ -27,3 +27,14 @@ cmake
 tealdeer
 tmux
 ghostty # COPR scottames/ghostty
+
+# Apps
+tailscale
+torbrowser-launcher # Tor Browser
+transmission-qt
+chromium # Fedora's own, not Flathub's: VIA needs WebHID, which the sandbox blocks
+solaar # Logitech devices, in place of Logi Options+
+okular
+texlive-scheme-full # all of TeX Live, like MacTeX
+latexmk
+flatpak

@@ -7,6 +7,7 @@ export DOTFILES_DIR
 
 source "$DOTFILES_DIR/lib/log.sh"
 source "$DOTFILES_DIR/lib/dnf.sh"
+source "$DOTFILES_DIR/lib/flatpak.sh"
 source "$DOTFILES_DIR/lib/homebrew.sh"
 source "$DOTFILES_DIR/lib/packages.sh"
 source "$DOTFILES_DIR/lib/shell.sh"
@@ -57,6 +58,8 @@ setup_fedora() {
     enable_copr atim/gping
     enable_copr scottames/ghostty
     dnf_install "$DOTFILES_DIR/packages/fedora.txt"
+    enable_service tailscaled
+    flathub_install "$DOTFILES_DIR/packages/flathub.txt"
     install_starship
     install_go_tools
     install_zed
@@ -69,7 +72,9 @@ setup_fedora() {
     set_default_shell
 
     log_title "Done"
-    log_ok "Log out and back in for zsh to become your shell."
+    log_ok "Machine configured. Follow steps below."
+    log_info "1. Log out and back in for zsh to become your shell"
+    log_info "2. Sign in to Tailscale: sudo tailscale up"
 }
 
 install_xcode_clt() {

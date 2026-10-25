@@ -1,0 +1,6 @@
+org.cryptomator.Cryptomator
+com.jgraph.drawio.desktop # draw.io
+org.telegram.desktop
+com.discordapp.Discord
+com.stremio.Stremio
+de.haeckerfelix.Shortwave
