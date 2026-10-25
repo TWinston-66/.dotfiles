@@ -55,6 +55,12 @@ setup_macos() {
 setup_fedora() {
     dnf_install "$DOTFILES_DIR/packages/fedora.txt"
     stow_packages
+
+    install_tpm
+    set_default_shell
+
+    log_title "Done"
+    log_ok "Log out and back in for zsh to become your shell."
 }
 
 install_xcode_clt() {

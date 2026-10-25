@@ -10,15 +10,8 @@ stow_packages() {
     local backup_dir="$HOME/.dotfiles-backup/$(date +%Y%m%d%H%M%S)"
     local backed_up=0
     local pkg file rel target resolved
-    local packages=()
 
     for pkg in "${DOTFILES_STOW_PACKAGES[@]}"; do
-        # .zshrc still assumes Homebrew, so Fedora links it once zsh is set up there.
-        [ "$pkg" = zsh ] && [ "$DOTFILES_OS" = fedora ] && continue
-        packages+=("$pkg")
-    done
-
-    for pkg in "${packages[@]}"; do
         while IFS= read -r file; do
             rel="${file#"$DOTFILES_DIR/$pkg/"}"
             target="$HOME/$rel"
@@ -54,6 +47,6 @@ stow_packages() {
     mkdir -p -m 700 "$HOME/.ssh"
     mkdir -p "$HOME/.pi/agent"
 
-    stow --dir="$DOTFILES_DIR" --target="$HOME" --restow "${packages[@]}"
+    stow --dir="$DOTFILES_DIR" --target="$HOME" --restow "${DOTFILES_STOW_PACKAGES[@]}"
     log_ok "Dotfiles stowed"
 }
