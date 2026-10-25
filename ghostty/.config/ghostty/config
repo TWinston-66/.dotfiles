@@ -19,6 +19,10 @@ split-inherit-working-directory = true
 
 scrollback-limit = 100000000
 
+# Windows, tabs and splits close, and Ghostty quits, without asking first, even with a
+# command running (tmux keeps the sessions).
+confirm-close-surface = false
+
 # precision = touchpad (default 1), discrete = mouse wheel notches (default 3).
 mouse-scroll-multiplier = precision:0.5,discrete:2
 

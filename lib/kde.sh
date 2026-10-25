@@ -70,6 +70,36 @@ kde_setup() {
     log_info "Plasma isn't running; the clock stays as it is"
   fi
 
+  ### BATTERY ###
+  # The battery shows its percentage in the panel. The battery lives in the system tray,
+  # which keeps its applets in a containment of its own, found by the tray's
+  # SystrayContainmentId. Like the clock, through Plasma's scripting, reporting what it set.
+  local battery_result
+  if battery_result="$(dbus-send --session --print-reply --type=method_call --dest=org.kde.plasmashell \
+    /PlasmaShell org.kde.PlasmaShell.evaluateScript string:'
+      var found = 0;
+      panels().forEach(function (panel) {
+        panel.widgets("org.kde.plasma.systemtray").forEach(function (tray) {
+          tray.currentConfigGroup = [];
+          var trayContainment = desktopById(Number(tray.readConfig("SystrayContainmentId")));
+          if (!trayContainment) return;
+          trayContainment.widgets("org.kde.plasma.battery").forEach(function (battery) {
+            battery.currentConfigGroup = ["General"];
+            battery.writeConfig("showPercentage", true);
+            battery.reloadConfig();
+            found++;
+            print("Battery " + battery.id + " shows its percentage (now " + battery.readConfig("showPercentage", "unset") + ")");
+          });
+        });
+      });
+      if (!found) print("No battery found in a system tray");')"; then
+    tail -n +2 <<<"$battery_result" | sed -e '1s/^ *string "//' -e '$s/"$//' | while IFS= read -r line; do
+      if [ -n "$line" ]; then log_info "$line"; fi
+    done
+  else
+    log_info "Plasma isn't running; the battery stays as it is"
+  fi
+
   ### DOLPHIN ###
   # One view for every folder (Dolphin's default), and that view: Details, hidden files
   # shown, folders first. Version 4 is the format Dolphin writes, so it doesn't redo it.
