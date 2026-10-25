@@ -6,6 +6,7 @@ DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 export DOTFILES_DIR
 
 source "$DOTFILES_DIR/lib/log.sh"
+source "$DOTFILES_DIR/lib/dnf.sh"
 source "$DOTFILES_DIR/lib/homebrew.sh"
 source "$DOTFILES_DIR/lib/packages.sh"
 source "$DOTFILES_DIR/lib/shell.sh"
@@ -52,7 +53,7 @@ setup_macos() {
 }
 
 setup_fedora() {
-    log_info "Fedora detected. Nothing is installed or linked yet; that comes next."
+    dnf_install "$DOTFILES_DIR/packages/fedora.txt"
 }
 
 install_xcode_clt() {
