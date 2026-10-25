@@ -65,6 +65,22 @@ kde_setup() {
   kwriteconfig6 --file kwinrc --group Effect-overview --key BorderActivate 9
   dbus-send --session --type=method_call --dest=org.kde.KWin /KWin org.kde.KWin.reconfigure || true
 
+  ### SHORTCUTS ###
+  # Meta+Up maximizes (a toggle, so it also restores), keeping Meta+PgUp, instead of
+  # quick-tiling to the top. Through kglobalaccel's D-Bus API, since it keeps shortcuts in
+  # memory and rewrites kglobalshortcutsrc over any edit; it saves them there itself. Keys
+  # are Qt key codes: Meta is 0x10000000, Up 0x01000013 and PgUp 0x01000016.
+  # Quick Tile Top gives up Meta+Up first, or Maximize couldn't take it.
+  local kglobalaccel=(busctl --user call org.kde.kglobalaccel /kglobalaccel org.kde.KGlobalAccel)
+  if "${kglobalaccel[@]}" setForeignShortcutKeys 'asa(ai)' \
+    4 kwin "Window Quick Tile Top" KWin "Quick Tile Window to the Top" 0 2>/dev/null; then
+    "${kglobalaccel[@]}" setForeignShortcutKeys 'asa(ai)' \
+      4 kwin "Window Maximize" KWin "Maximize Window" 2 1 285212691 1 285212694
+    log_info "Meta+Up maximizes"
+  else
+    log_info "kglobalaccel isn't running; the shortcuts stay as they are"
+  fi
+
   ### CLOCK ###
   # The panel clock in 24-hour time (2; 1 follows the locale), leaving US dates everywhere.
   # Through Plasma's scripting, since plasmashell rewrites its panel config while running.

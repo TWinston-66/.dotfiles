@@ -63,7 +63,7 @@ This clones the repo to `~/.dotfiles` (override with `DOTFILES_DIR`) and runs
 4. Copies the SSH key from the drive labelled `DB`, if it's plugged in, links the configs
    with Stow, installs tmux's plugins and sets zsh as the login shell.
 5. Applies KDE settings: the Gruvbox Material colours and icons, key repeat, no hot corner,
-   Dolphin, Spectacle, a 24-hour clock, the panel's Fedora launcher icon, pinned apps and Solaar,
+   Meta+Up to maximize, Dolphin, Spectacle, a 24-hour clock, the panel's Fedora launcher icon, pinned apps and Solaar,
    Ghostty as the terminal and Okular's jump back to Zed.
 
 ## Configs
