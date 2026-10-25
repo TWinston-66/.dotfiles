@@ -2,8 +2,8 @@
 
 set -euo pipefail
 
-# Installs what a package list (one per line, # starts a comment) names and rpm doesn't
-# already have, so a second run installs nothing and doesn't ask for sudo.
+# Installs what a package list (one per line, # starts a comment) names and nothing installed
+# provides yet, so a second run installs nothing and doesn't ask for sudo.
 dnf_install() {
   local list="$1" pkg missing=()
 
@@ -11,7 +11,8 @@ dnf_install() {
     pkg="${pkg%%#*}"
     pkg="${pkg//[[:space:]]/}"
     [ -n "$pkg" ] || continue
-    rpm -q "$pkg" >/dev/null 2>&1 || missing+=("$pkg")
+    # By what packages provide, not their names: Fedora 44 has nodejs as nodejs22.
+    rpm -q --whatprovides "$pkg" >/dev/null 2>&1 || missing+=("$pkg")
   done <"$list"
 
   if [ "${#missing[@]}" -eq 0 ]; then
