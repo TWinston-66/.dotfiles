@@ -61,6 +61,8 @@ setup_fedora() {
     install_go_tools
     install_zed
     install_nerd_symbols
+    install_claude_code
+    install_pi
     stow_packages
 
     install_tpm

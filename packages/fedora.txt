@@ -20,6 +20,7 @@ du-dust # dust
 procs
 uv
 nodejs
+nodejs-npm # pi installs through npm
 golang
 golangci-lint
 cmake
