@@ -61,6 +61,7 @@ setup_fedora() {
     enable_copr scottames/ghostty
     dnf_install "$DOTFILES_DIR/packages/fedora.txt"
     enable_service tailscaled
+    tailscale_setup
     install_udev_rules
     flathub_install "$DOTFILES_DIR/packages/flathub.txt"
     install_starship
@@ -91,6 +92,17 @@ install_xcode_clt() {
         log_info "Finish GUI installer, then re-run script."
         exit 1
     fi
+}
+
+# Routes other machines advertise (subnet routers), which Linux leaves off by default and
+# macOS's app takes, and Tailscale's tray icon, started at login by the user unit the
+# package ships. The tray runs as this user, so this user is made Tailscale's operator,
+# which lets it connect and change settings without sudo. The routes and operator are
+# saved in tailscaled's prefs, so they hold through the sign-in after.
+tailscale_setup() {
+  log_step "Setting up Tailscale"
+  sudo tailscale set --accept-routes --operator="$USER"
+  systemctl --user enable --now tailscale-systray
 }
 
 sudo_keepalive() {

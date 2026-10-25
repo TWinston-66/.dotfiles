@@ -53,7 +53,8 @@ This clones the repo to `~/.dotfiles` (override with `DOTFILES_DIR`) and runs
 **On Fedora (KDE Plasma)**
 
 1. Installs `packages/fedora.txt` with dnf (Ghostty and gping from COPR) and
-   `packages/flathub.txt` from Flathub, and enables Tailscale.
+   `packages/flathub.txt` from Flathub, and enables Tailscale with its tray icon
+   (accepting advertised routes).
 2. Installs what Fedora doesn't package from upstream: starship, lazygit, lazydocker,
    sesh, gitmux, Zed, the Symbols Nerd Font, the Gruvbox Plus icons, Claude Code, pi and
    Criterion.
