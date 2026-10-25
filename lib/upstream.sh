@@ -45,3 +45,27 @@ install_go_tools() {
     run_step "Building $name" env GOBIN="$HOME/.local/bin" go install "$module@latest"
   done
 }
+
+install_zed() {
+  if [ -x "$HOME/.local/bin/zed" ]; then
+    log_info "Zed already installed"
+    return
+  fi
+  log_step "Installing Zed"
+  # Zed updates itself from here on; its installer's PATH advice is already in .zshrc.
+  curl -fsSL https://zed.dev/install.sh | sh >/dev/null
+}
+
+# Icons in Zed's terminal, which falls back to this font (settings.json). Ghostty has its own.
+install_nerd_symbols() {
+  local dir="$HOME/.local/share/fonts/NerdFontsSymbolsOnly"
+  if [ -f "$dir/SymbolsNerdFontMono-Regular.ttf" ]; then
+    log_info "Symbols Nerd Font already installed"
+    return
+  fi
+  log_step "Installing Symbols Nerd Font"
+  mkdir -p "$dir"
+  curl -fsSL https://github.com/ryanoasis/nerd-fonts/releases/latest/download/NerdFontsSymbolsOnly.tar.xz |
+    tar -xJ -C "$dir"
+  fc-cache -f "$dir" >/dev/null
+}

@@ -59,6 +59,8 @@ setup_fedora() {
     dnf_install "$DOTFILES_DIR/packages/fedora.txt"
     install_starship
     install_go_tools
+    install_zed
+    install_nerd_symbols
     stow_packages
 
     install_tpm
