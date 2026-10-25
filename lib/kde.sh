@@ -94,34 +94,34 @@ kde_setup() {
   fi
 
   ### BATTERY ###
-  # The battery shows its percentage in the panel. The battery lives in the system tray,
-  # which keeps its applets in a containment of its own, found by the tray's
-  # SystrayContainmentId. Like the clock, through Plasma's scripting, reporting what it set.
-  local battery_result
-  if battery_result="$(dbus-send --session --print-reply --type=method_call --dest=org.kde.plasmashell \
-    /PlasmaShell org.kde.PlasmaShell.evaluateScript string:'
-      var found = 0;
-      panels().forEach(function (panel) {
-        panel.widgets("org.kde.plasma.systemtray").forEach(function (tray) {
-          tray.currentConfigGroup = [];
-          var trayContainment = desktopById(Number(tray.readConfig("SystrayContainmentId")));
-          if (!trayContainment) return;
-          trayContainment.widgets("org.kde.plasma.battery").forEach(function (battery) {
-            battery.currentConfigGroup = ["General"];
-            battery.writeConfig("showPercentage", true);
-            battery.reloadConfig();
-            found++;
-            print("Battery " + battery.id + " shows its percentage (now " + battery.readConfig("showPercentage", "unset") + ")");
-          });
-        });
-      });
-      if (!found) print("No battery found in a system tray");')"; then
-    tail -n +2 <<<"$battery_result" | sed -e '1s/^ *string "//' -e '$s/"$//' | while IFS= read -r line; do
-      if [ -n "$line" ]; then log_info "$line"; fi
-    done
-  else
-    log_info "Plasma isn't running; the battery stays as it is"
-  fi
+  # The battery shows its percentage in the panel. It lives in the system tray, which keeps
+  # its applets in its own config group, out of reach of Plasma's scripting, so the setting
+  # is written into the panel config directly. plasmashell rewrites that file while running,
+  # so it's stopped around the write, and only when the setting is missing.
+  local appletsrc="$HOME/.config/plasma-org.kde.plasma.desktop-appletsrc" header group stopped=0
+  local -a headers=() args=()
+  mapfile -t headers < <(awk '/^\[/ { h = $0 } $0 == "plugin=org.kde.plasma.battery" { print h }' \
+    "$appletsrc" 2>/dev/null)
+  for header in "${headers[@]}"; do
+    # [Containments][2][Applets][7][Applets][15] is one --group per name.
+    header="${header#[}"
+    header="${header%]}"
+    args=()
+    while IFS= read -r group; do args+=(--group "$group"); done <<<"${header//\]\[/$'\n'}"
+    args+=(--group Configuration --group General --key showPercentage)
+    if [ "$(kreadconfig6 --file "$appletsrc" "${args[@]}")" = true ]; then
+      log_info "Battery already shows its percentage"
+      continue
+    fi
+    if [ "$stopped" -eq 0 ] && systemctl --user is-active --quiet plasma-plasmashell.service; then
+      systemctl --user stop plasma-plasmashell.service
+      stopped=1
+    fi
+    kwriteconfig6 --file "$appletsrc" "${args[@]}" true
+    log_info "Battery shows its percentage"
+  done
+  if [ "$stopped" -eq 1 ]; then systemctl --user start plasma-plasmashell.service; fi
+  if [ "${#headers[@]}" -eq 0 ]; then log_info "No battery found in a system tray"; fi
 
   ### DOLPHIN ###
   # One view for every folder (Dolphin's default), and that view: Details, hidden files
