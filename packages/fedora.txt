@@ -1,2 +1,26 @@
 stow
+gum
+zsh
+zsh-autosuggestions
+zsh-syntax-highlighting
+ripgrep
+fd-find # fd
+fzf
+bat
+eza
+zoxide
+gh
 git-delta # git's pager
+jq
+nmap
+btop
+duf
+du-dust # dust
+procs
+uv
+nodejs
+golang
+golangci-lint
+cmake
+tealdeer
+tmux

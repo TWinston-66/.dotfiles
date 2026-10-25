@@ -54,6 +54,7 @@ setup_macos() {
 
 setup_fedora() {
     dnf_install "$DOTFILES_DIR/packages/fedora.txt"
+    stow_packages
 }
 
 install_xcode_clt() {

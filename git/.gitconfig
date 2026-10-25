@@ -12,7 +12,6 @@
     autoSetupRemote = true
 
 [core]
-    editor = zed --wait
     excludesfile = ~/.gitignore_global
     pager = delta
 
