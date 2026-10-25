@@ -69,3 +69,33 @@ install_nerd_symbols() {
     tar -xJ -C "$dir"
   fc-cache -f "$dir" >/dev/null
 }
+
+CRITERION_VERSION=2.5.0
+
+# Criterion, the C test library, from its prebuilt Linux release into /usr/local, where its
+# pkg-config file expects it. It needs only glibc. Fedora's loader doesn't look in
+# /usr/local/lib, so that is added. Installed again only when CRITERION_VERSION changes.
+install_criterion() {
+  local tmp
+
+  if grep -qx "Version: $CRITERION_VERSION" /usr/local/lib/pkgconfig/criterion.pc 2>/dev/null; then
+    log_info "Criterion already installed"
+    return
+  fi
+  if [ "$(uname -m)" != x86_64 ]; then
+    log_info "Criterion's release is x86_64 only; skipping it on $(uname -m)"
+    return
+  fi
+
+  log_step "Installing Criterion $CRITERION_VERSION"
+  tmp="$(mktemp -d)"
+  curl -fsSL "https://github.com/Snaipe/Criterion/releases/download/v$CRITERION_VERSION/criterion-$CRITERION_VERSION-linux-x86_64.tar.xz" |
+    tar -xJ -C "$tmp" --strip-components=1
+  sudo mkdir -p /usr/local/include /usr/local/lib
+  sudo cp -R "$tmp/include/." /usr/local/include/
+  sudo cp -R "$tmp/lib/." /usr/local/lib/
+  rm -rf "$tmp"
+
+  echo /usr/local/lib | sudo tee /etc/ld.so.conf.d/usr-local.conf >/dev/null
+  sudo ldconfig
+}

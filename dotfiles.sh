@@ -69,6 +69,7 @@ setup_fedora() {
     install_nerd_symbols
     install_claude_code
     install_pi
+    install_criterion
     stow_packages
 
     install_tpm
