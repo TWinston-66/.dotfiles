@@ -24,6 +24,27 @@ dnf_install() {
   sudo dnf install -y "${missing[@]}"
 }
 
+# Removes what a package list names and is still installed, along with whatever dnf finds
+# only they needed, so a second run removes nothing and doesn't ask for sudo.
+dnf_remove() {
+  local list="$1" pkg present=()
+
+  while IFS= read -r pkg || [ -n "$pkg" ]; do
+    pkg="${pkg%%#*}"
+    pkg="${pkg//[[:space:]]/}"
+    [ -n "$pkg" ] || continue
+    rpm -q "$pkg" >/dev/null 2>&1 && present+=("$pkg")
+  done <"$list"
+
+  if [ "${#present[@]}" -eq 0 ]; then
+    log_info "Packages from $(basename "$list") already removed"
+    return
+  fi
+
+  log_step "Removing ${present[*]}"
+  sudo dnf remove -y "${present[@]}"
+}
+
 enable_service() {
   local service="$1"
   if systemctl is-enabled --quiet "$service" 2>/dev/null; then

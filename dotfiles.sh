@@ -62,6 +62,7 @@ setup_fedora() {
     enable_copr atim/gping
     enable_copr scottames/ghostty
     dnf_install "$DOTFILES_DIR/packages/fedora.txt"
+    dnf_remove "$DOTFILES_DIR/packages/fedora-remove.txt"
     enable_service tailscaled
     tailscale_setup
     install_udev_rules

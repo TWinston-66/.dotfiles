@@ -1,0 +1,29 @@
+# Fedora KDE's own apps, removed. Upgrading its comps groups or the release can bring them back.
+
+# KDE PIM, for which Evolution stands in; dnf takes their Akonadi parts with them
+kmail
+kontact
+korganizer
+kaddressbook
+akregator
+akonadi-import-wizard
+pim-data-exporter
+pim-sieve-editor
+grantlee-editor
+kdepim-addons # KDE PIM events in the panel clock's calendar
+
+# Games
+kmahjongg
+kmines
+kpat
+
+# Chat and remote desktop
+neochat
+krdc
+krfb
+
+# Utilities
+kwrite # Zed
+qrca
+kmouth
+skanpage
