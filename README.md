@@ -27,7 +27,7 @@
 
 Everything that takes colours wears Gruvbox Material with a blue accent: Ghostty, tmux,
 the prompt, fzf, syntax highlighting, delta, bat, lazygit, btop, Zed, the macOS accent
-and KDE Plasma.
+and KDE Plasma. fastfetch takes Ghostty's palette, so it matches without a config.
 
 Runs on Apple Silicon Macs and on Fedora with KDE Plasma.
 
@@ -58,22 +58,23 @@ This clones the repo to `~/.dotfiles` (override with `DOTFILES_DIR`) and runs
    (accepting advertised routes).
 2. Installs what Fedora doesn't package from upstream: starship, lazygit, lazydocker,
    sesh, gitmux, Zed, the Symbols Nerd Font, the Gruvbox Plus icons, Claude Code, pi,
-   Criterion and LibrePods for AirPods.
+   Criterion, credentialsd for passkeys in Firefox and LibrePods for AirPods.
 3. Installs the udev rule that lets Chromium reach the keyboard for VIA.
 4. Copies the SSH key from the drive labelled `DB`, if it's plugged in, links the configs
    with Stow, installs tmux's plugins and sets zsh as the login shell.
-5. Applies KDE settings: the Gruvbox Material colours and icons, the 4K external at 1.25 scale, key repeat, no hot corner,
-   Meta+Up to maximize, Dolphin, Spectacle, a 24-hour clock, the panel's Fedora launcher icon, pinned apps and Solaar,
-   Ghostty as the terminal and Okular's jump back to Zed.
+5. Applies KDE settings: the Gruvbox Material colours and icons, the 4K external at 60 Hz
+   and 1.25 scale, key repeat, natural scrolling, no hot corner, Meta+Up to maximize,
+   Dolphin, Spectacle, a 24-hour clock, the panel's Fedora launcher icon, pinned apps,
+   Solaar and the battery percentage, Ghostty as the terminal and Okular's jump back to Zed.
 
 ## Configs
 
 bat, btop, ghostty, git, gitmux, lazygit, pi, sesh, ssh, starship, tealdeer, tmux, zed
 and zsh, each a Stow package laid out like `$HOME`. The `macos` and `fedora` packages
-hold the few files that differ by OS (Ghostty's keys, the LaTeX viewer), and only the
-current OS's is linked. Rectangle's config is copied in rather than linked, since
-Rectangle imports and renames its file; KDE's settings are written with `kwriteconfig6`
-for the same reason.
+hold the few files that differ by OS (Ghostty's keys, the LaTeX viewer, KDE's colour
+scheme), and only the current OS's is linked. Rectangle's config is copied in rather than
+linked, since Rectangle imports and renames its file; KDE's settings are written with
+`kwriteconfig6` for the same reason.
 
 ## Update
 

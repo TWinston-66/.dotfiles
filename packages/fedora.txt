@@ -16,6 +16,7 @@ unzip # the Gruvbox icon pack
 gping # COPR atim/gping
 nmap
 btop
+fastfetch
 duf
 du-dust # dust
 procs
