@@ -62,7 +62,7 @@ This clones the repo to `~/.dotfiles` (override with `DOTFILES_DIR`) and runs
 3. Installs the udev rule that lets Chromium reach the keyboard for VIA.
 4. Copies the SSH key from the drive labelled `DB`, if it's plugged in, links the configs
    with Stow, installs tmux's plugins and sets zsh as the login shell.
-5. Applies KDE settings: the Gruvbox Material colours and icons, key repeat, no hot corner,
+5. Applies KDE settings: the Gruvbox Material colours and icons, the 4K external at 1.25 scale, key repeat, no hot corner,
    Meta+Up to maximize, Dolphin, Spectacle, a 24-hour clock, the panel's Fedora launcher icon, pinned apps and Solaar,
    Ghostty as the terminal and Okular's jump back to Zed.
 

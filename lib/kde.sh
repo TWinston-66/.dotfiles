@@ -60,6 +60,30 @@ kde_setup() {
     log_info "KWin isn't running; scrolling stays as it is"
   fi
 
+  ### DISPLAYS ###
+  # The 32" 4K external at 3840x2160 60 Hz, scaled 1.25 (looks like 3072x1728), as the
+  # main display. It's found as the connected screen that isn't the built-in panel (type 7)
+  # and has a 4K mode, as displays.sh finds it by type on macOS. KScreen saves it per
+  # monitor. A monitor whose DisplayPort Ver. is set to 1.1 in its menu advertises only
+  # HBR1 lanes, too slow for 4K at 60 Hz, so it offers 4K at 30 Hz alone.
+  local outputs external
+  if outputs="$(kscreen-doctor -j 2>/dev/null)"; then
+    external="$(jq -r 'first(.outputs[] | select(.connected and .type != 7
+      and any(.modes[]; .size.width == 3840 and .size.height == 2160)) | .name) // empty' <<<"$outputs")"
+    if [ -z "$external" ]; then
+      log_info "No 4K external screen connected; displays stay as they are"
+    elif jq -e --arg name "$external" '.outputs[] | select(.name == $name)
+      | any(.modes[]; .name == "3840x2160@60")' <<<"$outputs" >/dev/null; then
+      kscreen-doctor "output.$external.enable" "output.$external.mode.3840x2160@60" \
+        "output.$external.scale.1.25" "output.$external.priority.1" >/dev/null
+      log_info "$external at 3840x2160 60 Hz, scaled 1.25, as the main display"
+    else
+      log_info "$external offers 4K only at 30 Hz; set the monitor's DisplayPort Ver. to 1.2"
+    fi
+  else
+    log_info "KScreen isn't running; displays stay as they are"
+  fi
+
   ### HOT CORNERS ###
   # The top-left corner opens the Overview by default; 9 is no screen edge.
   kwriteconfig6 --file kwinrc --group Effect-overview --key BorderActivate 9
