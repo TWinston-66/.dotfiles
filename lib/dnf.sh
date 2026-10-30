@@ -3,9 +3,11 @@
 set -euo pipefail
 
 # Installs what a package list (one per line, # starts a comment) names and nothing installed
-# provides yet, so a second run installs nothing and doesn't ask for sudo.
+# provides yet, so a second run installs nothing and doesn't ask for sudo. A package the repos
+# don't have for this machine (torbrowser-launcher isn't built for aarch64, for Asahi) is
+# reported and skipped rather than stopping the rest of the setup.
 dnf_install() {
-  local list="$1" pkg missing=()
+  local list="$1" pkg missing=() failed=()
 
   while IFS= read -r pkg || [ -n "$pkg" ]; do
     pkg="${pkg%%#*}"
@@ -21,7 +23,14 @@ dnf_install() {
   fi
 
   log_step "Installing ${missing[*]}"
-  sudo dnf install -y "${missing[@]}"
+  sudo dnf install -y --skip-unavailable "${missing[@]}"
+
+  for pkg in "${missing[@]}"; do
+    rpm -q --whatprovides "$pkg" >/dev/null 2>&1 || failed+=("$pkg")
+  done
+  if [ "${#failed[@]}" -gt 0 ]; then
+    log_err "Couldn't install with dnf: ${failed[*]}"
+  fi
 }
 
 # Removes what a package list names and is still installed, along with whatever dnf finds
