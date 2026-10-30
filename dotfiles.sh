@@ -28,11 +28,14 @@ main() {
 }
 
 # Apple Silicon macOS or Fedora, from uname and /etc/os-release (read in a subshell so its
-# variables stay out of this one).
+# variables stay out of this one). Fedora Asahi Linux has an ID of its own, with fedora in
+# ID_LIKE, and is set up as Fedora.
 detect_os() {
+    local ids
+    ids=" $( (. /etc/os-release && echo "${ID:-} ${ID_LIKE:-}") 2>/dev/null) "
     if [ "$(uname -s)" = Darwin ] && [ "$(uname -m)" = arm64 ]; then
         DOTFILES_OS=macos
-    elif [ "$(uname -s)" = Linux ] && [ "$( (. /etc/os-release && echo "${ID:-}") 2>/dev/null)" = fedora ]; then
+    elif [ "$(uname -s)" = Linux ] && case "$ids" in *" fedora "* | " fedora-asahi-"*) true ;; *) false ;; esac; then
         DOTFILES_OS=fedora
     else
         echo "Unsupported platform: $(uname -s) $(uname -m) (Apple Silicon macOS or Fedora only)" >&2

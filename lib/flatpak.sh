@@ -4,8 +4,10 @@ set -euo pipefail
 
 # Installs from Flathub what a list (one app ID per line, # starts a comment) names and
 # isn't installed yet, so a second run installs nothing and doesn't ask for sudo.
+# Apps are installed one at a time, and one that fails (Discord has no aarch64 build, for
+# Asahi) is reported and skipped rather than stopping the rest of the setup.
 flathub_install() {
-  local list="$1" app missing=()
+  local list="$1" app missing=() failed=()
 
   while IFS= read -r app || [ -n "$app" ]; do
     app="${app%%#*}"
@@ -23,6 +25,12 @@ flathub_install() {
   sudo flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
   sudo flatpak remote-modify --no-filter --enable flathub
 
-  log_step "Installing ${missing[*]}"
-  sudo flatpak install -y --noninteractive flathub "${missing[@]}"
+  for app in "${missing[@]}"; do
+    log_step "Installing $app"
+    sudo flatpak install -y --noninteractive flathub "$app" || failed+=("$app")
+  done
+
+  if [ "${#failed[@]}" -gt 0 ]; then
+    log_err "Couldn't install from Flathub: ${failed[*]}"
+  fi
 }
