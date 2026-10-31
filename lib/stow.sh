@@ -10,8 +10,11 @@ stow_packages() {
     local backup_dir="$HOME/.dotfiles-backup/$(date +%Y%m%d%H%M%S)"
     local backed_up=0
     local pkg file rel target resolved
-    # Plus the package of files that differ by OS, named after it (macos, fedora).
-    local packages=("${DOTFILES_STOW_PACKAGES[@]}" "$DOTFILES_OS")
+    # Plus the package of files that differ by OS, named after it (macos, fedora), and on
+    # Fedora Asahi the asahi package of what differs on that machine.
+    local machine=()
+    if [ -n "${DOTFILES_ASAHI:-}" ]; then machine=(asahi); fi
+    local packages=("${DOTFILES_STOW_PACKAGES[@]}" "$DOTFILES_OS" "${machine[@]}")
 
     for pkg in "${packages[@]}"; do
         while IFS= read -r file; do
@@ -50,6 +53,6 @@ stow_packages() {
     # another package also has. The shared packages go first: that turns whole-directory links
     # left by earlier runs into real directories, which stow can't do while adding the OS package.
     stow --dir="$DOTFILES_DIR" --target="$HOME" --no-folding --restow "${DOTFILES_STOW_PACKAGES[@]}"
-    stow --dir="$DOTFILES_DIR" --target="$HOME" --no-folding --restow "$DOTFILES_OS"
+    stow --dir="$DOTFILES_DIR" --target="$HOME" --no-folding --restow "$DOTFILES_OS" "${machine[@]}"
     log_ok "Dotfiles stowed"
 }

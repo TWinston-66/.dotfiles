@@ -74,7 +74,8 @@ This clones the repo to `~/.dotfiles` (override with `DOTFILES_DIR`) and runs
 bat, btop, ghostty, git, gitmux, lazygit, pi, sesh, ssh, starship, tealdeer, tmux, zed
 and zsh, each a Stow package laid out like `$HOME`. The `macos` and `fedora` packages
 hold the few files that differ by OS (Ghostty's keys, the LaTeX viewer, KDE's colour
-scheme), and only the current OS's is linked. Rectangle's config is copied in rather than
+scheme), and only the current OS's is linked. The `asahi` package, linked on Fedora Asahi
+alone, holds Ghostty's smaller font size for the MacBook's panel. Rectangle's config is copied in rather than
 linked, since Rectangle imports and renames its file; KDE's settings are written with
 `kwriteconfig6` for the same reason.
 

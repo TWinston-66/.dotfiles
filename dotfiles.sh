@@ -29,7 +29,7 @@ main() {
 
 # Apple Silicon macOS or Fedora, from uname and /etc/os-release (read in a subshell so its
 # variables stay out of this one). Fedora Asahi Linux has an ID of its own, with fedora in
-# ID_LIKE, and is set up as Fedora.
+# ID_LIKE, and is set up as Fedora, plus the asahi package (DOTFILES_ASAHI).
 detect_os() {
     local ids
     ids=" $( (. /etc/os-release && echo "${ID:-} ${ID_LIKE:-}") 2>/dev/null) "
@@ -37,11 +37,12 @@ detect_os() {
         DOTFILES_OS=macos
     elif [ "$(uname -s)" = Linux ] && case "$ids" in *" fedora "* | " fedora-asahi-"*) true ;; *) false ;; esac; then
         DOTFILES_OS=fedora
+        case "$ids" in *" fedora-asahi-"*) DOTFILES_ASAHI=1 ;; esac
     else
         echo "Unsupported platform: $(uname -s) $(uname -m) (Apple Silicon macOS or Fedora only)" >&2
         exit 1
     fi
-    export DOTFILES_OS
+    export DOTFILES_OS DOTFILES_ASAHI="${DOTFILES_ASAHI:-}"
 }
 
 setup_macos() {

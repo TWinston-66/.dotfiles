@@ -28,3 +28,5 @@ mouse-scroll-multiplier = precision:0.5,discrete:2
 
 # Keys that differ by OS, from the macos or fedora package: Super (Cmd) on macOS, Alt on Linux.
 config-file = ?platform
+# What differs by machine, from the asahi package (the Fedora Asahi MacBook's font size).
+config-file = ?machine

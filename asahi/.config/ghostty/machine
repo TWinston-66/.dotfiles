@@ -1,0 +1,4 @@
+# The MacBook's built-in panel at KDE's 1.7 scale. Ghostty on Linux sizes fonts at 96 dpi
+# times the scale (163 here), where macOS uses 72 times its 2x (144), so 13 here drew
+# about 13% larger than on macOS on the same panel. 11.5 matches it (13 x 144 / 163).
+font-size = 11.5
