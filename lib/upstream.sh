@@ -168,11 +168,16 @@ install_credentialsd() {
     log_info "credentialsd's xdg-desktop-portal already installed"
   else
     log_step "Installing credentialsd's xdg-desktop-portal $CREDENTIALSD_PORTAL_VERSION"
-    portal="$base/xdg-desktop-portal-$CREDENTIALSD_PORTAL_VERSION.$arch.rpm"
+    # Downloaded by curl rather than handed to dnf as a URL: on Fedora Asahi, dnf's own
+    # download of it left something in its command-line cache that wasn't an RPM.
+    tmp="$(mktemp -d)"
+    portal="$tmp/xdg-desktop-portal-$CREDENTIALSD_PORTAL_VERSION.$arch.rpm"
+    curl -fsSL -o "$portal" "$base/${portal##*/}"
     sudo dnf install -y --allow-vendor-change "$portal"
     if ! rpm -q "xdg-desktop-portal-$CREDENTIALSD_PORTAL_VERSION" >/dev/null 2>&1; then
       sudo dnf downgrade -y --allow-vendor-change "$portal"
     fi
+    rm -rf "$tmp"
     # The running portal is restarted onto the new one, with its drop-in.
     systemctl --user daemon-reload || true
     systemctl --user try-restart xdg-desktop-portal.service || true
