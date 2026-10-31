@@ -98,9 +98,14 @@ kde_setup() {
   local kglobalaccel=(busctl --user call org.kde.kglobalaccel /kglobalaccel org.kde.KGlobalAccel)
   if "${kglobalaccel[@]}" setForeignShortcutKeys 'asa(ai)' \
     4 kwin "Window Quick Tile Top" KWin "Quick Tile Window to the Top" 0 2>/dev/null; then
-    "${kglobalaccel[@]}" setForeignShortcutKeys 'asa(ai)' \
-      4 kwin "Window Maximize" KWin "Maximize Window" 2 1 285212691 1 285212694
-    log_info "Meta+Up maximizes"
+    # On Fedora Asahi this call has ended with KWin, which hosts kglobalaccel, dropping
+    # off the bus mid-call, so a failure is reported rather than stopping the setup.
+    if "${kglobalaccel[@]}" setForeignShortcutKeys 'asa(ai)' \
+      4 kwin "Window Maximize" KWin "Maximize Window" 2 1 285212691 1 285212694 2>/dev/null; then
+      log_info "Meta+Up maximizes"
+    else
+      log_err "Couldn't give Maximize Meta+Up; set it in System Settings > Shortcuts > KWin"
+    fi
   else
     log_info "kglobalaccel isn't running; the shortcuts stay as they are"
   fi
