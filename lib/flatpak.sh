@@ -2,6 +2,13 @@
 
 set -euo pipefail
 
+# Updates installed apps and runtimes and removes runtimes nothing uses any more.
+flatpak_update() {
+  log_step "Updating Flatpak apps"
+  sudo flatpak update -y --noninteractive
+  sudo flatpak uninstall -y --noninteractive --unused
+}
+
 # Installs from Flathub what a list (one app ID per line, # starts a comment) names and
 # isn't installed yet, so a second run installs nothing and doesn't ask for sudo.
 # Apps are installed one at a time, and one that fails (Discord has no aarch64 build, for

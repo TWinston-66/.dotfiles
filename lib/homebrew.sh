@@ -27,6 +27,14 @@ install_homebrew() {
   fi
 }
 
+# Upgrades every formula and cask installed. Casks that update themselves (auto_updates)
+# are left to do so.
+brew_upgrade() {
+  log_step "Upgrading Homebrew packages"
+  brew update
+  brew upgrade
+}
+
 brew_bundle() {
   local brewfile="$1"
   log_step "Installing packages from $(basename "$brewfile")"

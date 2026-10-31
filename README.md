@@ -44,7 +44,8 @@ This clones the repo to `~/.dotfiles` (override with `DOTFILES_DIR`) and runs
 
 **On macOS**
 
-1. Installs the Xcode Command Line Tools, Homebrew and `packages/Brewfile`, plus Claude Code and pi.
+1. Installs the Xcode Command Line Tools, Homebrew and `packages/Brewfile`, plus Claude Code and pi,
+   and upgrades what Homebrew already has.
 2. Copies the SSH key from the drive labelled `DB`, if it's plugged in, and links the
    configs with Stow.
 3. Installs tmux's plugins.
@@ -53,8 +54,8 @@ This clones the repo to `~/.dotfiles` (override with `DOTFILES_DIR`) and runs
 
 **On Fedora (KDE Plasma)**
 
-1. Installs `packages/fedora.txt` with dnf (Ghostty and gping from COPR) and
-   `packages/flathub.txt` from Flathub, removes the Fedora KDE apps in
+1. Upgrades the system with dnf and Flatpak, installs `packages/fedora.txt` with dnf
+   (Ghostty and gping from COPR) and `packages/flathub.txt` from Flathub, removes the Fedora KDE apps in
    `packages/fedora-remove.txt` (KDE PIM, games, chat, remote desktop and a few
    utilities), and enables Tailscale with its tray icon (accepting advertised routes).
 2. Installs what Fedora doesn't package from upstream: starship, lazygit, lazydocker,
@@ -80,9 +81,7 @@ linked, since Rectangle imports and renames its file; KDE's settings are written
 ## Update
 
 ```sh
-~/.dotfiles/dotfiles.sh                # re-link configs and re-run setup
-brew update && brew upgrade            # macOS packages
-sudo dnf upgrade && flatpak update     # Fedora packages
+~/.dotfiles/dotfiles.sh                # upgrade packages, re-link configs and re-run setup
 ```
 
 Bumping `VERSION` on `main` publishes a GitHub release.

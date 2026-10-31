@@ -64,12 +64,14 @@ setup_macos() {
 setup_fedora() {
     enable_copr atim/gping
     enable_copr scottames/ghostty
+    dnf_upgrade
     dnf_install "$DOTFILES_DIR/packages/fedora.txt"
     dnf_remove "$DOTFILES_DIR/packages/fedora-remove.txt"
     enable_service tailscaled
     tailscale_setup
     install_udev_rules
     flathub_install "$DOTFILES_DIR/packages/flathub.txt"
+    flatpak_update
     install_starship
     install_go_tools
     install_zed

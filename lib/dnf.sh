@@ -33,6 +33,14 @@ dnf_install() {
   fi
 }
 
+# Upgrades everything installed to what the repos have now, with fresh metadata. Leaves out
+# xdg-desktop-portal, which is credentialsd's patched build and would otherwise be replaced
+# by Fedora's on every run, only for install_credentialsd to downgrade it back.
+dnf_upgrade() {
+  log_step "Upgrading Fedora packages"
+  sudo dnf upgrade -y --refresh --exclude=xdg-desktop-portal
+}
+
 # Removes what a package list names and is still installed, along with whatever dnf finds
 # only they needed, so a second run removes nothing and doesn't ask for sudo.
 dnf_remove() {
