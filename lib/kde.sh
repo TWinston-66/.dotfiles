@@ -5,8 +5,30 @@ set -euo pipefail
 # KDE apps rewrite their config files whole when saving, which would replace a stowed link,
 # so their settings are written in place with kwriteconfig6, as defaults.sh does on macOS.
 
+# Whether KWin or plasmashell started before the last install of KWin, Plasma, KDE
+# Frameworks or Qt, so is still running files that upgrade replaced. Changing such a
+# session through D-Bus has crashed KWin, so its settings wait for a reboot. (KWin's
+# memory map, which would show the replaced files, isn't readable without root.)
+kde_session_outdated() {
+  local pid started installed
+  installed="$(rpm -qa --qf '%{INSTALLTIME}\n' 'kwin*' 'plasma-workspace*' 'libplasma*' 'kf6-*' 'qt6-*' |
+    sort -n | tail -n 1)"
+  [ -n "$installed" ] || return 1
+  for pid in $(pgrep -u "$UID" -x 'kwin_wayland|plasmashell'); do
+    started=$(($(date +%s) - $(ps -o etimes= -p "$pid")))
+    [ "$started" -lt "$installed" ] && return 0
+  done
+  return 1
+}
+
 kde_setup() {
   log_step "Applying KDE settings"
+
+  if kde_session_outdated; then
+    log_err "KDE was upgraded under the running session; its settings wait for a reboot"
+    KDE_SETUP_PENDING=1
+    return
+  fi
 
   ### THEME ###
   # Gruvbox Material, from the scheme the fedora package stows into color-schemes, with
@@ -98,8 +120,9 @@ kde_setup() {
   local kglobalaccel=(busctl --user call org.kde.kglobalaccel /kglobalaccel org.kde.KGlobalAccel)
   if "${kglobalaccel[@]}" setForeignShortcutKeys 'asa(ai)' \
     4 kwin "Window Quick Tile Top" KWin "Quick Tile Window to the Top" 0 2>/dev/null; then
-    # On Fedora Asahi this call has ended with KWin, which hosts kglobalaccel, dropping
-    # off the bus mid-call, so a failure is reported rather than stopping the setup.
+    # KWin, which hosts kglobalaccel, has crashed on this call when running files an
+    # upgrade replaced; kde_session_outdated keeps that from happening, and any other
+    # failure is reported rather than stopping the setup.
     if "${kglobalaccel[@]}" setForeignShortcutKeys 'asa(ai)' \
       4 kwin "Window Maximize" KWin "Maximize Window" 2 1 285212691 1 285212694 2>/dev/null; then
       log_info "Meta+Up maximizes"

@@ -93,6 +93,9 @@ setup_fedora() {
     log_ok "Machine configured. Follow steps below."
     log_info "1. Log out and back in for zsh to become your shell"
     log_info "2. Sign in to Tailscale: sudo tailscale up"
+    if [ "${KDE_SETUP_PENDING:-0}" -eq 1 ]; then
+        log_info "3. Reboot, then run ~/.dotfiles/dotfiles.sh again to apply the KDE settings"
+    fi
 }
 
 install_xcode_clt() {
