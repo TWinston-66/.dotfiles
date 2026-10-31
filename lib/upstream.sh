@@ -139,7 +139,8 @@ CREDENTIALSD_PORTAL_VERSION=1.22.1-14.1
 # its UI and the native-messaging host as RPMs (dnf pulls in their Fedora dependencies), and
 # the signed add-on, which a Firefox policy installs into every profile. Since 0.3 the add-on
 # reaches credentialsd through xdg-desktop-portal's experimental Credential portal, which
-# Fedora's portal lacks, so the release's patched portal replaces it; it turns the portal on
+# Fedora's portal lacks, so the release's patched portal replaces it, which dnf allows only
+# with --allow-vendor-change since it comes from openSUSE's build service; it turns the portal on
 # with a systemd drop-in of its own. A Fedora update to the portal undoes that until the
 # next run, which puts it back, as a downgrade if need be. Firefox reads
 # /etc/firefox/policies in place of the policies it ships with, so those are carried over.
@@ -168,9 +169,9 @@ install_credentialsd() {
   else
     log_step "Installing credentialsd's xdg-desktop-portal $CREDENTIALSD_PORTAL_VERSION"
     portal="$base/xdg-desktop-portal-$CREDENTIALSD_PORTAL_VERSION.$arch.rpm"
-    sudo dnf install -y "$portal"
+    sudo dnf install -y --allow-vendor-change "$portal"
     if ! rpm -q "xdg-desktop-portal-$CREDENTIALSD_PORTAL_VERSION" >/dev/null 2>&1; then
-      sudo dnf downgrade -y "$portal"
+      sudo dnf downgrade -y --allow-vendor-change "$portal"
     fi
     # The running portal is restarted onto the new one, with its drop-in.
     systemctl --user daemon-reload || true
