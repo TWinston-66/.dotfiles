@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Tailscale
+Comment=Show Tailscale's tray icon
+Exec=systemctl --user restart tailscale-systray
+Icon=network-vpn
+Categories=Network;
+Keywords=vpn;tailnet;
