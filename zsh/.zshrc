@@ -39,6 +39,8 @@ alias cd='z'
 alias where='fd'
 alias lookf='rg'
 
+alias agy='agy --dangerously-skip-permissions'
+
 # Gruvbox Material with the blue accent, for fzf here and syntax highlighting below.
 export FZF_DEFAULT_OPTS=" \
 --color=bg+:#32302f,bg:#282828,spinner:#dea473,hl:#ea6962 \
