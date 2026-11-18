@@ -15,7 +15,6 @@ brew "jq"
 brew "gping"
 brew "nmap"
 brew "btop"
-brew "fastfetch"
 brew "duf"
 brew "dust"
 brew "procs"
@@ -35,6 +34,7 @@ brew "dockutil"
 brew "defaultbrowser"
 brew "displayplacer"
 brew "mas"
+brew "rclone"
 
 cask "zed"
 cask "skim" # LaTeX live preview (synctex)
@@ -60,6 +60,7 @@ cask "claude"
 cask "antigravity-cli"
 cask "google-gemini"
 cask "logi-options+"
+cask "onyx"
 
 mas "Amphetamine", id: 937984704
 mas "wBlock", id: 6746388723

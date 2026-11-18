@@ -92,16 +92,16 @@ defaults write com.apple.WindowManager EnableTopTilingByEdgeDrag -bool false
 defaults write com.apple.WindowManager EnableTilingOptionAccelerator -bool false
 defaults write com.apple.WindowManager EnableTiledWindowMargins -bool false
 
-# Don't scatter windows when clicking the wallpaper
-defaults write com.apple.WindowManager EnableStandardClickToShowDesktop -bool false
+# Clicking the wallpaper moves windows aside to show the desktop
+defaults write com.apple.WindowManager EnableStandardClickToShowDesktop -bool true
 
 # Stage Manager off
 defaults write com.apple.WindowManager GloballyEnabled -bool false
 defaults write com.apple.WindowManager AutoHide -bool false
 
-# Nothing on the desktop, and no desktop at all
+# No desktop icons or desktop folder, but widgets stay
 defaults write com.apple.WindowManager StandardHideDesktopIcons -bool true
-defaults write com.apple.WindowManager StandardHideWidgets -bool true
+defaults write com.apple.WindowManager StandardHideWidgets -bool false
 defaults write com.apple.finder CreateDesktop -bool false
 
 ### MISSION CONTROL ###
@@ -174,12 +174,12 @@ defaults -currentHost write com.apple.controlcenter Weather -int 2
 
 #### DOCK ####
 defaults write com.apple.dock orientation -string "bottom"
-defaults write com.apple.dock mineffect -string "scale"
+defaults write com.apple.dock mineffect -string "genie"
 defaults write com.apple.dock minimize-to-application -bool true
 defaults write com.apple.dock tilesize -int 48
 defaults write com.apple.dock magnification -bool false
 defaults write com.apple.dock show-recents -bool false
-defaults write com.apple.dock launchanim -bool false
+defaults write com.apple.dock launchanim -bool true
 defaults write com.apple.dock no-bouncing -bool true
 defaults write com.apple.dock showhidden -bool true # hidden apps appear translucent
 defaults write com.apple.dock show-process-indicators -bool true
@@ -212,9 +212,10 @@ if command -v dockutil >/dev/null 2>&1; then
     "/System/Applications/Passwords.app"
     "/Applications/Cryptomator.app"
     "/System/Applications/System Settings.app"
-    "/System/Applications/Siri.app"
+    "/System/Applications/Siri AI.app"
     "/Applications/Claude.app"
     "/Applications/Gemini.app"
+    "/Applications/OnyX.app"
   )
 
   dockutil --remove all --no-restart >/dev/null 2>&1 || true
@@ -232,7 +233,7 @@ fi
 
 ### PRIVACY ###
 defaults write com.apple.AdLib allowApplePersonalizedAdvertising -bool false
-defaults write com.apple.AdLib allowIdentifierForAdvertising -bool false
+defaults write com.apple.AdLib allowIdentifierForAdvertising -bool true
 
 ### TIME MACHINE ###
 defaults write com.apple.TimeMachine DoNotOfferNewDisksForBackup -bool true
